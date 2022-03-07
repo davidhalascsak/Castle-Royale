@@ -1,4 +1,5 @@
 import pygame
+import tile
 
 pygame.init()
 
@@ -17,7 +18,9 @@ FPS = 60
 # 3 - Load Game
 # 4 - In Game
 
-game_state = 1
+game_state = 4
+
+tile1 = tile.Tile()
 
 run = True
 while run:
@@ -32,8 +35,8 @@ while run:
         pass
         # draw
     elif game_state == 4:
-        pass
-        # draw
+        tile1.draw(screen)
+
 
     for event in pygame.event.get():
         if game_state == 1:
