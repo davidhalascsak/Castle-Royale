@@ -1,4 +1,7 @@
 import pygame
+
+import soldier
+import tower
 import tile
 
 pygame.init()
@@ -37,7 +40,6 @@ while run:
     elif game_state == 4:
         tile1.draw(screen)
 
-
     for event in pygame.event.get():
         if game_state == 1:
             pass
@@ -58,3 +60,6 @@ while run:
     pygame.display.update()
 
 pygame.quit()
+
+
+
