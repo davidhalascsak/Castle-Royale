@@ -1,5 +1,5 @@
-from player import Player
-from tile import Tile
+from src.player import Player
+from src.tile import Tile
 import random
 
 

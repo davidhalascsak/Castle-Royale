@@ -1,14 +1,11 @@
 import pygame
 
-import soldier
-import tower
-import tile
-from button import Button
-from game import Game
+from src.button import Button
+from src.game import Game
 
 pygame.init()
 
-SCREEN_WIDTH = 1280
+SCREEN_WIDTH = 1248 # 1280
 SCREEN_HEIGHT = 720
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
