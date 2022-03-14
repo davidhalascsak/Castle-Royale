@@ -23,7 +23,16 @@ FPS = 60
 
 game_state = 4
 
-tile1 = tile.Tile()
+# tile1 = tile.Tile()
+
+map = []
+
+for x in range(0, 26):
+    map.append([])
+    for y in range(0, 15):
+        map[len(map) - 1].append(tile.Tile(x, y))
+
+print(map)
 
 run = True
 while run:
@@ -38,7 +47,11 @@ while run:
         pass
         # draw
     elif game_state == 4:
-        tile1.draw(screen)
+        # pass
+        for row in map:
+            for tile in row:
+                tile.draw(screen)
+        # tile1.draw(screen)
 
     for event in pygame.event.get():
         if game_state == 1:
