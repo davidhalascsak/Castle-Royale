@@ -3,6 +3,8 @@ import pygame
 import soldier
 import tower
 import tile
+from button import Button
+from game import Game
 
 pygame.init()
 
@@ -25,18 +27,31 @@ game_state = 4
 
 # tile1 = tile.Tile()
 
-map = []
+button1 = Button((255, 255, 255), 10, 10, 100, 30, "TEST")
 
-for x in range(0, 26):
-    map.append([])
-    for y in range(0, 15):
-        map[len(map) - 1].append(tile.Tile(x, y))
+game = Game()
+game.new_game(1000, 10, "Player1", "Player2")
 
-print(map)
+font = pygame.font.SysFont('comicsans', 20)
+
+
+# Change name color based on round
+name_color = (0, 0, 0)
+name_color_now_playing = (255, 0, 0)
+
+
+def get_name_color(player):
+    if game.now_playing == player:
+        return name_color_now_playing
+    return name_color
+
 
 run = True
 while run:
     clock.tick(FPS)
+    # Background color for testing
+    screen.fill((0, 100, 200))
+    # Draw update function
     if game_state == 1:
         pass
         # draw
@@ -47,12 +62,25 @@ while run:
         pass
         # draw
     elif game_state == 4:
-        # pass
-        for row in map:
+        # Draw Tiles
+        for row in game.map:
             for tile in row:
                 tile.draw(screen)
-        # tile1.draw(screen)
 
+        # Draw Player Information
+        player1_name = font.render(str(game.player_1.get_name()), True, get_name_color(game.player_1))
+        player1_money = font.render(str(game.player_1.get_gold()), True, get_name_color(game.player_1))
+
+        screen.blit(player1_name, (10, 10))
+        screen.blit(player1_money, (10, 35))
+
+        player2_name = font.render(str(game.player_2.get_name()), True, get_name_color(game.player_2))
+        player2_money = font.render(str(game.player_2.get_gold()), True, get_name_color(game.player_2))
+
+        screen.blit(player2_name, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 10))
+        screen.blit(player2_money, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 35))
+
+    # Keyboard input update function
     for event in pygame.event.get():
         if game_state == 1:
             pass
@@ -64,8 +92,9 @@ while run:
             pass
             # keyboard input
         elif game_state == 4:
-            pass
-            # keyboard input
+            for row in game.map:
+                for tile in row:
+                    tile.isOver(pygame.mouse.get_pos())
 
         if event.type == pygame.QUIT:
             run = False
@@ -73,6 +102,3 @@ while run:
     pygame.display.update()
 
 pygame.quit()
-
-
-
