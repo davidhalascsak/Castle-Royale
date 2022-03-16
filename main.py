@@ -24,10 +24,10 @@ game_state = 4
 
 # tile1 = tile.Tile()
 
-button1 = Button((255, 255, 255), 10, 10, 100, 30, "TEST")
+button1 = Button((255, 0, 0), 10, 10, 100, 30, "VALTOZZ CSICSKA")
 
 game = Game()
-game.new_game(1000, 10, "Player1", "Player2")
+game.new_game(1000, 9999999999, "Player1", "Player2")
 
 font = pygame.font.SysFont('comicsans', 20)
 
@@ -60,6 +60,7 @@ while run:
         # draw
     elif game_state == 4:
         # Draw Tiles
+
         for row in game.map:
             for tile in row:
                 tile.draw(screen)
@@ -77,6 +78,8 @@ while run:
         screen.blit(player2_name, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 10))
         screen.blit(player2_money, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 35))
 
+        button1.draw(screen)
+
     # Keyboard input update function
     for event in pygame.event.get():
         if game_state == 1:
@@ -91,7 +94,14 @@ while run:
         elif game_state == 4:
             for row in game.map:
                 for tile in row:
-                    tile.isOver(pygame.mouse.get_pos())
+                    if tile.isOver(pygame.mouse.get_pos()):
+                        pass
+            if event.type == pygame.MOUSEBUTTONUP:
+                if button1.isOver(pygame.mouse.get_pos()):
+                    game.next_round()
+
+
+
 
         if event.type == pygame.QUIT:
             run = False

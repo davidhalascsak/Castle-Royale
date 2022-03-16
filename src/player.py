@@ -12,3 +12,10 @@ class Player:
 
     def get_name(self):
         return self.name
+
+    def get_gold_bonus(self):
+        sum_gold = 0
+        for _ in self.structures:
+            sum_gold += 10
+        return sum_gold
+

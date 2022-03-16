@@ -34,3 +34,13 @@ class Game:
     def load_game(self):
         pass
 
+    def next_round(self):
+        if self.now_playing == self.player_1:
+            self.now_playing = self.player_2
+        else:
+            self.now_playing = self.player_1
+        self.player_1.gold += (self.gold_increase + self.player_1.get_gold_bonus())
+        self.player_2.gold += (self.gold_increase + self.player_2.get_gold_bonus())
+
+
+
