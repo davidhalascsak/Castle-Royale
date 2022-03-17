@@ -3,6 +3,9 @@ import pygame
 from src.button import Button
 from src.game import Game
 from src.contextmenu import Context
+from src.soldier import *
+from src.tower import *
+
 pygame.init()
 
 SCREEN_WIDTH = 1248 # 1280
@@ -35,6 +38,25 @@ btn_continue = Button((255, 0, 0), 1010, 676, 235, 40, "CONTINUE")
 
 game = Game()
 game.new_game(1000, "Player1", "Player2")
+
+'''
+#Test
+game._map[1][1]._units.append(Basic(0, 0, game._map[0], "Player2"))
+game._map[1][1]._units.append(Climber(0, 0, game._map[0], "Player2"))
+game._map[1][1]._units.append(Tank(0, 0, game._map[0], "Player2"))
+game._map[1][1]._units.append(Suicide(0, 0, game._map[0], "Player2"))
+game._map[1][1]._structures.append(Basic(0, 0, game._map[0], "Player2"))
+game._map[2][2]._structures.append(Splash(0, 0, game._map[0], "Player2"))
+game._map[3][3]._structures.append(Slow(0, 0, game._map[0], "Player2"))
+
+game._map[2][1]._units.append(Basic(0, 0, game._map[0], "Player1"))
+game._map[2][1]._units.append(Climber(0, 0, game._map[0], "Player1"))
+game._map[2][1]._units.append(Tank(0, 0, game._map[0], "Player1"))
+game._map[2][1]._units.append(Suicide(0, 0, game._map[0], "Player1"))
+game._map[2][1]._structures.append(Basic(0, 0, game._map[0], "Player1"))
+game._map[3][2]._structures.append(Splash(0, 0, game._map[0], "Player1"))
+game._map[4][3]._structures.append(Slow(0, 0, game._map[0], "Player1"))
+'''
 
 font = pygame.font.SysFont('comicsans', 20)
 

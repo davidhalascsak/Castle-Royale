@@ -8,6 +8,7 @@ class Player:
         self._name = name
         self._gold = 0
         self._structures = []
+        self._units = []
         self.state = None
 
     def add(self, unit):
@@ -15,7 +16,7 @@ class Player:
 
     def calculate_gold_bonus(self):
         sum = 0
-        for _ in self._structures:
+        for _ in self._units:
             sum += 10
         return sum
 
