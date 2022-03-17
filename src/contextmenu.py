@@ -1,5 +1,5 @@
 import pygame
-
+SCREEN_WIDTH = 1248
 
 class Context:
     def __init__(self):
@@ -23,7 +23,10 @@ class Context:
                           self.y + ((item[0]-1) * self.height) + (self.height / 2 - text.get_height() / 2)))
 
     def open(self, x, y):
-        self.x = x
+        if x + self.width > SCREEN_WIDTH:
+            self.x = x-self.width
+        else:
+            self.x = x
         self.y = y
         self.opened = True
 
