@@ -27,7 +27,7 @@ game_state = 4
 button1 = Button((255, 0, 0), 10, 10, 100, 30, "VALTOZZ CSICSKA")
 
 game = Game()
-game.new_game(1000, 9999999999, "Player1", "Player2")
+game.new_game(1000, "Player1", "Player2")
 
 font = pygame.font.SysFont('comicsans', 20)
 
@@ -38,7 +38,7 @@ name_color_now_playing = (255, 0, 0)
 
 
 def get_name_color(player):
-    if game.now_playing == player:
+    if game.current_player == player:
         return name_color_now_playing
     return name_color
 
@@ -66,14 +66,14 @@ while run:
                 tile.draw(screen)
 
         # Draw Player Information
-        player1_name = font.render(str(game.player_1.get_name()), True, get_name_color(game.player_1))
-        player1_money = font.render(str(game.player_1.get_gold()), True, get_name_color(game.player_1))
+        player1_name = font.render(str(game.player_1.name), True, get_name_color(game.player_1))
+        player1_money = font.render(str(game.player_1.gold), True, get_name_color(game.player_1))
 
         screen.blit(player1_name, (10, 10))
         screen.blit(player1_money, (10, 35))
 
-        player2_name = font.render(str(game.player_2.get_name()), True, get_name_color(game.player_2))
-        player2_money = font.render(str(game.player_2.get_gold()), True, get_name_color(game.player_2))
+        player2_name = font.render(str(game.player_2.name), True, get_name_color(game.player_2))
+        player2_money = font.render(str(game.player_2.gold), True, get_name_color(game.player_2))
 
         screen.blit(player2_name, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 10))
         screen.blit(player2_money, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 35))
@@ -94,14 +94,11 @@ while run:
         elif game_state == 4:
             for row in game.map:
                 for tile in row:
-                    if tile.isOver(pygame.mouse.get_pos()):
+                    if tile.is_over(pygame.mouse.get_pos()):
                         pass
             if event.type == pygame.MOUSEBUTTONUP:
-                if button1.isOver(pygame.mouse.get_pos()):
+                if button1.is_over(pygame.mouse.get_pos()):
                     game.next_round()
-
-
-
 
         if event.type == pygame.QUIT:
             run = False
@@ -109,3 +106,5 @@ while run:
     pygame.display.update()
 
 pygame.quit()
+
+

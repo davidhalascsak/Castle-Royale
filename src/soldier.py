@@ -1,7 +1,7 @@
-import unit
+import src.unit
 
 
-class Soldier(unit.Unit):
+class Soldier(src.unit.Unit):
 
     def __init__(self, health, damage, stamina, price, x, y):
         super().__init__(health=health, damage=damage, price=price, x=x, y=y)

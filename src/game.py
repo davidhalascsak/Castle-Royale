@@ -5,42 +5,60 @@ import random
 
 class Game:
     def __init__(self):
-        self.player_1 = None
-        self.player_2 = None
-        self.gold_increase = 0
-        self.map = []
-        self.now_playing = None
+        self._player_1 = None
+        self._player_2 = None
+        self._map = []
+        self._current_player = None
 
-    def new_game(self, start_gold, gold_increase, name_1, name_2):
-        self.gold_increase = gold_increase
-
+    def new_game(self, start_gold, name_1, name_2):
         # Configure Players
-        self.player_1 = Player(name_1)
-        self.player_2 = Player(name_2)
+        self._player_1 = Player(name_1)
+        self._player_2 = Player(name_2)
 
-        self.player_1.set_gold(start_gold)
-        self.player_2.set_gold(start_gold)
+        self._player_1.gold = start_gold
+        self._player_2.gold = start_gold
 
         # Determine Starting Player
-        self.now_playing = random.sample({self.player_1, self.player_2}, 1)[0]
+        self._current_player = random.sample({self._player_1, self._player_2}, 1)[0]
 
         # Generate Map
-        self.map = []
         for x in range(0, 26):
-            self.map.append([])
+            self._map.append([])
             for y in range(0, 15):
-                self.map[len(self.map) - 1].append(Tile(x, y))
+                self._map[len(self._map) - 1].append(Tile(x, y))
 
     def load_game(self):
         pass
 
+    def save_game(self):
+        pass
+
     def next_round(self):
-        if self.now_playing == self.player_1:
-            self.now_playing = self.player_2
+        if self._current_player == self._player_1:
+            self._current_player = self._player_2
         else:
-            self.now_playing = self.player_1
-        self.player_1.gold += (self.gold_increase + self.player_1.get_gold_bonus())
-        self.player_2.gold += (self.gold_increase + self.player_2.get_gold_bonus())
+            self._current_player = self._player_1
+
+        self._player_1.gold = (self._player_1.gold + self._player_1.calculate_gold_bonus())
+        self._player_2.gold = (self._player_2.gold + self._player_2.calculate_gold_bonus())
+
+    @property
+    def map(self):
+        return self._map
+
+    @property
+    def player_1(self):
+        return self._player_1
+
+    @property
+    def player_2(self):
+        return self._player_2
+
+    @property
+    def current_player(self):
+        return self._current_player
+
+
 
 
 

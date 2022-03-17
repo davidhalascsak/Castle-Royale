@@ -29,7 +29,7 @@ class Unit:
 
     @property
     def x(self):
-        return self._y
+        return self._x
 
     @x.setter
     def x(self, change):
