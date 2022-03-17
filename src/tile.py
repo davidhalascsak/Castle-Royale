@@ -4,10 +4,13 @@ import random
 
 class Tile:
     def __init__(self, pos_x, pos_y):
+        self.x = pos_x
+        self.y = pos_y
         self._x = pos_x * 48
         self._y = pos_y * 48
         self._width = 48
         self._height = 48
+
         # self.r = random.randint(0, 255)
         # self.g = random.randint(0, 255)
         # self.b = random.randint(0, 255)

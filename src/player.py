@@ -4,6 +4,7 @@ class Player:
         self._name = name
         self._gold = 0
         self._structures = []
+        self.state = None
 
     def calculate_gold_bonus(self):
         sum = 0

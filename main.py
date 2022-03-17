@@ -82,6 +82,8 @@ while run:
         screen.blit(player2_name, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 10))
         screen.blit(player2_money, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 35))
 
+        current_player_state = font.render(str(game.current_player.state), True, (0, 0, 0))
+        screen.blit(current_player_state, ((SCREEN_WIDTH / 2) - (current_player_state.get_width() / 2), 10))
         # button1.draw(screen)
 
         btn_quit.draw(screen)
@@ -104,19 +106,28 @@ while run:
         elif game_state == 4:
             for row in game.map:
                 for tile in row:
-                    if tile.is_over(pygame.mouse.get_pos()):
-                        pass
+                    if tile.is_over(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONUP:
+                        if game.current_player.state == "BUILD":
+                            print("BUILD")
+                        elif game.current_player.state == "TRAIN":
+                            print("TRAIN")
+                        elif game.current_player.state == "MOVE":
+                            print("MOVE")
+                        print("Tile Cords: {}, {}".format(tile.x, tile.y))
             if event.type == pygame.MOUSEBUTTONUP:
                 if btn_continue.is_over(pygame.mouse.get_pos()):
                     game.next_round()
                 elif btn_quit.is_over(pygame.mouse.get_pos()):
                     run = False
                 elif btn_build.is_over(pygame.mouse.get_pos()):
-                    print("BUILD")
+                    game.current_player.state = "BUILD"
+                    # print(game.current_player.state)
                 elif btn_train.is_over(pygame.mouse.get_pos()):
-                    print("TRAIN")
+                    game.current_player.state = "TRAIN"
+                    # print(game.current_player.state)
                 elif btn_move.is_over(pygame.mouse.get_pos()):
-                    print("MOVE")
+                    game.current_player.state = "MOVE"
+                    # print(game.current_player.state)
 
         if event.type == pygame.QUIT:
             run = False

@@ -9,6 +9,8 @@ class Game:
         self._player_2 = None
         self._map = []
         self._current_player = None
+        self.map_height = 14
+        self.map_width = 26
 
     def new_game(self, start_gold, name_1, name_2):
         # Configure Players
@@ -22,9 +24,9 @@ class Game:
         self._current_player = random.sample({self._player_1, self._player_2}, 1)[0]
 
         # Generate Map
-        for x in range(0, 26):
+        for x in range(0, self.map_width):
             self._map.append([])
-            for y in range(0, 14):
+            for y in range(0, self.map_height):
                 self._map[len(self._map) - 1].append(Tile(x, y))
 
     def load_game(self):
