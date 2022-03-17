@@ -2,7 +2,7 @@ import pygame
 
 from src.button import Button
 from src.game import Game
-
+from src.contextmenu import Context
 pygame.init()
 
 SCREEN_WIDTH = 1248 # 1280
@@ -14,6 +14,8 @@ pygame.display.set_caption('Castle Royale')
 
 clock = pygame.time.Clock()
 FPS = 60
+
+hamburger = Context()
 
 # 1 - Menu
 # 2 - New Game
@@ -86,11 +88,12 @@ while run:
         screen.blit(current_player_state, ((SCREEN_WIDTH / 2) - (current_player_state.get_width() / 2), 10))
         # button1.draw(screen)
 
-        btn_quit.is_over(pygame.mouse.get_pos())
-        btn_build.is_over(pygame.mouse.get_pos())
-        btn_train.is_over(pygame.mouse.get_pos())
-        btn_move.is_over(pygame.mouse.get_pos())
-        btn_continue.is_over(pygame.mouse.get_pos())
+        if not hamburger.opened:
+            btn_quit.is_over(pygame.mouse.get_pos())
+            btn_build.is_over(pygame.mouse.get_pos())
+            btn_train.is_over(pygame.mouse.get_pos())
+            btn_move.is_over(pygame.mouse.get_pos())
+            btn_continue.is_over(pygame.mouse.get_pos())
 
         btn_quit.draw(screen)
         btn_build.draw(screen)
@@ -98,6 +101,11 @@ while run:
         btn_move.draw(screen)
         btn_continue.draw(screen)
 
+
+        # Draw Context Menu
+
+        hamburger.draw(screen)
+        hamburger.is_over(pygame.mouse.get_pos())
     # Keyboard input update function
     for event in pygame.event.get():
         if game_state == 1:
@@ -110,30 +118,44 @@ while run:
             pass
             # keyboard input
         elif game_state == 4:
-            for row in game.map:
-                for tile in row:
-                    if tile.is_over(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONUP:
-                        if game.current_player.state == "BUILD":
-                            print("BUILD")
-                        elif game.current_player.state == "TRAIN":
-                            print("TRAIN")
-                        elif game.current_player.state == "MOVE":
-                            print("MOVE")
-                        print("Tile Cords: {}, {}".format(tile.x, tile.y))
-            if event.type == pygame.MOUSEBUTTONUP:
-                if btn_continue.is_over(pygame.mouse.get_pos()):
-                    game.next_round()
-                elif btn_quit.is_over(pygame.mouse.get_pos()):
-                    run = False
-                elif btn_build.is_over(pygame.mouse.get_pos()):
-                    game.current_player.state = "BUILD"
-                    # print(game.current_player.state)
-                elif btn_train.is_over(pygame.mouse.get_pos()):
-                    game.current_player.state = "TRAIN"
-                    # print(game.current_player.state)
-                elif btn_move.is_over(pygame.mouse.get_pos()):
-                    game.current_player.state = "MOVE"
-                    # print(game.current_player.state)
+            if hamburger.opened:
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if hamburger.is_outside(pygame.mouse.get_pos()):
+                        hamburger.opened = False
+
+                    content = hamburger.is_over(pygame.mouse.get_pos())
+                    for item in content:
+                        if item[2]:
+                            print(item[1])
+            else:
+                for row in game.map:
+                    for tile in row:
+                        if tile.is_over(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONUP:
+                            if game.current_player.state == "BUILD":
+                                mouse_cords = pygame.mouse.get_pos()
+                                print("BUILD")
+                                hamburger.change_content(["Tower", "Barracks"])
+                                hamburger.open(mouse_cords[0], mouse_cords[1])
+
+                            elif game.current_player.state == "TRAIN":
+                                print("TRAIN")
+                            elif game.current_player.state == "MOVE":
+                                print("MOVE")
+                            print("Tile Cords: {}, {}".format(tile.x, tile.y))
+                if event.type == pygame.MOUSEBUTTONUP:
+                    if btn_continue.is_over(pygame.mouse.get_pos()):
+                        game.next_round()
+                    elif btn_quit.is_over(pygame.mouse.get_pos()):
+                        run = False
+                    elif btn_build.is_over(pygame.mouse.get_pos()):
+                        game.current_player.state = "BUILD"
+                        # print(game.current_player.state)
+                    elif btn_train.is_over(pygame.mouse.get_pos()):
+                        game.current_player.state = "TRAIN"
+                        # print(game.current_player.state)
+                    elif btn_move.is_over(pygame.mouse.get_pos()):
+                        game.current_player.state = "MOVE"
+                        # print(game.current_player.state)
 
         if event.type == pygame.QUIT:
             run = False
