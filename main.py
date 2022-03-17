@@ -24,7 +24,11 @@ game_state = 4
 
 # tile1 = tile.Tile()
 
-button1 = Button((255, 0, 0), 10, 10, 100, 30, "VALTOZZ CSICSKA")
+btn_quit = Button((255, 0, 0), 10, 672, 240, 48, "QUIT")
+btn_build = Button((255, 0, 0), 260, 672, 240, 48, "BUILD")
+btn_train = Button((255, 0, 0), 510, 672, 240, 48, "TRAIN")
+btn_move = Button((255, 0, 0), 760, 672, 240, 48, "MOVE")
+btn_continue = Button((255, 0, 0), 1010, 672, 240, 48, "CONTINUE")
 
 game = Game()
 game.new_game(1000, "Player1", "Player2")
@@ -78,7 +82,13 @@ while run:
         screen.blit(player2_name, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 10))
         screen.blit(player2_money, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 35))
 
-        button1.draw(screen)
+        # button1.draw(screen)
+
+        btn_quit.draw(screen)
+        btn_build.draw(screen)
+        btn_train.draw(screen)
+        btn_move.draw(screen)
+        btn_continue.draw(screen)
 
     # Keyboard input update function
     for event in pygame.event.get():
@@ -97,8 +107,16 @@ while run:
                     if tile.is_over(pygame.mouse.get_pos()):
                         pass
             if event.type == pygame.MOUSEBUTTONUP:
-                if button1.is_over(pygame.mouse.get_pos()):
+                if btn_continue.is_over(pygame.mouse.get_pos()):
                     game.next_round()
+                elif btn_quit.is_over(pygame.mouse.get_pos()):
+                    run = False
+                elif btn_build.is_over(pygame.mouse.get_pos()):
+                    print("BUILD")
+                elif btn_train.is_over(pygame.mouse.get_pos()):
+                    print("TRAIN")
+                elif btn_move.is_over(pygame.mouse.get_pos()):
+                    print("MOVE")
 
         if event.type == pygame.QUIT:
             run = False

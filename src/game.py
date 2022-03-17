@@ -24,7 +24,7 @@ class Game:
         # Generate Map
         for x in range(0, 26):
             self._map.append([])
-            for y in range(0, 15):
+            for y in range(0, 14):
                 self._map[len(self._map) - 1].append(Tile(x, y))
 
     def load_game(self):
