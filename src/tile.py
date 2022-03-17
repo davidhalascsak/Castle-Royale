@@ -10,11 +10,16 @@ class Tile:
         self._y = pos_y * 48
         self._width = 48
         self._height = 48
-
+        self.type = None
         # self.r = random.randint(0, 255)
         # self.g = random.randint(0, 255)
         # self.b = random.randint(0, 255)
-        self._color = (255, 255, 255)
+        self._color = {
+              None: (255, 255, 255),
+              "DIRT": (161, 146, 101),
+              "MOSS": (13, 64, 18),
+              "MOUNT": (120, 125, 123)
+        }
         self._hover_color = (48, 241, 255)
         self._hover = False
 
@@ -33,4 +38,4 @@ class Tile:
         if self._hover:
             return self._hover_color
         else:
-            return self._color
+            return self._color[self.type]

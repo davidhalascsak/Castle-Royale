@@ -24,11 +24,11 @@ game_state = 4
 
 # tile1 = tile.Tile()
 
-btn_quit = Button((255, 0, 0), 10, 672, 240, 48, "QUIT")
-btn_build = Button((255, 0, 0), 260, 672, 240, 48, "BUILD")
-btn_train = Button((255, 0, 0), 510, 672, 240, 48, "TRAIN")
-btn_move = Button((255, 0, 0), 760, 672, 240, 48, "MOVE")
-btn_continue = Button((255, 0, 0), 1010, 672, 240, 48, "CONTINUE")
+btn_quit = Button((255, 0, 0), 10, 676, 235, 40, "QUIT")
+btn_build = Button((255, 0, 0), 260, 676, 235, 40, "BUILD")
+btn_train = Button((255, 0, 0), 510, 676, 235, 40, "TRAIN")
+btn_move = Button((255, 0, 0), 760, 676, 235, 40, "MOVE")
+btn_continue = Button((255, 0, 0), 1010, 676, 235, 40, "CONTINUE")
 
 game = Game()
 game.new_game(1000, "Player1", "Player2")
@@ -51,7 +51,7 @@ run = True
 while run:
     clock.tick(FPS)
     # Background color for testing
-    screen.fill((0, 100, 200))
+    screen.fill((54, 71, 101))
     # Draw update function
     if game_state == 1:
         pass
@@ -85,6 +85,12 @@ while run:
         current_player_state = font.render(str(game.current_player.state), True, (0, 0, 0))
         screen.blit(current_player_state, ((SCREEN_WIDTH / 2) - (current_player_state.get_width() / 2), 10))
         # button1.draw(screen)
+
+        btn_quit.is_over(pygame.mouse.get_pos())
+        btn_build.is_over(pygame.mouse.get_pos())
+        btn_train.is_over(pygame.mouse.get_pos())
+        btn_move.is_over(pygame.mouse.get_pos())
+        btn_continue.is_over(pygame.mouse.get_pos())
 
         btn_quit.draw(screen)
         btn_build.draw(screen)

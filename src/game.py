@@ -2,6 +2,7 @@ from src.player import Player
 from src.tile import Tile
 import random
 
+terrain_type = {"DIRT", "MOSS", "MOUNT"}
 
 class Game:
     def __init__(self):
@@ -27,7 +28,9 @@ class Game:
         for x in range(0, self.map_width):
             self._map.append([])
             for y in range(0, self.map_height):
-                self._map[len(self._map) - 1].append(Tile(x, y))
+                t = Tile(x, y)
+                t.type = random.sample(terrain_type, 1)[0]
+                self._map[len(self._map) - 1].append(t)
 
     def load_game(self):
         pass
@@ -43,6 +46,8 @@ class Game:
 
         self._player_1.gold = (self._player_1.gold + self._player_1.calculate_gold_bonus())
         self._player_2.gold = (self._player_2.gold + self._player_2.calculate_gold_bonus())
+        self._player_1.state = None
+        self._player_2.state = None
 
     @property
     def map(self):
