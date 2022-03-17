@@ -1,5 +1,7 @@
 import pygame
 import random
+import src.tower
+import src.soldier
 
 
 class Tile:
@@ -22,6 +24,17 @@ class Tile:
         }
         self._hover_color = (48, 241, 255)
         self._hover = False
+        self._structures = []
+
+    def build(self, player, type):
+        if len(self._structures) == 0:
+            unit_price = eval("src.tower." + type).price
+            if (player.gold - unit_price) > 0:
+                player.gold = (player.gold - unit_price)
+                unit = eval("src.tower." + type)(self.x, self.y, self, player)
+                player.add(unit)
+                self._structures.append(unit)
+                print(unit.__dict__)
 
     def draw(self, surface):
         pygame.draw.rect(surface, self.get_color(), pygame.Rect(self._x, self._y, self._width, self._height))

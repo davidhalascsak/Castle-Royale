@@ -16,6 +16,7 @@ clock = pygame.time.Clock()
 FPS = 60
 
 hamburger = Context()
+current_tile = None
 
 # 1 - Menu
 # 2 - New Game
@@ -126,7 +127,7 @@ while run:
                     content = hamburger.is_over(pygame.mouse.get_pos())
                     for item in content:
                         if item[2]:
-                            print(item[1])
+                            current_tile.build(game.current_player, item[1])
             else:
                 for row in game.map:
                     for tile in row:
@@ -134,7 +135,7 @@ while run:
                             if game.current_player.state == "BUILD":
                                 mouse_cords = pygame.mouse.get_pos()
                                 print("BUILD")
-                                hamburger.change_content(["Tower", "Barracks"])
+                                hamburger.change_content(["Basic", "Barracks"])
                                 hamburger.open(mouse_cords[0], mouse_cords[1])
 
                             elif game.current_player.state == "TRAIN":
@@ -142,6 +143,7 @@ while run:
                             elif game.current_player.state == "MOVE":
                                 print("MOVE")
                             print("Tile Cords: {}, {}".format(tile.x, tile.y))
+                            current_tile = tile
                 if event.type == pygame.MOUSEBUTTONUP:
                     if btn_continue.is_over(pygame.mouse.get_pos()):
                         game.next_round()

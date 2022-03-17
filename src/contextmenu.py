@@ -1,6 +1,7 @@
 import pygame
 SCREEN_WIDTH = 1248
 
+
 class Context:
     def __init__(self):
         self.content = []

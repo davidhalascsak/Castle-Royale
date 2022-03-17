@@ -1,11 +1,12 @@
 class Unit:
 
-    def __init__(self, health, damage, price, x, y):
+    def __init__(self, health, damage, x, y, tile, owner):
         self._health = health
         self._damage = damage
-        self._price = price
         self._x = x
         self._y = y
+        self._tile = tile
+        self._owner = owner
 
     def change_health(self, damage):
         new = self._health - damage
@@ -22,10 +23,6 @@ class Unit:
     @property
     def damage(self):
         return self._damage
-
-    @property
-    def price(self):
-        return self._price
 
     @property
     def x(self):

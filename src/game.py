@@ -1,10 +1,13 @@
 from src.player import Player
 from src.tile import Tile
+import src.soldier
 import random
 
 terrain_type = {"DIRT", "MOSS", "MOUNT"}
 
+
 class Game:
+
     def __init__(self):
         self._player_1 = None
         self._player_2 = None

@@ -1,3 +1,7 @@
+import src.soldier
+import src.tower
+
+
 class Player:
 
     def __init__(self, name):
@@ -5,6 +9,9 @@ class Player:
         self._gold = 0
         self._structures = []
         self.state = None
+
+    def add(self, unit):
+        self._structures.append(unit)
 
     def calculate_gold_bonus(self):
         sum = 0
