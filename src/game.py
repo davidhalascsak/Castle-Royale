@@ -12,6 +12,7 @@ class Game:
         self._player_1 = None
         self._player_2 = None
         self._map = []
+        self._starting_player = None
         self._current_player = None
         self.map_height = 14
         self.map_width = 26
@@ -26,12 +27,12 @@ class Game:
 
         # Determine Starting Player
         self._current_player = random.sample({self._player_1, self._player_2}, 1)[0]
-
+        self._starting_player = self._current_player
         # Generate Map
         for x in range(0, self.map_width):
             self._map.append([])
             for y in range(0, self.map_height):
-                t = Tile(x, y)
+                t = Tile(self, x, y)
                 t.type = random.sample(terrain_type, 1)[0]
                 self._map[len(self._map) - 1].append(t)
 
@@ -46,9 +47,9 @@ class Game:
             self._current_player = self._player_2
         else:
             self._current_player = self._player_1
-
-        self._player_1.gold = (self._player_1.gold + self._player_1.calculate_gold_bonus())
-        self._player_2.gold = (self._player_2.gold + self._player_2.calculate_gold_bonus())
+        if self._current_player == self._starting_player:
+            self._player_1.gold = (self._player_1.gold + self._player_1.calculate_gold_bonus())
+            self._player_2.gold = (self._player_2.gold + self._player_2.calculate_gold_bonus())
         self._player_1.state = None
         self._player_2.state = None
 

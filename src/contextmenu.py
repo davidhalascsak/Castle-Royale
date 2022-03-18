@@ -35,7 +35,7 @@ class Context:
         self.content = []
         for index, item in enumerate(content):
             self.content.append((index + 1, item, False))
-        print(self.content)
+        # print(self.content)
 
     def get_color(self, hover):
         if hover:
