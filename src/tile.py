@@ -4,6 +4,7 @@ import src.tower
 from src.soldier import *
 from src.tower import *
 
+
 class Tile:
     def __init__(self, pos_x, pos_y):
         self.x = pos_x
@@ -17,10 +18,10 @@ class Tile:
         # self.g = random.randint(0, 255)
         # self.b = random.randint(0, 255)
         self._color = {
-              None: (255, 255, 255),
-              "DIRT": (161, 146, 101),
-              "MOSS": (13, 64, 18),
-              "MOUNT": (120, 125, 123)
+            None: (255, 255, 255),
+            "DIRT": (161, 146, 101),
+            "MOSS": (13, 64, 18),
+            "MOUNT": (120, 125, 123)
         }
         self._hover_color = (48, 241, 255)
         self._hover = False
@@ -36,7 +37,6 @@ class Tile:
                 unit = eval("src.tower." + type)(self.x, self.y, self, player)
                 player.add(unit)
                 self._structures.append(unit)
-                print(unit.__dict__)
 
     def draw(self, surface):
         pygame.draw.rect(surface, self.get_color(), pygame.Rect(self._x, self._y, self._width, self._height))
@@ -55,36 +55,38 @@ class Tile:
                     tank += 1
                 elif isinstance(unit, Suicide):
                     suicide += 1
-            surface.blit(self.font.render(str(basic), True, (0,0,0)), (self._x, self._y-self._width/10))
-            surface.blit(self.font.render(str(climber), True, (0,0,0)), (self._x+self._width/16*13, self._y-self._width/10))
-            surface.blit(self.font.render(str(tank), True, (0,0,0)), (self._x, self._y-self._width/10+self._width/4*2.7))
-            surface.blit(self.font.render(str(suicide), True, (0,0,0)), (self._x+self._width/16*13, self._y-self._width/10+self._width/4*2.7))
+            surface.blit(self.font.render(str(basic), True, (0, 0, 0)), (self._x, self._y - self._width / 10))
+            surface.blit(self.font.render(str(climber), True, (0, 0, 0)),
+                         (self._x + self._width / 16 * 13, self._y - self._width / 10))
+            surface.blit(self.font.render(str(tank), True, (0, 0, 0)),
+                         (self._x, self._y - self._width / 10 + self._width / 4 * 2.7))
+            surface.blit(self.font.render(str(suicide), True, (0, 0, 0)),
+                         (self._x + self._width / 16 * 13, self._y - self._width / 10 + self._width / 4 * 2.7))
         if len(self._structures) > 0:
-            color = (0,0,0)
+            color = (0, 0, 0)
             if isinstance(self._structures[0], Basic):
-                    color = (0,255,255)
+                color = (0, 255, 255)
             elif isinstance(self._structures[0], Splash):
-                color = (255,0,255)
+                color = (255, 0, 255)
             elif isinstance(self._structures[0], Slow):
-                color = (255,255,0)
+                color = (255, 255, 0)
 
-            pygame.draw.rect(surface, self.get_owner_color(), pygame.Rect(self._x+self._width/4-self._width/16,
-                                                                     self._y+self._height/4-self._width/16,
-                                                                     self._width-self._width/2+self._width/8,
-                                                                     self._height-self._height/2+self._width/8))
+            pygame.draw.rect(surface, self.get_owner_color(), pygame.Rect(self._x + self._width / 4 - self._width / 16,
+                                                                          self._y + self._height / 4 - self._width / 16,
+                                                                          self._width - self._width / 2 + self._width / 8,
+                                                                          self._height - self._height / 2 + self._width / 8))
 
-            pygame.draw.rect(surface, color, pygame.Rect(self._x+self._width/4,
-                                                         self._y+self._height/4,
-                                                         self._width-self._width/2,
-                                                         self._height-self._height/2)) 
+            pygame.draw.rect(surface, color, pygame.Rect(self._x + self._width / 4,
+                                                         self._y + self._height / 4,
+                                                         self._width - self._width / 2,
+                                                         self._height - self._height / 2))
 
         if len(self._units) > 0:
-            surface.blit(self.font.render(str(len(self._units)), True, self.get_owner_color()), (self._x+self._width/24*10, self._y+self._width/4))
+            surface.blit(self.font.render(str(len(self._units)), True, self.get_owner_color()),
+                         (self._x + self._width / 24 * 10, self._y + self._width / 4))
 
-        #Barakk kirajzolás
-        #pygame.draw.polygon(surface, (0,0,0), points=[(self._x + self._width/2,self._y + self._height/3), (self._x + self._width/4, self._y + self._height/3*2), (self._x + self._width/4*3,self._y + self._height/3 * 2)])
-        
-        
+        # Barakk kirajzolás
+        # pygame.draw.polygon(surface, (0,0,0), points=[(self._x + self._width/2,self._y + self._height/3), (self._x + self._width/4, self._y + self._height/3*2), (self._x + self._width/4*3,self._y + self._height/3 * 2)])
 
     def is_over(self, pos):
         if self._x < pos[0] < self._x + self._width:
@@ -105,9 +107,9 @@ class Tile:
             owner = unit._owner
         for structure in self._structures:
             owner = structure._owner
-        
+
         if owner is "Player1":
-            return (255,0,0)
+            return (255, 0, 0)
         elif owner is "Player2":
-            return (0,0,255)
+            return (0, 0, 255)
         return ""

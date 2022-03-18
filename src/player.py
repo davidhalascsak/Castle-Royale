@@ -16,8 +16,9 @@ class Player:
 
     def calculate_gold_bonus(self):
         sum = 0
-        for _ in self._units:
-            sum += 10
+        for unit in self._structures:
+            if unit.__class__.__bases__[0].__name__ != "Tower":
+                sum += 10
         return sum
 
     @property
