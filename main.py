@@ -41,22 +41,22 @@ game.new_game(1000, "Player1", "Player2")
 
 
 #Test
-game._map[1][1]._units.append(Basic_Soldier(game._map[0], "Player2", 0, 0))
-game._map[1][1]._units.append(Climber(game._map[0], "Player2", 0, 0))
-game._map[1][1]._units.append(Tank(game._map[0], "Player2", 0, 0))
-game._map[1][1]._units.append(Suicide(game._map[0], "Player2", 0, 0))
-game._map[4][4]._units.append(Basic_Tower(game._map[0], "Player2", 0, 0))
-game._map[2][2]._units.append(Splash(game._map[0], "Player2", 0, 0))
-game._map[3][3]._units.append(Slow(game._map[0], "Player2", 0, 0))
-
-game._map[2][1]._units.append(Basic_Soldier(game._map[0], "Player1", 0, 0))
-game._map[2][1]._units.append(Climber(game._map[0], "Player1", 0, 0))
-game._map[2][1]._units.append(Tank(game._map[0], "Player1", 0, 0))
-game._map[2][1]._units.append(Suicide(game._map[0], "Player1", 0, 0))
-game._map[5][4]._units.append(Basic_Tower(game._map[0], "Player1", 0, 0))
-game._map[3][2]._units.append(Splash(game._map[0], "Player1", 0, 0))
-game._map[4][3]._units.append(Slow(game._map[0], "Player1", 0, 0))
-game._player_1.add(Climber(game._map[0], "Player1", 0, 0))
+# game._map[1][1]._units.append(Basic_Soldier(game._map[0], game.player_2, 0, 0))
+# game._map[1][1]._units.append(Climber(game._map[0], game.player_2, 0, 0))
+# game._map[1][1]._units.append(Tank(game._map[0], game.player_2, 0, 0))
+# game._map[1][1]._units.append(Suicide(game._map[0], game.player_2, 0, 0))
+# game._map[4][4]._units.append(Basic_Tower(game._map[0], game.player_2, 0, 0))
+# game._map[2][2]._units.append(Splash(game._map[0], game.player_2, 0, 0))
+# game._map[3][3]._units.append(Slow(game._map[0], game.player_2, 0, 0))
+#
+# game._map[2][1]._units.append(Basic_Soldier(game._map[0], game.player_1, 0, 0))
+# game._map[2][1]._units.append(Climber(game._map[0], game.player_1, 0, 0))
+# game._map[2][1]._units.append(Tank(game._map[0], game.player_1, 0, 0))
+# game._map[2][1]._units.append(Suicide(game._map[0], game.player_1, 0, 0))
+# game._map[5][4]._units.append(Basic_Tower(game._map[0], game.player_1, 0, 0))
+# game._map[3][2]._units.append(Splash(game._map[0], game.player_1, 0, 0))
+# game._map[4][3]._units.append(Slow(game._map[0], game.player_1, 0, 0))
+# game._player_1.add(Climber(game._map[0], game.player_1, 0, 0))
 
 
 font = pygame.font.SysFont('comicsans', 20)
@@ -144,14 +144,23 @@ while run:
         elif game_state == 4:
             if hamburger.opened:
                 if event.type == pygame.MOUSEBUTTONUP:
-                    if hamburger.is_outside(pygame.mouse.get_pos()):
-                        hamburger.opened = False
-
+                    # if hamburger.is_outside(pygame.mouse.get_pos()):
                     content = hamburger.is_over(pygame.mouse.get_pos())
-                    print(content)
+                    # print(content)
                     for item in content:
-                        if item[2]:
-                            current_tile.build(game.current_player, item[1])
+                        if item[2] and item[1] == "Basic":
+                            print("basic")
+                            current_tile.build(game.current_player, "Basic_Tower")
+                        if item[2] and item[1] == "Slow":
+                            print("slow")
+                            current_tile.build(game.current_player, "Slow")
+                        if item[2] and item[1] == "Splash":
+                            print("splash")
+                            current_tile.build(game.current_player, "Splash")
+                        if item[2] and item[1] == "Barracks":
+                            print("barracks")
+                            # current_tile.build(game.current_player, item[1])
+                        hamburger.opened = False
             else:
                 for row in game.map:
                     for tile in row:

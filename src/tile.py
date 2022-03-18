@@ -6,7 +6,8 @@ from src.tower import *
 
 
 class Tile:
-    def __init__(self, pos_x, pos_y):
+    def __init__(self, game, pos_x, pos_y):
+        self._game_ref = game
         self.x = pos_x
         self.y = pos_y
         self._x = pos_x * 48
@@ -80,7 +81,7 @@ class Tile:
                                                          self._height - self._height / 2))
 
         if len(self._units) > 0 and isinstance(self._units[0], Soldier):
-            print(self._units[0]._owner)
+            # print(self._units[0]._owner)
             surface.blit(self.font.render(str(len(self._units)), True, self.get_owner_color()), (self._x+self._width/24*10, self._y+self._width/4))
 
         # Barakk kirajzolás
@@ -100,8 +101,8 @@ class Tile:
             return self._color[self.type]
 
     def get_owner_color(self):
-        if self._units[0]._owner == "Player1":
+        if self._units[0]._owner == self._game_ref.player_1:
             return (255,0,0)
-        elif self._units[0]._owner == "Player2":
+        elif self._units[0]._owner == self._game_ref.player_2:
             return (0,0,255)
         return (0,0,0)
