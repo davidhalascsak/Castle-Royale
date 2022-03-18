@@ -1,6 +1,6 @@
 class Unit:
 
-    def __init__(self, health, damage,tile, owner, x, y):
+    def __init__(self, health, damage, tile, owner, x, y):
         self._health = health
         self._damage = damage
         self._tile = tile

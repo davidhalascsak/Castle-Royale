@@ -39,24 +39,25 @@ btn_continue = Button((255, 0, 0), 1010, 676, 235, 40, "CONTINUE")
 game = Game()
 game.new_game(1000, "Player1", "Player2")
 
-'''
-#Test
-game._map[1][1]._units.append(Basic(0, 0, game._map[0], "Player2"))
-game._map[1][1]._units.append(Climber(0, 0, game._map[0], "Player2"))
-game._map[1][1]._units.append(Tank(0, 0, game._map[0], "Player2"))
-game._map[1][1]._units.append(Suicide(0, 0, game._map[0], "Player2"))
-game._map[1][1]._structures.append(Basic(0, 0, game._map[0], "Player2"))
-game._map[2][2]._structures.append(Splash(0, 0, game._map[0], "Player2"))
-game._map[3][3]._structures.append(Slow(0, 0, game._map[0], "Player2"))
 
-game._map[2][1]._units.append(Basic(0, 0, game._map[0], "Player1"))
-game._map[2][1]._units.append(Climber(0, 0, game._map[0], "Player1"))
-game._map[2][1]._units.append(Tank(0, 0, game._map[0], "Player1"))
-game._map[2][1]._units.append(Suicide(0, 0, game._map[0], "Player1"))
-game._map[2][1]._structures.append(Basic(0, 0, game._map[0], "Player1"))
-game._map[3][2]._structures.append(Splash(0, 0, game._map[0], "Player1"))
-game._map[4][3]._structures.append(Slow(0, 0, game._map[0], "Player1"))
-'''
+#Test
+game._map[1][1]._units.append(Basic_Soldier(game._map[0], "Player2", 0, 0))
+game._map[1][1]._units.append(Climber(game._map[0], "Player2", 0, 0))
+game._map[1][1]._units.append(Tank(game._map[0], "Player2", 0, 0))
+game._map[1][1]._units.append(Suicide(game._map[0], "Player2", 0, 0))
+game._map[4][4]._units.append(Basic_Tower(game._map[0], "Player2", 0, 0))
+game._map[2][2]._units.append(Splash(game._map[0], "Player2", 0, 0))
+game._map[3][3]._units.append(Slow(game._map[0], "Player2", 0, 0))
+
+game._map[2][1]._units.append(Basic_Soldier(game._map[0], "Player1", 0, 0))
+game._map[2][1]._units.append(Climber(game._map[0], "Player1", 0, 0))
+game._map[2][1]._units.append(Tank(game._map[0], "Player1", 0, 0))
+game._map[2][1]._units.append(Suicide(game._map[0], "Player1", 0, 0))
+game._map[5][4]._units.append(Basic_Tower(game._map[0], "Player1", 0, 0))
+game._map[3][2]._units.append(Splash(game._map[0], "Player1", 0, 0))
+game._map[4][3]._units.append(Slow(game._map[0], "Player1", 0, 0))
+game._player_1.add(Climber(game._map[0], "Player1", 0, 0))
+
 
 font = pygame.font.SysFont('comicsans', 20)
 

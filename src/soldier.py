@@ -34,7 +34,7 @@ class Soldier(src.unit.Unit):
         self._alive = change
 
 
-class Basic(Soldier):
+class Basic_Soldier(Soldier):
     price = 100
 
     def __init__(self, tile, owner, x, y):

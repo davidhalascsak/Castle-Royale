@@ -2,8 +2,8 @@ import src.unit
 
 
 class Tower(src.unit.Unit):
-    def __init__(self, health, damage, x, y, range, clean_time, tile, owner):
-        super().__init__(health=health, damage=damage, x=x, y=y, tile=tile, owner=owner)
+    def __init__(self, health, damage, range, clean_time, tile, owner, x, y):
+        super().__init__(health=health, damage=damage, tile=tile, owner=owner, x=x, y=y)
         self._range = range
         self._clean_time = clean_time
         self._is_in_ruins = False
@@ -51,18 +51,18 @@ class Tower(src.unit.Unit):
         self._is_ready_to_demolish = new
 
 
-class Basic(Tower):
+class Basic_Tower(Tower):
     price = 30
 
-    def __init__(self, x, y,  tile, owner):
-        super().__init__(health=5000, damage=50, x=x, y=y, range=2, clean_time=2, tile=tile, owner=owner)
+    def __init__(self, tile, owner, x, y):
+        super().__init__(health=5000, damage=50, range=2, clean_time=2, tile=tile, owner=owner, x=x, y=y)
 
 
 class Splash(Tower):
     price = 30
 
-    def __init__(self, x, y, tile, owner):
-        super().__init__(health=5000, damage=20, x=x, y=y, range=3, clean_time=2, tile=tile, owner=owner)
+    def __init__(self, tile, owner, x, y):
+        super().__init__(health=5000, damage=20, range=3, clean_time=2, tile=tile, owner=owner, x=x, y=y)
 
     def shoot(self):
         pass
@@ -71,8 +71,8 @@ class Splash(Tower):
 class Slow(Tower):
     price = 30
 
-    def __init__(self, x, y, tile, owner):
-        super().__init__(health=5000, damage=50, x=x, y=y, range=2, clean_time=2, tile=tile, owner=owner)
+    def __init__(self, tile, owner, x, y):
+        super().__init__(health=5000, damage=50, range=2, clean_time=2, tile=tile, owner=owner, x=x, y=y)
 
     def shoot(self):
         pass
