@@ -1,12 +1,12 @@
 class Unit:
 
-    def __init__(self, health, damage, x, y, tile, owner):
+    def __init__(self, health, damage,tile, owner, x, y):
         self._health = health
         self._damage = damage
-        self._x = x
-        self._y = y
         self._tile = tile
         self._owner = owner
+        self._x = x
+        self._y = y
 
     def change_health(self, damage):
         new = self._health - damage

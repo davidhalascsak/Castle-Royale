@@ -52,14 +52,14 @@ class Tower(src.unit.Unit):
 
 
 class Basic(Tower):
-    price = 30
+    price = 100
 
-    def __init__(self, x, y,  tile, owner):
+    def __init__(self, x, y, tile, owner):
         super().__init__(health=5000, damage=50, x=x, y=y, range=2, clean_time=2, tile=tile, owner=owner)
 
 
 class Splash(Tower):
-    price = 30
+    price = 150
 
     def __init__(self, x, y, tile, owner):
         super().__init__(health=5000, damage=20, x=x, y=y, range=3, clean_time=2, tile=tile, owner=owner)
@@ -69,10 +69,10 @@ class Splash(Tower):
 
 
 class Slow(Tower):
-    price = 30
+    price = 150
 
-    def __init__(self, x, y):
-        super().__init__(health=5000, damage=50, x=x, y=y, range=2, clean_time=2)
+    def __init__(self, x, y, tile, owner):
+        super().__init__(health=5000, damage=50, x=x, y=y, range=3, clean_time=2, tile=tile, owner=owner)
 
     def shoot(self):
         pass

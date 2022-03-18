@@ -125,6 +125,7 @@ while run:
                         hamburger.opened = False
 
                     content = hamburger.is_over(pygame.mouse.get_pos())
+                    print(content)
                     for item in content:
                         if item[2]:
                             current_tile.build(game.current_player, item[1])
@@ -135,7 +136,7 @@ while run:
                             if game.current_player.state == "BUILD":
                                 mouse_cords = pygame.mouse.get_pos()
                                 print("BUILD")
-                                hamburger.change_content(["Basic", "Barracks"])
+                                hamburger.change_content(["Basic", "Slow", "Splash", "Barracks"])
                                 hamburger.open(mouse_cords[0], mouse_cords[1])
 
                             elif game.current_player.state == "TRAIN":
