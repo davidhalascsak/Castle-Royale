@@ -16,7 +16,7 @@ class Player:
     def calculate_gold_bonus(self):
         sum = 0
         for unit in self._units:
-            if isinstance(unit, Soldier):
+            if issubclass(type(unit), Soldier):
                 sum += 10
         return sum
 
