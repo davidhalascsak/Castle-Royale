@@ -35,7 +35,7 @@ class Tile:
             unit_price = eval("src.tower." + type).price
             if (player.gold - unit_price) > 0:
                 player.gold = (player.gold - unit_price)
-                unit = eval("src.tower." + type)(self.x, self.y, self, player)
+                unit = eval("src.tower." + type)(self, player, self.x, self.y)
                 player.add(unit)
                 self._units.append(unit)
                 print(unit.__dict__)

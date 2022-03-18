@@ -39,6 +39,8 @@ btn_continue = Button((255, 0, 0), 1010, 676, 235, 40, "CONTINUE")
 game = Game()
 game.new_game(1000, "Player1", "Player2")
 
+# TODO: kastély látszon
+# TODO: gombok az egységekhez
 
 #Test
 '''
@@ -160,6 +162,14 @@ while run:
                             current_tile.build(game.current_player, "Splash")
                         if item[2] and item[1] == "Barracks":
                             print("barracks")
+                        if item[2] and item[1] == "Soldier":
+                            print("Soldier")
+                        if item[2] and item[1] == "Climber":
+                            print("Climber")
+                        if item[2] and item[1] == "Suicide":
+                            print("Suicide")
+                        if item[2] and item[1] == "Tank":
+                            print("Tank")
                             # current_tile.build(game.current_player, item[1])
                         hamburger.opened = False
             else:
@@ -173,7 +183,10 @@ while run:
                                 hamburger.open(mouse_cords[0], mouse_cords[1])
 
                             elif game.current_player.state == "TRAIN":
+                                mouse_cords = pygame.mouse.get_pos()
                                 print("TRAIN")
+                                hamburger.change_content(["Soldier", "Climber", "Suicide", "Tank"])
+                                hamburger.open(mouse_cords[0], mouse_cords[1])
                             elif game.current_player.state == "MOVE":
                                 print("MOVE")
                             print("Tile Cords: {}, {}".format(tile.x, tile.y))
