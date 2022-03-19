@@ -1,8 +1,7 @@
-import src.unit
+from src.unit import *
 
 
-class Soldier(src.unit.Unit):
-
+class Soldier(Unit):
     def __init__(self, health, damage, stamina, tile, owner, x, y):
         super().__init__(health=health, damage=damage, tile=tile, owner=owner, x=x, y=y)
         self._stamina = stamina
@@ -34,7 +33,7 @@ class Soldier(src.unit.Unit):
         self._alive = change
 
 
-class Basic_Soldier(Soldier):
+class BasicSoldier(Soldier):
     price = 100
 
     def __init__(self, tile, owner, x, y):

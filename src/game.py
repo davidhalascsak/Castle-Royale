@@ -1,6 +1,6 @@
 from src.player import Player
 from src.tile import Tile
-import src.soldier
+from src.castle import Castle
 import random
 
 terrain_type = {"DIRT", "MOSS", "MOUNT"}
@@ -19,8 +19,8 @@ class Game:
 
     def new_game(self, start_gold, name_1, name_2):
         # Configure Players
-        self._player_1 = Player(name_1)
-        self._player_2 = Player(name_2)
+        self._player_1 = Player(name_1, 1000, 0, self.map_height // 2)
+        self._player_2 = Player(name_2, 1000, self.map_width-1, self.map_height // 2)
 
         self._player_1.gold = start_gold
         self._player_2.gold = start_gold
@@ -35,6 +35,10 @@ class Game:
                 t = Tile(self, x, y)
                 t.type = random.sample(terrain_type, 1)[0]
                 self._map[len(self._map) - 1].append(t)
+                if self._player_1.units[0].x == x and self._player_1.units[0].y == y:
+                    t.add_castle(self._player_1.units[0])
+                elif self._player_2.units[0].x == x and self._player_2.units[0].y == y:
+                    t.add_castle(self._player_2.units[0])
 
     def load_game(self):
         pass

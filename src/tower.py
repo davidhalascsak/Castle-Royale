@@ -1,7 +1,7 @@
-import src.unit
+from src.unit import *
 
 
-class Tower(src.unit.Unit):
+class Tower(Unit):
     def __init__(self, health, damage, range, clean_time, tile, owner, x, y):
         super().__init__(health=health, damage=damage, tile=tile, owner=owner, x=x, y=y)
         self._range = range
@@ -51,7 +51,7 @@ class Tower(src.unit.Unit):
         self._is_ready_to_demolish = new
 
 
-class Basic_Tower(Tower):
+class BasicTower(Tower):
     price = 30
 
     def __init__(self, tile, owner, x, y):

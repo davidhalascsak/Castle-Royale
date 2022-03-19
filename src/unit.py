@@ -1,5 +1,4 @@
 class Unit:
-
     def __init__(self, health, damage, tile, owner, x, y):
         self._health = health
         self._damage = damage
@@ -23,6 +22,14 @@ class Unit:
     @property
     def damage(self):
         return self._damage
+
+    @property
+    def owner(self):
+        return self._owner
+
+    @property
+    def tile(self):
+        return self._tile
 
     @property
     def x(self):

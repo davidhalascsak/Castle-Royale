@@ -1,13 +1,14 @@
 from src.soldier import *
-import src.tower
+from src.tower import *
+from src.castle import *
 
 
 class Player:
 
-    def __init__(self, name):
+    def __init__(self, name, health, x, y):
         self._name = name
         self._gold = 0
-        self._units = []  #structures volt
+        self._units = [Castle(health, x, y)]
         self.state = None
 
     def add(self, unit):
@@ -31,4 +32,8 @@ class Player:
     @property
     def name(self):
         return self._name
+
+    @property
+    def units(self):
+        return self._units
 

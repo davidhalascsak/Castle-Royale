@@ -8,7 +8,7 @@ from src.tower import *
 
 pygame.init()
 
-SCREEN_WIDTH = 1248 # 1280
+SCREEN_WIDTH = 1248  # 1280
 SCREEN_HEIGHT = 720
 
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -28,8 +28,6 @@ current_tile = None
 
 game_state = 4
 
-# tile1 = tile.Tile()
-
 btn_quit = Button((255, 0, 0), 10, 676, 235, 40, "QUIT")
 btn_build = Button((255, 0, 0), 260, 676, 235, 40, "BUILD")
 btn_train = Button((255, 0, 0), 510, 676, 235, 40, "TRAIN")
@@ -39,10 +37,7 @@ btn_continue = Button((255, 0, 0), 1010, 676, 235, 40, "CONTINUE")
 game = Game()
 game.new_game(1000, "Player1", "Player2")
 
-# TODO: kastély látszon
-# TODO: gombok az egységekhez
-
-#Test
+# Test
 '''
 game._map[1][1]._units.append(Basic_Soldier(game._map[0], game._player_2, 0, 0))
 game._map[1][1]._units.append(Climber(game._map[0], game._player_2, 0, 0))
@@ -128,7 +123,6 @@ while run:
         btn_move.draw(screen)
         btn_continue.draw(screen)
 
-
         # Draw Context Menu
 
         hamburger.draw(screen)
@@ -153,7 +147,7 @@ while run:
                     for item in content:
                         if item[2] and item[1] == "Basic":
                             print("basic")
-                            current_tile.build(game.current_player, "Basic_Tower")
+                            current_tile.build(game.current_player, "BasicTower")
                         if item[2] and item[1] == "Slow":
                             print("slow")
                             current_tile.build(game.current_player, "Slow")
@@ -162,7 +156,7 @@ while run:
                             current_tile.build(game.current_player, "Splash")
                         if item[2] and item[1] == "Barracks":
                             print("barracks")
-                        if item[2] and item[1] == "Soldier":
+                        if item[2] and item[1] == "BasicSoldier":
                             print("Soldier")
                         if item[2] and item[1] == "Climber":
                             print("Climber")
