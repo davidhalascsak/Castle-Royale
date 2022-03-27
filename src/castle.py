@@ -1,8 +1,9 @@
 class Castle:
-    def __init__(self, health, x, y):
+    def __init__(self, player, health, x, y):
         self._health = health
         self._x = x
         self._y = y
+        self.owner = player
 
     @property
     def health(self):

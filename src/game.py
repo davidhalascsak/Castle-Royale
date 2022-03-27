@@ -37,8 +37,10 @@ class Game:
                 self._map[len(self._map) - 1].append(t)
                 if self._player_1.units[0].x == x and self._player_1.units[0].y == y:
                     t.add_castle(self._player_1.units[0])
+                    self._player_1.add_castle_tile(t)
                 elif self._player_2.units[0].x == x and self._player_2.units[0].y == y:
                     t.add_castle(self._player_2.units[0])
+                    self._player_2.add_castle_tile(t)
 
     def load_game(self):
         pass

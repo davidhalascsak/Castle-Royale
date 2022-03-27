@@ -39,26 +39,27 @@ game.new_game(1000, "Player1", "Player2")
 
 # Test
 '''
-game._map[1][1]._units.append(Basic_Soldier(game._map[0], game._player_2, 0, 0))
+game._map[1][1]._units.append(BasicSoldier(game._map[0], game._player_2, 0, 0))
 game._map[1][1]._units.append(Climber(game._map[0], game._player_2, 0, 0))
 game._map[1][1]._units.append(Tank(game._map[0], game._player_2, 0, 0))
+
 game._map[1][1]._units.append(Suicide(game._map[0], game._player_2, 0, 0))
-game._map[4][4]._units.append(Basic_Tower(game._map[0], game._player_2, 0, 0))
+game._map[4][4]._units.append(BasicTower(game._map[0], game._player_2, 0, 0))
 game._map[2][2]._units.append(Splash(game._map[0], game._player_2, 0, 0))
 game._map[3][3]._units.append(Slow(game._map[0], game._player_2, 0, 0))
 
-game._map[2][1]._units.append(Basic_Soldier(game._map[0], game._player_1, 0, 0))
+game._map[2][1]._units.append(BasicSoldier(game._map[0], game._player_1, 0, 0))
 game._map[2][1]._units.append(Climber(game._map[0], game._player_1, 0, 0))
 game._map[2][1]._units.append(Tank(game._map[0], game._player_1, 0, 0))
 game._map[2][1]._units.append(Suicide(game._map[0], game._player_1, 0, 0))
-game._map[5][4]._units.append(Basic_Tower(game._map[0], game._player_1, 0, 0))
+game._map[5][4]._units.append(BasicTower(game._map[0], game._player_1, 0, 0))
 game._map[3][2]._units.append(Splash(game._map[0], game._player_1, 0, 0))
 game._map[4][3]._units.append(Slow(game._map[0], game._player_1, 0, 0))
 game._player_1.add(Climber(game._map[0], game._player_1, 0, 0))
 game._player_1.add(Slow(game._map[0], game._player_1, 0, 0))
 '''
-font = pygame.font.SysFont('comicsans', 20)
 
+font = pygame.font.SysFont('comicsans', 20)
 
 # Change name color based on round
 name_color = (0, 0, 0)
@@ -145,26 +146,22 @@ while run:
                     content = hamburger.is_over(pygame.mouse.get_pos())
                     # print(content)
                     for item in content:
-                        if item[2] and item[1] == "Basic":
-                            print("basic")
+                        if item[2] and item[1] == "Tower":
                             current_tile.build(game.current_player, "BasicTower")
                         if item[2] and item[1] == "Slow":
-                            print("slow")
                             current_tile.build(game.current_player, "Slow")
                         if item[2] and item[1] == "Splash":
-                            print("splash")
                             current_tile.build(game.current_player, "Splash")
                         if item[2] and item[1] == "Barracks":
                             print("barracks")
-                        if item[2] and item[1] == "BasicSoldier":
-                            print("Soldier")
+                        if item[2] and item[1] == "Soldier":
+                            game.current_player.castle_tile.train(game.current_player, "BasicSoldier")
                         if item[2] and item[1] == "Climber":
-                            print("Climber")
+                            game.current_player.castle_tile.train(game.current_player, "Climber")
                         if item[2] and item[1] == "Suicide":
-                            print("Suicide")
+                            game.current_player.castle_tile.train(game.current_player, "Suicide")
                         if item[2] and item[1] == "Tank":
-                            print("Tank")
-                            # current_tile.build(game.current_player, item[1])
+                            game.current_player.castle_tile.train(game.current_player, "Tank")
                         hamburger.opened = False
             else:
                 for row in game.map:
@@ -173,7 +170,7 @@ while run:
                             if game.current_player.state == "BUILD":
                                 mouse_cords = pygame.mouse.get_pos()
                                 print("BUILD")
-                                hamburger.change_content(["Basic", "Slow", "Splash", "Barracks"])
+                                hamburger.change_content(["Tower", "Slow", "Splash", "Barracks"])
                                 hamburger.open(mouse_cords[0], mouse_cords[1])
 
                             elif game.current_player.state == "TRAIN":
@@ -181,9 +178,10 @@ while run:
                                 print("TRAIN")
                                 hamburger.change_content(["Soldier", "Climber", "Suicide", "Tank"])
                                 hamburger.open(mouse_cords[0], mouse_cords[1])
+
                             elif game.current_player.state == "MOVE":
                                 print("MOVE")
-                            print("Tile Cords: {}, {}".format(tile.x, tile.y))
+                            # print("Tile Cords: {}, {}".format(tile.x, tile.y))
                             current_tile = tile
                 if event.type == pygame.MOUSEBUTTONUP:
                     if btn_continue.is_over(pygame.mouse.get_pos()):
@@ -206,5 +204,3 @@ while run:
     pygame.display.update()
 
 pygame.quit()
-
-

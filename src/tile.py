@@ -1,6 +1,6 @@
 import pygame
 import random
-import src.tower
+from src.castle import *
 from src.soldier import *
 from src.tower import *
 
@@ -14,10 +14,6 @@ class Tile:
         self._y = pos_y * 48
         self._width = 48
         self._height = 48
-        self.type = None
-        # self.r = random.randint(0, 255)
-        # self.g = random.randint(0, 255)
-        # self.b = random.randint(0, 255)
         self._color = {
             None: (255, 255, 255),
             "DIRT": (161, 146, 101),
@@ -28,7 +24,7 @@ class Tile:
         self._hover = False
         self._is_castle = False
         self._units = []
-        self.font = pygame.font.SysFont('Arial', 20)
+        self._font = pygame.font.SysFont('Arial', 20)
 
     def add_castle(self, castle):
         self._units.append(castle)
@@ -36,26 +32,42 @@ class Tile:
 
     def build(self, player, type):
         if len(self._units) == 0:
-            unit_price = eval("src.tower." + type).price
+            unit_price = eval(type).price
             if (player.gold - unit_price) > 0:
                 player.gold = (player.gold - unit_price)
-                unit = eval("src.tower." + type)(self, player, self.x, self.y)
-                player.add(unit)
+                unit = eval(type)(self, player, self.x, self.y)
+                player.add_unit(unit)
+                self._units.append(unit)
+
+    def train(self, player, soldier):
+        count = 0
+        for unit in self._units:
+            if issubclass(type(unit), Soldier):
+                count += 1
+
+        if count < 4:
+            unit_price = eval(soldier).price
+            if (player.gold - unit_price) > 0:
+                player.gold = (player.gold - unit_price)
+                unit = eval(soldier)(self, player, self.x, self.y)
+                player.add_unit(unit)
                 self._units.append(unit)
 
     def draw(self, surface):
         if self._is_castle:
-            pygame.draw.rect(surface, (255, 0, 0), pygame.Rect(self._x, self._y, self._width, self._height))
+            pygame.draw.rect(surface, (255, 255, 255), pygame.Rect(self._x, self._y, self._width, self._height))
         else:
             pygame.draw.rect(surface, self.get_color(), pygame.Rect(self._x, self._y, self._width, self._height))
         # pygame.display.flip()
-        if self._hover and len(self._units) > 0 and issubclass(type(self._units[0]), Soldier):
+
+        if self._hover and ((len(self._units) > 0 and issubclass(type(self._units[0]), Soldier)) or
+                            (self._is_castle and len(self._units) > 1 and issubclass(type(self._units[1]), Soldier))):
             basic = 0
             climber = 0
             tank = 0
             suicide = 0
             for unit in self._units:
-                if isinstance(unit, Basic_Soldier):
+                if isinstance(unit, BasicSoldier):
                     basic += 1
                 elif isinstance(unit, Climber):
                     climber += 1
@@ -63,13 +75,20 @@ class Tile:
                     tank += 1
                 elif isinstance(unit, Suicide):
                     suicide += 1
-            surface.blit(self.font.render(str(basic), True, (0, 0, 0)), (self._x, self._y - self._width / 10))
-            surface.blit(self.font.render(str(climber), True, (0, 0, 0)),
+            # basic soldier count
+            surface.blit(self._font.render(str(basic), True, (0, 0, 0)),
+                         (self._x, self._y - self._width / 10))
+            # climber count
+            surface.blit(self._font.render(str(climber), True, (0, 0, 0)),
                          (self._x + self._width / 16 * 13, self._y - self._width / 10))
-            surface.blit(self.font.render(str(tank), True, (0, 0, 0)),
+            # tank count
+            surface.blit(self._font.render(str(tank), True, (0, 0, 0)),
                          (self._x, self._y - self._width / 10 + self._width / 4 * 2.7))
-            surface.blit(self.font.render(str(suicide), True, (0, 0, 0)),
+            # suicide count
+            surface.blit(self._font.render(str(suicide), True, (0, 0, 0)),
                          (self._x + self._width / 16 * 13, self._y - self._width / 10 + self._width / 4 * 2.7))
+
+        # tower draw
         if len(self._units) > 0 and isinstance(self._units[0], Tower):
             color = (0, 0, 0)
             if isinstance(self._units[0], BasicTower):
@@ -88,14 +107,18 @@ class Tile:
                                                          self._y + self._height / 4,
                                                          self._width - self._width / 2,
                                                          self._height - self._height / 2))
-
-        if len(self._units) > 0 and isinstance(self._units[0], Soldier):
-            # print(self._units[0]._owner)
-            surface.blit(self.font.render(str(len(self._units)), True, self.get_owner_color()),
+        # count of the soldiers on the tile
+        if len(self._units) > 0 and (isinstance(self._units[0], Soldier)):
+            surface.blit(self._font.render(str(len(self._units)), True, self.get_owner_color()),
+                         (self._x + self._width / 24 * 10, self._y + self._width / 4))
+        elif len(self._units) > 1 and self._is_castle:
+            surface.blit(self._font.render(str(len(self._units) - 1), True, self.get_owner_color()),
                          (self._x + self._width / 24 * 10, self._y + self._width / 4))
 
-        # Barakk kirajzolás
-        # pygame.draw.polygon(surface, (0,0,0), points=[(self._x + self._width/2,self._y + self._height/3), (self._x + self._width/4, self._y + self._height/3*2), (self._x + self._width/4*3,self._y + self._height/3 * 2)])
+        # barrack draw
+        # pygame.draw.polygon(surface, (0, 0, 0), points=[(self._x + self._width/2,self._y + self._height/3),
+        #                                               (self._x + self._width/4, self._y + self._height/3*2),
+        #                                               (self._x + self._width/4*3,self._y + self._height/3 * 2)])
 
     def is_over(self, pos):
         if self._x < pos[0] < self._x + self._width:
@@ -120,3 +143,7 @@ class Tile:
     @property
     def units(self):
         return self._units
+
+    @property
+    def font(self):
+        return self._font

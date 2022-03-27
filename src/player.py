@@ -8,11 +8,15 @@ class Player:
     def __init__(self, name, health, x, y):
         self._name = name
         self._gold = 0
-        self._units = [Castle(health, x, y)]
-        self.state = None
+        self._units = [Castle(self, health, x, y)]
+        self._castle_tile = None
+        self._state = None
 
-    def add(self, unit):
+    def add_unit(self, unit):
         self._units.append(unit)
+
+    def add_castle_tile(self, tile):
+        self._castle_tile = tile
 
     def calculate_gold_bonus(self):
         sum = 0
@@ -36,4 +40,17 @@ class Player:
     @property
     def units(self):
         return self._units
+
+    @property
+    def castle_tile(self):
+        return self._castle_tile
+
+    @property
+    def state(self):
+        return self._state
+
+    @state.setter
+    def state(self, new_state):
+        self._state = new_state
+
 
