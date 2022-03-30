@@ -35,15 +35,16 @@ class Unit:
     def x(self):
         return self._x
 
-    @x.setter
-    def x(self, change):
-        self._x = change
-
     @property
     def y(self):
         return self._y
 
+    @x.setter
+    def x(self, new):
+        self._x = new
+
     @y.setter
-    def y(self, change):
-        self._y = change
+    def y(self, new):
+        self._y = new
+
 

@@ -8,10 +8,10 @@ class Soldier(Unit):
         self._alive = True
 
     def move(self, x, y):
-        new_x = self.x + x
-        new_y = self.y + y
-        self.x = new_x
-        self.y = new_y
+        new_x = self._x + x1
+        new_y = self._y + y1
+        self._x = new_x
+        self._y = new_y
 
     def attack(self, enemy):
         if enemy.health - self.damage > 0:
@@ -35,6 +35,7 @@ class Soldier(Unit):
 
 class BasicSoldier(Soldier):
     price = 100
+    max_health = 100
 
     def __init__(self, tile, owner, x, y):
         super().__init__(health=100, damage=50, stamina=100, tile=tile, owner=owner, x=x, y=y)
@@ -42,6 +43,7 @@ class BasicSoldier(Soldier):
 
 class Climber(Soldier):
     price = 150
+    max_health = 120
 
     def __init__(self, tile, owner, x, y):
         super().__init__(health=120, damage=50, stamina=80, tile=tile, owner=owner, x=x, y=y)
@@ -52,6 +54,7 @@ class Climber(Soldier):
 
 class Tank(Soldier):
     price = 150
+    max_health = 200
 
     def __init__(self, tile, owner, x, y):
         super().__init__(health=200, damage=75, stamina=80, tile=tile, owner=owner, x=x, y=y)
@@ -62,12 +65,10 @@ class Tank(Soldier):
 
 class Suicide(Soldier):
     price = 200
+    max_health = 500
 
     def __init__(self, tile, owner, x, y):
         super().__init__(health=500, damage=100, stamina=30, tile=tile, owner=owner, x=x, y=y)
 
     def attack(self, enemy):
         pass
-
-
-

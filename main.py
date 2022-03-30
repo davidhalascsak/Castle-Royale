@@ -14,7 +14,6 @@ SCREEN_HEIGHT = 720
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Castle Royale')
 
-
 clock = pygame.time.Clock()
 FPS = 60
 
@@ -39,10 +38,10 @@ game.new_game(1000, "Player1", "Player2")
 
 # Test
 '''
-game._map[1][1]._units.append(BasicSoldier(game._map[0], game._player_2, 0, 0))
-game._map[1][1]._units.append(Climber(game._map[0], game._player_2, 0, 0))
-game._map[1][1]._units.append(Tank(game._map[0], game._player_2, 0, 0))
-
+game._map[15][1]._units.append(BasicSoldier(game._map[0], game._player_1, 0, 0))
+game._map[15][1]._units.append(Climber(game._map[0], game._player_2, 0, 0))
+game._map[15][1]._units.append(Tank(game._map[0], game._player_2, 0, 0))
+game._map[15][1]._units.append(Suicide(game._map[0], game._player_2, 0, 0))
 game._map[1][1]._units.append(Suicide(game._map[0], game._player_2, 0, 0))
 game._map[4][4]._units.append(BasicTower(game._map[0], game._player_2, 0, 0))
 game._map[2][2]._units.append(Splash(game._map[0], game._player_2, 0, 0))
@@ -89,10 +88,10 @@ while run:
         # draw
     elif game_state == 4:
         # Draw Tiles
-
-        for row in game.map:
-            for tile in row:
-                tile.draw(screen)
+        for i in range(0, 13):
+            for j in range(0, 14):
+                game.map[12 - i][j].draw(screen)
+                game.map[13 + i][j].draw(screen)
 
         # Draw Player Information
         player1_name = font.render(str(game.player_1.name), True, get_name_color(game.player_1))

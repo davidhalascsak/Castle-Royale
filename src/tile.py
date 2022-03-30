@@ -62,31 +62,32 @@ class Tile:
 
         if self._hover and ((len(self._units) > 0 and issubclass(type(self._units[0]), Soldier)) or
                             (self._is_castle and len(self._units) > 1 and issubclass(type(self._units[1]), Soldier))):
-            basic = 0
-            climber = 0
-            tank = 0
-            suicide = 0
-            for unit in self._units:
-                if isinstance(unit, BasicSoldier):
-                    basic += 1
-                elif isinstance(unit, Climber):
-                    climber += 1
-                elif isinstance(unit, Tank):
-                    tank += 1
-                elif isinstance(unit, Suicide):
-                    suicide += 1
-            # basic soldier count
-            surface.blit(self._font.render(str(basic), True, (0, 0, 0)),
-                         (self._x, self._y - self._width / 10))
-            # climber count
-            surface.blit(self._font.render(str(climber), True, (0, 0, 0)),
-                         (self._x + self._width / 16 * 13, self._y - self._width / 10))
-            # tank count
-            surface.blit(self._font.render(str(tank), True, (0, 0, 0)),
-                         (self._x, self._y - self._width / 10 + self._width / 4 * 2.7))
-            # suicide count
-            surface.blit(self._font.render(str(suicide), True, (0, 0, 0)),
-                         (self._x + self._width / 16 * 13, self._y - self._width / 10 + self._width / 4 * 2.7))
+            start = 0
+            ind = 0
+            length = len(self._units)
+            if self._is_castle:
+                start = 1
+                length -= 1
+            if self._x < 14 * 48:
+                pygame.draw.rect(surface, pygame.Color(0, 0, 0), pygame.Rect(self._x + 48, self._y, 170, length * 18))
+                for i in range(start, len(self._units)):
+                    text = pygame.font.SysFont('Arial', 17).render("{0} - {1}/{2}".
+                                                                   format(type(self._units[i]).__name__,
+                                                                          self._units[i].health,
+                                                                          eval(type(self._units[i]).__name__).max_health),
+                                                                   False, self.get_owner_color(i))
+                    surface.blit(text, (self._x + 48, self._y + (ind * 16)))
+                    ind += 1
+            else:
+                pygame.draw.rect(surface, pygame.Color(0, 0, 0), pygame.Rect(self._x - 170, self._y, 170, length * 18))
+                for i in range(start, len(self._units)):
+                    text = pygame.font.SysFont('Arial', 17).render("{0} - {1}/{2}".
+                                                                   format(type(self._units[i]).__name__,
+                                                                          self._units[i].health,
+                                                                          eval(type(self._units[i]).__name__).max_health),
+                                                                   False, self.get_owner_color(i))
+                    surface.blit(text, (self._x - 170, self._y + (ind * 16)))
+                    ind += 1
 
         # tower draw
         if len(self._units) > 0 and isinstance(self._units[0], Tower):
@@ -133,10 +134,10 @@ class Tile:
         else:
             return self._color[self.type]
 
-    def get_owner_color(self):
-        if self._units[0].owner == self._game_ref.player_1:
+    def get_owner_color(self, index=0):
+        if self._units[index].owner == self._game_ref.player_1:
             return 255, 0, 0
-        elif self._units[0].owner == self._game_ref.player_2:
+        elif self._units[index].owner == self._game_ref.player_2:
             return 0, 0, 255
         return 0, 0, 0
 
