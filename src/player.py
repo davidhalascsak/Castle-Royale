@@ -53,4 +53,7 @@ class Player:
     def state(self, new_state):
         self._state = new_state
 
+    def get_castle_health(self):
+        return self._units[0].health
+
 

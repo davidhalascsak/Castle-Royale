@@ -16,6 +16,8 @@ class Game:
         self._current_player = None
         self.map_height = 14
         self.map_width = 26
+        self._is_ended = False
+        self._winner = None
 
     def new_game(self, start_gold, name_1, name_2):
         # Configure Players
@@ -59,6 +61,8 @@ class Game:
         self._player_1.state = None
         self._player_2.state = None
 
+        self._is_ended = not (self._player_1.get_castle_health() > 0 and self._player_2.get_castle_health())
+
     @property
     def map(self):
         return self._map
@@ -74,6 +78,15 @@ class Game:
     @property
     def current_player(self):
         return self._current_player
+
+    @property
+    def is_ended(self):
+        return self._is_ended
+
+    @property
+    def winner(self):
+        return self._winner
+
 
 
 
