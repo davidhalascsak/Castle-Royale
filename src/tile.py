@@ -16,9 +16,9 @@ class Tile:
         self._height = 48
         self._color = {
             None: (255, 255, 255),
-            "DIRT": (161, 146, 101),
-            "MOSS": (13, 64, 18),
-            "MOUNT": (120, 125, 123)
+            "PLAIN": (161, 146, 101),
+            "LAKE": (13, 64, 18),
+            "HILL": (120, 125, 123)
         }
         self._hover_color = (48, 241, 255)
         self._hover = False

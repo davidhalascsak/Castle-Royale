@@ -1,9 +1,10 @@
 from src.player import Player
 from src.tile import Tile
 from src.castle import Castle
+from src.mapgeneration import MapGeneration
 import random
 
-terrain_type = {"DIRT", "MOSS", "MOUNT"}
+terrain_type = {"PLAIN", "LAKE", "HILL"}
 
 
 class Game:
@@ -35,7 +36,7 @@ class Game:
             self._map.append([])
             for y in range(0, self.map_height):
                 t = Tile(self, x, y)
-                t.type = random.sample(terrain_type, 1)[0]
+                t.type = "PLAIN"
                 self._map[len(self._map) - 1].append(t)
                 if self._player_1.units[0].x == x and self._player_1.units[0].y == y:
                     t.add_castle(self._player_1.units[0])
@@ -43,6 +44,7 @@ class Game:
                 elif self._player_2.units[0].x == x and self._player_2.units[0].y == y:
                     t.add_castle(self._player_2.units[0])
                     self._player_2.add_castle_tile(t)
+        self._map = MapGeneration.generate_map(self._map)
 
     def load_game(self):
         pass
