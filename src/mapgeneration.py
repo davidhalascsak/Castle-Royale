@@ -44,12 +44,12 @@ class MapGeneration:
         width = len(obs_matrix[0])
         height = len(obs_matrix)
 
-        if(x < 0 or y < 0 or x+width >= game.map_width or y+height >= game.map_height):
+        if(x < 0 or y < 0 or y+width >= game.map_width or x+height >= game.map_height):
             return False
 
         availability_matrix = MapGeneration.available_tiles(game)
-        for i in range(y, y+height+1):
-            for j in range(x, x+width+1):
+        for i in range(x, x+height+1):
+            for j in range(y, y+width+1):
                 if(availability_matrix[i][j] == 1):
                     return False
         return True
@@ -68,19 +68,23 @@ class MapGeneration:
         pass
 
     def setup_availability_matrix(availability_matrix, x, y, width, height):
-        left_x = max(min(x-2, width-1), 0) 
-        right_x = max(min(x+2, width-1), 0) 
-        top_y = max(min(y-2,  height-1), 0) 
-        bottom_y = max(min(y+2,  height-1), 0) 
-        for i in range(top_y, bottom_y+1):
-            for j in range(left_x, right_x+1):
+        top_x = max(min(x-2, height-1), 0) 
+        bottom_x = max(min(x+2, height-1), 0) 
+        left_y = max(min(y-2,  width-1), 0) 
+        right_y = max(min(y+2,  width-1), 0) 
+        for i in range(top_x, bottom_x+1):
+            for j in range(left_y, right_y+1):
                 availability_matrix[i][j] = 1
             
 
     def available_tiles(game):
         availability_matrix = [[0 for i in range(0, game.map_width)] for j in range(0, game.map_height)]
-        for i in range(0, game.map_width):
-            for j in range(0, game.map_height):
+        print("width: ", len(availability_matrix[0]))
+        print("height: ", len(availability_matrix))
+        print("index: ", availability_matrix[0][14])
+        for i in range(0, game.map_height):
+            for j in range(0, game.map_width):
+                print("index: ", i, j)
                 if(game._map[i][j]._is_castle):
                     MapGeneration.setup_availability_matrix(availability_matrix, i, j, game.map_width, game.map_height)
                 elif(game._map[i][j].type != "PLAIN"):
@@ -88,4 +92,5 @@ class MapGeneration:
         return availability_matrix
         
     def generate_map(game):
+        print(MapGeneration.check_placement_availability(game, MapGeneration.obstacle_type1, 0, 7))
         return game._map

@@ -90,10 +90,10 @@ while run:
     elif game_state == 4:
         # Draw Tiles
         if not game.is_ended:
-            for i in range(0, 13):
-                for j in range(0, 14):
-                    game.map[12 - i][j].draw(screen)
-                    game.map[13 + i][j].draw(screen)
+            for i in range(0, 14):
+                for j in range(0, 13):
+                    game.map[i][12 - j].draw(screen)
+                    game.map[i][13 + j].draw(screen)
         else:
             text = pygame.font.SysFont('Arial', 25).render("The winner is {0}.".format(game.winner), False, (0, 0, 0))
             screen.blit(text, (SCREEN_WIDTH/2 - text.get_width()/2, SCREEN_HEIGHT/2 - 60))

@@ -22,8 +22,8 @@ class Game:
 
     def new_game(self, start_gold, name_1, name_2):
         # Configure Players
-        self._player_1 = Player(name_1, 1000, 0, self.map_height // 2)
-        self._player_2 = Player(name_2, 1000, self.map_width-1, self.map_height // 2)
+        self._player_1 = Player(name_1, 1000, self.map_height // 2, 0)
+        self._player_2 = Player(name_2, 1000, self.map_height // 2, self.map_width-1)
 
         self._player_1.gold = start_gold
         self._player_2.gold = start_gold
@@ -32,12 +32,12 @@ class Game:
         self._current_player = random.sample({self._player_1, self._player_2}, 1)[0]
         self._starting_player = self._current_player
         # Generate Map
-        for x in range(0, self.map_width):
+        for x in range(0, self.map_height):
             self._map.append([])
-            for y in range(0, self.map_height):
-                t = Tile(self, x, y)
+            for y in range(0, self.map_width):
+                t = Tile(self, y, x)
                 t.type = "PLAIN"
-                self._map[len(self._map) - 1].append(t)
+                self._map[x].append(t)
                 if self._player_1.units[0].x == x and self._player_1.units[0].y == y:
                     t.add_castle(self._player_1.units[0])
                     self._player_1.add_castle_tile(t)
