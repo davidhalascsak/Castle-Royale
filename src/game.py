@@ -35,7 +35,7 @@ class Game:
         for x in range(0, self.map_height):
             self._map.append([])
             for y in range(0, self.map_width):
-                t = Tile(self, y, x)
+                t = Tile(self, x, y)
                 t.type = "PLAIN"
                 self._map[x].append(t)
                 if self._player_1.units[0].x == x and self._player_1.units[0].y == y:
@@ -44,7 +44,7 @@ class Game:
                 elif self._player_2.units[0].x == x and self._player_2.units[0].y == y:
                     t.add_castle(self._player_2.units[0])
                     self._player_2.add_castle_tile(t)
-        self._map = MapGeneration.generate_map(self)
+        MapGeneration.generate_map(self)
 
     def load_game(self):
         pass
