@@ -44,7 +44,7 @@ class Game:
                 elif self._player_2.units[0].x == x and self._player_2.units[0].y == y:
                     t.add_castle(self._player_2.units[0])
                     self._player_2.add_castle_tile(t)
-        self._map = MapGeneration.generate_map(self._map)
+        self._map = MapGeneration.generate_map(self)
 
     def load_game(self):
         pass
