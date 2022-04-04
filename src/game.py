@@ -20,7 +20,7 @@ class Game:
         self.map_width = 26
         self._is_ended = False
         self._winner = None
-        self.path_finder = None
+        self._path_finder = None
 
     def new_game(self, start_gold, name_1, name_2):
         # Configure Players
@@ -47,7 +47,7 @@ class Game:
                     t.add_castle(self._player_2.units[0])
                     self._player_2.add_castle_tile(t)
         MapGeneration.generate_map(self)
-        self.path_finder = AStar(self)
+        self._path_finder = AStar(self)
 
     def load_game(self):
         pass
@@ -91,6 +91,10 @@ class Game:
     @property
     def winner(self):
         return self._winner
+
+    @property
+    def path_finder(self):
+        return self._path_finder
 
 
 

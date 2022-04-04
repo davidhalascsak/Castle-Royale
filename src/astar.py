@@ -118,8 +118,9 @@ class AStar:
         self.row = len(self.arr)
         self.col = len(self.arr[0])
 
-    def isPath(self, x1, y1, x2, y2):
-        self.loadObstacles()
+    def isPath(self, x1, y1, x2, y2, update=True):
+        if update:
+            self.loadObstacles()
         path = search(self.arr, 1, [x1, y1], [x2, y2])
         if path is None:
             return False, []
@@ -137,3 +138,6 @@ class AStar:
         #     self.arr.append([])
         #     for j in range(26):
         #         self.arr[i].append(0)
+
+    def set_obstacle(self, x, y, value):
+        self.arr[x][y] = value

@@ -194,7 +194,7 @@ while run:
                             elif game.current_player.state == "MOVE":
                                 print("MOVE")
                             print("Tile Cords: {}, {}".format(tile.x, tile.y))
-                            print(game.path_finder.isPath(0, 0, tile.x, tile.y))
+                            #print(game.path_finder.isPath(0, 0, tile.x, tile.y))
                             current_tile = tile
                 if event.type == pygame.MOUSEBUTTONUP:
                     if btn_continue.is_over(pygame.mouse.get_pos()):
@@ -203,10 +203,8 @@ while run:
                         run = False
                     elif btn_build.is_over(pygame.mouse.get_pos()):
                         game.current_player.state = "BUILD"
-                        # print(game.current_player.state)
                     elif btn_train.is_over(pygame.mouse.get_pos()):
                         game.current_player.state = "TRAIN"
-                        # print(game.current_player.state)
                     elif btn_move.is_over(pygame.mouse.get_pos()):
                         game.current_player.state = "MOVE"
                         # print(game.current_player.state)

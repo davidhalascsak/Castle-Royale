@@ -6,6 +6,7 @@ from src.tower import *
 
 
 class Tile:
+
     def __init__(self, game, pos_x, pos_y):
         self._game_ref = game
         self.x = pos_x
@@ -34,10 +35,15 @@ class Tile:
         if len(self._units) == 0:
             unit_price = eval(type).price
             if (player.gold - unit_price) > 0:
-                player.gold = (player.gold - unit_price)
-                unit = eval(type)(self, player, self.x, self.y)
-                player.add_unit(unit)
-                self._units.append(unit)
+                self._game_ref.path_finder.set_obstacle(self.x, self.y, 1)
+                if self._game_ref.path_finder.isPath(7, 0, 7, 25, False)[0]:
+                    print(self._game_ref.path_finder.isPath(7, 0, 7, 25)[0])
+                    player.gold = (player.gold - unit_price)
+                    unit = eval(type)(self, player, self.x, self.y)
+                    player.add_unit(unit)
+                    self._units.append(unit)
+                else:
+                    self._game_ref.path_finder.set_obstacle(self.x, self.y, 0)
 
     def train(self, player, soldier):
         count = 0
@@ -59,6 +65,7 @@ class Tile:
         else:
             pygame.draw.rect(surface, self.get_color(), pygame.Rect(self._y, self._x, self._width, self._height))
         # pygame.display.flip()
+
     def draw_buildings_and_soldiers(self, surface):
         # tower draw
         if len(self._units) > 0 and isinstance(self._units[0], Tower):
@@ -110,13 +117,15 @@ class Tile:
                 vertical_alignment = - length * 18
             else:
                 vertical_alignment = 48
-            pygame.draw.rect(surface, pygame.Color(0, 0, 0), pygame.Rect(self._y + horizontal_alignment, self._x + vertical_alignment, 170, length * 18))
+            pygame.draw.rect(surface, pygame.Color(0, 0, 0),
+                             pygame.Rect(self._y + horizontal_alignment, self._x + vertical_alignment, 170,
+                                         length * 18))
             for i in range(start, len(self._units)):
                 text = pygame.font.SysFont('Arial', 17).render("{0} - {1}/{2}".
-                                                                format(type(self._units[i]).__name__,
-                                                                        self._units[i].health,
-                                                                        eval(type(self._units[i]).__name__).max_health),
-                                                                False, self.get_owner_color(i))
+                                                               format(type(self._units[i]).__name__,
+                                                                      self._units[i].health,
+                                                                      eval(type(self._units[i]).__name__).max_health),
+                                                               False, self.get_owner_color(i))
                 surface.blit(text, (self._y + horizontal_alignment, self._x + vertical_alignment + (ind * 16)))
                 ind += 1
 
