@@ -1,4 +1,5 @@
 from src.unit import *
+from src.soldier import *
 
 
 class Tower(Unit):
@@ -19,7 +20,13 @@ class Tower(Unit):
             else:
                 self._is_ready_to_demolish = True
 
-    def shoot(self):
+    def distance(self, unit):
+        x = unit.x
+        y = unit.y
+        distance = sqrt(abs(x - self._x) + abs(y - self._y))
+        return distance
+
+    def attack(self):
         pass
 
     @property
@@ -56,23 +63,53 @@ class BasicTower(Tower):
 
     def __init__(self, tile, owner, x, y):
         super().__init__(health=5000, damage=50, range=2, clean_time=2, tile=tile, owner=owner, x=x, y=y)
+        self._locked_unit = None
+
+    def attack(self, units):
+        if distance(self._locked_unit) > self._range:
+            self._locked_unit = None
+        for unit in units:
+            if issubclass(type(unit), Soldier):
+                if self._locked_unit is None and distance(unit) <= self._range:
+                    self._locked_unit = unit
+                elif self._locked_unit is not None and distance(unit) < distance(self._locked_unit):
+                    self._locked_unit = unit
+
+        self._locked_unit.take_damage(self._damage)
 
 
 class Splash(Tower):
-    price = 30
+    price = 40
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=5000, damage=20, range=3, clean_time=2, tile=tile, owner=owner, x=x, y=y)
+        super().__init__(health=5000, damage=25, range=3, clean_time=2, tile=tile, owner=owner, x=x, y=y)
 
-    def shoot(self):
-        pass
+    def attack(self, units):
+        locked_units = []
+        for unit in units:
+            if issubclass(type(unit), Soldier):
+                if distance(unit) < self._range:
+                    locked_units += unit
+
+        for unit in locked_units:
+            unit.take_damage(self._damage)
 
 
 class Slow(Tower):
     price = 30
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=5000, damage=50, range=2, clean_time=2, tile=tile, owner=owner, x=x, y=y)
+        super().__init__(health=5000, damage=40, range=3, clean_time=2, tile=tile, owner=owner, x=x, y=y)
+        self._locked_unit = None
 
-    def shoot(self):
-        pass
+    def attack(self, units):
+        if distance(self._locked_unit) > self._range:
+            self._locked_unit = None
+        for unit in units:
+            if issubclass(type(unit), Soldier):
+                if self._locked_unit is None and distance(unit) <= self._range:
+                    self._locked_unit = unit
+                elif self._locked_unit is not None and distance(unit) < distance(self._locked_unit):
+                    self._locked_unit = unit
+
+        self._locked_unit.take_damage(self._damage)

@@ -13,7 +13,7 @@ class Soldier(Unit):
         self._x = new_x
         self._y = new_y
 
-    def attack(self, enemy):
+    def take_damage(self, enemy):
         if enemy.health - self.damage > 0:
             enemy.change_health(self.damage)
         else:
