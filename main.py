@@ -39,24 +39,24 @@ game.new_game(1000, "Player1", "Player2")
 
 # Test
 '''
-game._map[15][1]._units.append(BasicSoldier(game._map[0], game._player_1, 0, 0))
-game._map[15][1]._units.append(Climber(game._map[0], game._player_2, 0, 0))
-game._map[15][1]._units.append(Tank(game._map[0], game._player_2, 0, 0))
-game._map[15][1]._units.append(Suicide(game._map[0], game._player_2, 0, 0))
+game._map[1][15]._units.append(BasicSoldier(game._map[0], game._player_2, 0, 0))
+game._map[1][15]._units.append(Climber(game._map[0], game._player_2, 0, 0))
+game._map[1][15]._units.append(Tank(game._map[0], game._player_2, 0, 0))
+game._map[1][15]._units.append(Suicide(game._map[0], game._player_2, 0, 0))
 game._map[1][1]._units.append(Suicide(game._map[0], game._player_2, 0, 0))
 game._map[4][4]._units.append(BasicTower(game._map[0], game._player_2, 0, 0))
 game._map[2][2]._units.append(Splash(game._map[0], game._player_2, 0, 0))
 game._map[3][3]._units.append(Slow(game._map[0], game._player_2, 0, 0))
 
-game._map[2][1]._units.append(BasicSoldier(game._map[0], game._player_1, 0, 0))
-game._map[2][1]._units.append(Climber(game._map[0], game._player_1, 0, 0))
-game._map[2][1]._units.append(Tank(game._map[0], game._player_1, 0, 0))
-game._map[2][1]._units.append(Suicide(game._map[0], game._player_1, 0, 0))
-game._map[5][4]._units.append(BasicTower(game._map[0], game._player_1, 0, 0))
-game._map[3][2]._units.append(Splash(game._map[0], game._player_1, 0, 0))
-game._map[4][3]._units.append(Slow(game._map[0], game._player_1, 0, 0))
-game._player_1.add(Climber(game._map[0], game._player_1, 0, 0))
-game._player_1.add(Slow(game._map[0], game._player_1, 0, 0))
+game._map[1][2]._units.append(BasicSoldier(game._map[0], game._player_1, 0, 0))
+game._map[1][2]._units.append(Climber(game._map[0], game._player_1, 0, 0))
+game._map[1][2]._units.append(Tank(game._map[0], game._player_1, 0, 0))
+game._map[1][2]._units.append(Suicide(game._map[0], game._player_1, 0, 0))
+game._map[4][5]._units.append(BasicTower(game._map[0], game._player_1, 0, 0))
+game._map[2][3]._units.append(Splash(game._map[0], game._player_1, 0, 0))
+game._map[3][4]._units.append(Slow(game._map[0], game._player_1, 0, 0))
+#game._player_1.add(Climber(game._map[0], game._player_1, 0, 0))
+#game._player_1.add(Slow(game._map[0], game._player_1, 0, 0))
 '''
 
 font = pygame.font.SysFont('comicsans', 20)
@@ -93,6 +93,12 @@ while run:
             for i in range(0, 14):
                 for j in range(0, 26):
                     game.map[i][j].draw(screen)
+            for i in range(0, 14):
+                for j in range(0, 26):
+                    game.map[i][j].draw_buildings_and_soldiers(screen)
+            for i in range(0, 14):
+                for j in range(0, 26):
+                    game.map[i][j].draw_context_menu_for_tiles(screen)
         else:
             text = pygame.font.SysFont('Arial', 25).render("The winner is {0}.".format(game.winner), False, (0, 0, 0))
             screen.blit(text, (SCREEN_WIDTH/2 - text.get_width()/2, SCREEN_HEIGHT/2 - 60))

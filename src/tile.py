@@ -59,36 +59,7 @@ class Tile:
         else:
             pygame.draw.rect(surface, self.get_color(), pygame.Rect(self._y, self._x, self._width, self._height))
         # pygame.display.flip()
-
-        if self._hover and ((len(self._units) > 0 and issubclass(type(self._units[0]), Soldier)) or
-                            (self._is_castle and len(self._units) > 1 and issubclass(type(self._units[1]), Soldier))):
-            start = 0
-            ind = 0
-            length = len(self._units)
-            if self._is_castle:
-                start = 1
-                length -= 1
-            if self._x < 14 * 48:
-                pygame.draw.rect(surface, pygame.Color(0, 0, 0), pygame.Rect(self._x + 48, self._y, 170, length * 18))
-                for i in range(start, len(self._units)):
-                    text = pygame.font.SysFont('Arial', 17).render("{0} - {1}/{2}".
-                                                                   format(type(self._units[i]).__name__,
-                                                                          self._units[i].health,
-                                                                          eval(type(self._units[i]).__name__).max_health),
-                                                                   False, self.get_owner_color(i))
-                    surface.blit(text, (self._x + 48, self._y + (ind * 16)))
-                    ind += 1
-            else:
-                pygame.draw.rect(surface, pygame.Color(0, 0, 0), pygame.Rect(self._x - 170, self._y, 170, length * 18))
-                for i in range(start, len(self._units)):
-                    text = pygame.font.SysFont('Arial', 17).render("{0} - {1}/{2}".
-                                                                   format(type(self._units[i]).__name__,
-                                                                          self._units[i].health,
-                                                                          eval(type(self._units[i]).__name__).max_health),
-                                                                   False, self.get_owner_color(i))
-                    surface.blit(text, (self._x - 170, self._y + (ind * 16)))
-                    ind += 1
-
+    def draw_buildings_and_soldiers(self, surface):
         # tower draw
         if len(self._units) > 0 and isinstance(self._units[0], Tower):
             color = (0, 0, 0)
@@ -99,27 +70,55 @@ class Tile:
             elif isinstance(self._units[0], Slow):
                 color = (255, 255, 0)
 
-            pygame.draw.rect(surface, self.get_owner_color(), pygame.Rect(self._x + self._width / 4 - self._width / 16,
-                                                                          self._y + self._height / 4 - self._width / 16,
+            pygame.draw.rect(surface, self.get_owner_color(), pygame.Rect(self._y + self._width / 4 - self._width / 16,
+                                                                          self._x + self._height / 4 - self._width / 16,
                                                                           self._width - self._width / 2 + self._width / 8,
                                                                           self._height - self._height / 2 + self._width / 8))
 
-            pygame.draw.rect(surface, color, pygame.Rect(self._x + self._width / 4,
-                                                         self._y + self._height / 4,
+            pygame.draw.rect(surface, color, pygame.Rect(self._y + self._width / 4,
+                                                         self._x + self._height / 4,
                                                          self._width - self._width / 2,
                                                          self._height - self._height / 2))
         # count of the soldiers on the tile
         if len(self._units) > 0 and (isinstance(self._units[0], Soldier)):
             surface.blit(self._font.render(str(len(self._units)), True, self.get_owner_color()),
-                         (self._x + self._width / 24 * 10, self._y + self._width / 4))
+                         (self._y + self._width / 24 * 10, self._x + self._width / 4))
         elif len(self._units) > 1 and self._is_castle:
             surface.blit(self._font.render(str(len(self._units) - 1), True, self.get_owner_color()),
-                         (self._x + self._width / 24 * 10, self._y + self._width / 4))
+                         (self._y + self._width / 24 * 10, self._x + self._width / 4))
 
         # barrack draw
         # pygame.draw.polygon(surface, (0, 0, 0), points=[(self._x + self._width/2,self._y + self._height/3),
         #                                               (self._x + self._width/4, self._y + self._height/3*2),
         #                                               (self._x + self._width/4*3,self._y + self._height/3 * 2)])
+
+    def draw_context_menu_for_tiles(self, surface):
+        # context menu for soldiers on a tile
+        if self._hover and ((len(self._units) > 0 and issubclass(type(self._units[0]), Soldier)) or
+                            (self._is_castle and len(self._units) > 1 and issubclass(type(self._units[1]), Soldier))):
+            start = 0
+            ind = 0
+            length = len(self._units)
+            if self._is_castle:
+                start = 1
+                length -= 1
+            if self._y > 600:
+                horizontal_alignment = -122
+            else:
+                horizontal_alignment = 0
+            if self._x > 330:
+                vertical_alignment = - length * 18
+            else:
+                vertical_alignment = 48
+            pygame.draw.rect(surface, pygame.Color(0, 0, 0), pygame.Rect(self._y + horizontal_alignment, self._x + vertical_alignment, 170, length * 18))
+            for i in range(start, len(self._units)):
+                text = pygame.font.SysFont('Arial', 17).render("{0} - {1}/{2}".
+                                                                format(type(self._units[i]).__name__,
+                                                                        self._units[i].health,
+                                                                        eval(type(self._units[i]).__name__).max_health),
+                                                                False, self.get_owner_color(i))
+                surface.blit(text, (self._y + horizontal_alignment, self._x + vertical_alignment + (ind * 16)))
+                ind += 1
 
     def is_over(self, pos):
         if self._y < pos[0] < self._y + self._width:
