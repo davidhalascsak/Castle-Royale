@@ -193,7 +193,8 @@ while run:
 
                             elif game.current_player.state == "MOVE":
                                 print("MOVE")
-                            # print("Tile Cords: {}, {}".format(tile.x, tile.y))
+                            print("Tile Cords: {}, {}".format(tile.x, tile.y))
+                            print(game.path_finder.isPath(0, 0, tile.x, tile.y))
                             current_tile = tile
                 if event.type == pygame.MOUSEBUTTONUP:
                     if btn_continue.is_over(pygame.mouse.get_pos()):

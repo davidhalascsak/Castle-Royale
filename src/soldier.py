@@ -7,7 +7,7 @@ class Soldier(Unit):
         self._stamina = stamina
         self._alive = True
 
-    def move(self, x, y):
+    def move(self, x1, y1):
         new_x = self._x + x1
         new_y = self._y + y1
         self._x = new_x

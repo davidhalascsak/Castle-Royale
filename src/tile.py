@@ -147,3 +147,7 @@ class Tile:
     @property
     def font(self):
         return self._font
+
+    @property
+    def is_castle(self):
+        return self._is_castle
