@@ -16,9 +16,9 @@ class Tile:
         self._height = 48
         self._color = {
             None: (255, 255, 255),
-            "DIRT": (161, 146, 101),
-            "MOSS": (13, 64, 18),
-            "MOUNT": (120, 125, 123)
+            "PLAIN": (161, 146, 101),
+            "LAKE": (13, 64, 18),
+            "HILL": (120, 125, 123)
         }
         self._hover_color = (48, 241, 255)
         self._hover = False
@@ -55,9 +55,9 @@ class Tile:
 
     def draw(self, surface):
         if self._is_castle:
-            pygame.draw.rect(surface, (255, 255, 255), pygame.Rect(self._x, self._y, self._width, self._height))
+            pygame.draw.rect(surface, (255, 255, 255), pygame.Rect(self._y, self._x, self._width, self._height))
         else:
-            pygame.draw.rect(surface, self.get_color(), pygame.Rect(self._x, self._y, self._width, self._height))
+            pygame.draw.rect(surface, self.get_color(), pygame.Rect(self._y, self._x, self._width, self._height))
         # pygame.display.flip()
 
         if self._hover and ((len(self._units) > 0 and issubclass(type(self._units[0]), Soldier)) or
@@ -122,8 +122,8 @@ class Tile:
         #                                               (self._x + self._width/4*3,self._y + self._height/3 * 2)])
 
     def is_over(self, pos):
-        if self._x < pos[0] < self._x + self._width:
-            if self._y < pos[1] < self._y + self._height:
+        if self._y < pos[0] < self._y + self._width:
+            if self._x < pos[1] < self._x + self._height:
                 self._hover = True
                 return True
         self._hover = False
