@@ -1,0 +1,6 @@
+before_script:
+  - python --version  # For debugging
+  - pip install -r requirements.txt
+test:
+  script:
+    - pytest src/test/
