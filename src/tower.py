@@ -1,5 +1,6 @@
 from src.unit import *
 from src.soldier import *
+import math
 
 
 class Tower(Unit):
@@ -21,9 +22,9 @@ class Tower(Unit):
                 self._is_ready_to_demolish = True
 
     def distance(self, unit):
-        x = unit.x
-        y = unit.y
-        distance = sqrt(abs(x - self._x) + abs(y - self._y))
+        x = unit._x
+        y = unit._y
+        distance = math.sqrt(abs(x - self._x) + abs(y - self._y))
         return distance
 
     def attack(self):
@@ -66,13 +67,13 @@ class BasicTower(Tower):
         self._locked_unit = None
 
     def attack(self, units):
-        if distance(self._locked_unit) > self._range:
+        if self.distance(self._locked_unit) > self._range:
             self._locked_unit = None
         for unit in units:
             if issubclass(type(unit), Soldier):
-                if self._locked_unit is None and distance(unit) <= self._range:
+                if self._locked_unit is None and self.distance(unit) <= self._range:
                     self._locked_unit = unit
-                elif self._locked_unit is not None and distance(unit) < distance(self._locked_unit):
+                elif self._locked_unit is not None and self.distance(unit) < self.distance(self._locked_unit):
                     self._locked_unit = unit
 
         self._locked_unit.take_damage(self._damage)
@@ -88,7 +89,7 @@ class Splash(Tower):
         locked_units = []
         for unit in units:
             if issubclass(type(unit), Soldier):
-                if distance(unit) < self._range:
+                if self.distance(unit) < self._range:
                     locked_units += unit
 
         for unit in locked_units:
@@ -103,13 +104,13 @@ class Slow(Tower):
         self._locked_unit = None
 
     def attack(self, units):
-        if distance(self._locked_unit) > self._range:
+        if self.distance(self._locked_unit) > self._range:
             self._locked_unit = None
         for unit in units:
             if issubclass(type(unit), Soldier):
-                if self._locked_unit is None and distance(unit) <= self._range:
+                if self._locked_unit is None and self.distance(unit) <= self._range:
                     self._locked_unit = unit
-                elif self._locked_unit is not None and distance(unit) < distance(self._locked_unit):
+                elif self._locked_unit is not None and self.distance(unit) < self.distance(self._locked_unit):
                     self._locked_unit = unit
 
         self._locked_unit.take_damage(self._damage)
