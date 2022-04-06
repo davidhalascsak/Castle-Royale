@@ -11,6 +11,7 @@ class Player:
         self._units = [Castle(self, health, x, y)]
         self._castle_tile = None
         self._state = None
+        self.to_simulate = []
 
     def add_unit(self, unit):
         self._units.append(unit)

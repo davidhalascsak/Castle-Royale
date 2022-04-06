@@ -55,6 +55,12 @@ class Game:
     def save_game(self):
         pass
 
+    def other_player(self):
+        if self._current_player == self._player_1:
+            return self._player_2
+        else:
+            return self._player_1
+
     def next_round(self):
         if self._current_player == self._player_1:
             self._current_player = self._player_2

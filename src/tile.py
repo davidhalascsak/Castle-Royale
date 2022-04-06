@@ -8,7 +8,7 @@ from src.tower import *
 class Tile:
 
     def __init__(self, game, pos_x, pos_y):
-        self._game_ref = game
+        self.game_ref = game
         self.x = pos_x
         self.y = pos_y
         self._x = pos_x * 48
@@ -27,6 +27,8 @@ class Tile:
         self._units = []
         self._font = pygame.font.SysFont('Arial', 20)
         self.type = None
+        self.selected = None
+        self.waypoint = None
 
     def add_castle(self, castle):
         self._units.append(castle)
@@ -36,15 +38,15 @@ class Tile:
         if len(self._units) == 0:
             unit_price = eval(type).price
             if (player.gold - unit_price) > 0:
-                self._game_ref.path_finder.set_obstacle(self.x, self.y, 1)
-                if self._game_ref.path_finder.isPath(7, 0, 7, 25, False)[0]:
-                    print(self._game_ref.path_finder.isPath(7, 0, 7, 25)[0])
+                self.game_ref.path_finder.set_obstacle(self.x, self.y, 1)
+                if self.game_ref.path_finder.isPath(7, 0, 7, 25, False)[0]:
+                    print(self.game_ref.path_finder.isPath(7, 0, 7, 25)[0])
                     player.gold = (player.gold - unit_price)
                     unit = eval(type)(self, player, self.x, self.y)
                     player.add_unit(unit)
                     self._units.append(unit)
                 else:
-                    self._game_ref.path_finder.set_obstacle(self.x, self.y, 0)
+                    self.game_ref.path_finder.set_obstacle(self.x, self.y, 0)
 
     def train(self, player, soldier):
         count = 0
@@ -65,6 +67,12 @@ class Tile:
             pygame.draw.rect(surface, (255, 255, 255), pygame.Rect(self._y, self._x, self._width, self._height))
         else:
             pygame.draw.rect(surface, self.get_color(), pygame.Rect(self._y, self._x, self._width, self._height))
+
+        if self.selected:
+            pygame.draw.rect(surface, (255, 0, 0), pygame.Rect(self._y, self._x, self._width, self._height), 2)
+
+        if self.waypoint:
+            pygame.draw.rect(surface, (0, 255, 0), pygame.Rect(self._y, self._x, self._width, self._height), 2)
         # pygame.display.flip()
 
     def draw_buildings_and_soldiers(self, surface):
@@ -144,9 +152,9 @@ class Tile:
             return self._color[self.type]
 
     def get_owner_color(self, index=0):
-        if self._units[index].owner == self._game_ref.player_1:
+        if self._units[index].owner == self.game_ref.player_1:
             return 255, 0, 0
-        elif self._units[index].owner == self._game_ref.player_2:
+        elif self._units[index].owner == self.game_ref.player_2:
             return 0, 0, 255
         return 0, 0, 0
 

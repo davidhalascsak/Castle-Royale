@@ -19,6 +19,7 @@ FPS = 60
 
 hamburger = Context()
 current_tile = None
+selected_tile = None
 
 # 1 - Menu
 # 2 - New Game
@@ -32,7 +33,7 @@ btn_build = Button((255, 0, 0), 260, 676, 235, 40, "BUILD")
 btn_train = Button((255, 0, 0), 510, 676, 235, 40, "TRAIN")
 btn_move = Button((255, 0, 0), 760, 676, 235, 40, "MOVE")
 btn_continue = Button((255, 0, 0), 1010, 676, 235, 40, "CONTINUE")
-btn_end = Button((255, 0, 0), SCREEN_WIDTH/2 - 40, SCREEN_HEIGHT/2 - 25, 80, 50, "MENU")
+btn_end = Button((255, 0, 0), SCREEN_WIDTH / 2 - 40, SCREEN_HEIGHT / 2 - 25, 80, 50, "MENU")
 
 game = Game()
 game.new_game(1000, "Player1", "Player2")
@@ -58,6 +59,9 @@ game._map[3][4]._units.append(Slow(game._map[0], game._player_1, 0, 0))
 #game._player_1.add(Climber(game._map[0], game._player_1, 0, 0))
 #game._player_1.add(Slow(game._map[0], game._player_1, 0, 0))
 '''
+
+#TODO: a szimulacio lefuttatasa utan minden csempéről leszedni a waypointokat és a selectedet
+# (Tile.waypoint = False, Tile.selected = False)
 
 font = pygame.font.SysFont('comicsans', 20)
 
@@ -101,7 +105,7 @@ while run:
                     game.map[i][j].draw_context_menu_for_tiles(screen)
         else:
             text = pygame.font.SysFont('Arial', 25).render("The winner is {0}.".format(game.winner), False, (0, 0, 0))
-            screen.blit(text, (SCREEN_WIDTH/2 - text.get_width()/2, SCREEN_HEIGHT/2 - 60))
+            screen.blit(text, (SCREEN_WIDTH / 2 - text.get_width() / 2, SCREEN_HEIGHT / 2 - 60))
             btn_end.draw(screen)
 
         if not game.is_ended:
@@ -115,8 +119,10 @@ while run:
             player2_name = font.render(str(game.player_2.name), True, get_name_color(game.player_2))
             player2_money = font.render(str(game.player_2.gold), True, get_name_color(game.player_2))
 
-            screen.blit(player2_name, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 10))
-            screen.blit(player2_money, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 35))
+            screen.blit(player2_name,
+                        (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 10))
+            screen.blit(player2_money,
+                        (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 35))
 
             current_player_state = font.render(str(game.current_player.state), True, (0, 0, 0))
             screen.blit(current_player_state, ((SCREEN_WIDTH / 2) - (current_player_state.get_width() / 2), 10))
@@ -174,6 +180,37 @@ while run:
                             game.current_player.castle_tile.train(game.current_player, "Suicide")
                         if item[2] and item[1] == "Tank":
                             game.current_player.castle_tile.train(game.current_player, "Tank")
+                        if item[2] and item[1] == "Select":
+                            if selected_tile:
+                                selected_tile.selected = False
+                            selected_tile = current_tile
+                            has_units = False
+                            for u in selected_tile.units:
+                                if hasattr(u, 'alive'):
+                                    has_units = has_units or u.alive
+                            if selected_tile and (has_units and selected_tile.is_castle):
+                                selected_tile.selected = True
+                            else:
+                                selected_tile = None
+
+                            # game.current_player.castle_tile.train(game.current_player, "Tank")
+                        if item[2] and item[1] == "Move":
+                            if selected_tile:
+                                # path = game.path_finder.isPath(selected_tile.x, selected_tile.y, current_tile.x,
+                                #                                current_tile.y)
+                                # if path[0]:
+                                for u in selected_tile.units:
+                                    if hasattr(u, 'alive'):
+                                        path = game.path_finder.isPath(selected_tile.x, selected_tile.y, current_tile.x, current_tile.y, issubclass(type(u), Climber))
+                                        u.path = path[1]
+                                        u.path.pop(0)
+                                        u.destination = current_tile
+                                        game.current_player.to_simulate.append(u)
+                            print(game.current_player.to_simulate[0].path)
+                            current_tile.waypoint = True
+                            selected_tile.selected = False
+                            selected_tile = None
+                            # game.current_player.castle_tile.train(game.current_player, "Tank")
                         hamburger.opened = False
             else:
                 for row in game.map:
@@ -192,15 +229,30 @@ while run:
                                 hamburger.open(mouse_cords[0], mouse_cords[1])
 
                             elif game.current_player.state == "MOVE":
+                                mouse_cords = pygame.mouse.get_pos()
                                 print("MOVE")
+
+                                if selected_tile is None:
+                                    hamburger.change_content(["Select"])
+                                else:
+                                    if tile.type == "PLAIN" and game.path_finder.isPath(selected_tile.x, selected_tile.y, tile.x, tile.y)[0]:
+                                        hamburger.change_content(["Select", "Move"])
+                                    else:
+                                        hamburger.change_content(["Select"])
+                                if tile != selected_tile and (len(tile.units) == 0 or (tile.is_castle and tile.units[0].owner != game.other_player())):
+                                    hamburger.open(mouse_cords[0], mouse_cords[1])
+
                             print("Tile Cords: {}, {}".format(tile.x, tile.y))
-                            #print(game.path_finder.isPath(0, 0, tile.x, tile.y))
+                            # print(game.path_finder.isPath(0, 0, tile.x, tile.y))
                             current_tile = tile
                 if event.type == pygame.MOUSEBUTTONUP:
                     if btn_continue.is_over(pygame.mouse.get_pos()):
                         game.next_round()
                     elif btn_quit.is_over(pygame.mouse.get_pos()):
                         run = False
+                        # for unit in game.current_player.to_simulate:
+                        #     unit.move()
+                        # game.current_player.to_simulate[0]
                     elif btn_build.is_over(pygame.mouse.get_pos()):
                         game.current_player.state = "BUILD"
                     elif btn_train.is_over(pygame.mouse.get_pos()):

@@ -1,17 +1,33 @@
 from src.unit import *
 
-
 class Soldier(Unit):
     def __init__(self, health, damage, stamina, tile, owner, x, y):
         super().__init__(health=health, damage=damage, tile=tile, owner=owner, x=x, y=y)
         self._stamina = stamina
         self._alive = True
+        self.path = None
+        self.destination = None
+        self.game = tile.game_ref
 
-    def move(self, x1, y1):
-        new_x = self._x + x1
-        new_y = self._y + y1
-        self._x = new_x
-        self._y = new_y
+    def move(self):
+        if self.path and self.destination:
+            if len(self.path) > 0:
+                #TODO: csak akkor menjen tovabb ha eleg a stamina
+                #TODO: vonja le a staminat, stb
+                next = self.path.pop(0)
+                self._tile.units.remove(self)
+                self.x = next[0]
+                self.y = next[1]
+                self._tile = self.game.map[self.x][self.y]
+                self._tile.units.append(self)
+
+
+
+        # new_x = self._x + x1
+        # new_y = self._y + y1
+        # self._x = new_x
+        # self._y = new_y
+
 
     def take_damage(self, enemy):
         if enemy.health - self.damage > 0:
@@ -48,8 +64,8 @@ class Climber(Soldier):
     def __init__(self, tile, owner, x, y):
         super().__init__(health=120, damage=50, stamina=80, tile=tile, owner=owner, x=x, y=y)
 
-    def move(self, x, y):
-        pass
+    # def move(self, x, y):
+    #     pass
 
 
 class Tank(Soldier):
