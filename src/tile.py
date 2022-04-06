@@ -26,6 +26,7 @@ class Tile:
         self._is_castle = False
         self._units = []
         self._font = pygame.font.SysFont('Arial', 20)
+        self.type = None
 
     def add_castle(self, castle):
         self._units.append(castle)

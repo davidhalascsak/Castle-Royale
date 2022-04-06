@@ -118,18 +118,20 @@ class AStar:
         self.row = len(self.arr)
         self.col = len(self.arr[0])
 
-    def isPath(self, x1, y1, x2, y2, update=True):
+    def isPath(self, x1, y1, x2, y2, special=False, update=True):
         if update:
-            self.loadObstacles()
+            self.loadObstacles(special)
         path = search(self.arr, 1, [x1, y1], [x2, y2])
         if path is None:
             return False, []
         return True, path
 
-    def loadObstacles(self):
+    def loadObstacles(self, special):
         for row in self.game.map:
             for tile in row:
                 if len(tile.units) > 0 and not tile.is_castle:
+                    self.arr[tile.x][tile.y] = 1
+                elif not special and tile.type != "PLAIN":
                     self.arr[tile.x][tile.y] = 1
                 else:
                     self.arr[tile.x][tile.y] = 0
