@@ -3,7 +3,10 @@ class Castle:
         self._health = health
         self._x = x
         self._y = y
-        self.owner = player
+        self._owner = player
+
+    def hit(self, damage):
+        self._health -= damage
 
     @property
     def health(self):
@@ -16,4 +19,8 @@ class Castle:
     @property
     def y(self):
         return self._y
+
+    @property
+    def owner(self):
+        return self._owner
 

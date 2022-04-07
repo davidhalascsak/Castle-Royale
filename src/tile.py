@@ -27,8 +27,8 @@ class Tile:
         self._units = []
         self._font = pygame.font.SysFont('Arial', 20)
         self.type = None
-        self.selected = None
-        self.waypoint = None
+        self._selected = None
+        self._waypoint = None
 
     def add_castle(self, castle):
         self._units.append(castle)
@@ -40,7 +40,6 @@ class Tile:
             if (player.gold - unit_price) > 0:
                 self.game_ref.path_finder.set_obstacle(self.x, self.y, 1)
                 if self.game_ref.path_finder.isPath(7, 0, 7, 25, False)[0]:
-                    print(self.game_ref.path_finder.isPath(7, 0, 7, 25)[0])
                     player.gold = (player.gold - unit_price)
                     unit = eval(type)(self, player, self.x, self.y)
                     player.add_unit(unit)
@@ -68,10 +67,10 @@ class Tile:
         else:
             pygame.draw.rect(surface, self.get_color(), pygame.Rect(self._y, self._x, self._width, self._height))
 
-        if self.selected:
+        if self._selected:
             pygame.draw.rect(surface, (255, 0, 0), pygame.Rect(self._y, self._x, self._width, self._height), 2)
 
-        if self.waypoint:
+        if self._waypoint:
             pygame.draw.rect(surface, (0, 255, 0), pygame.Rect(self._y, self._x, self._width, self._height), 2)
         # pygame.display.flip()
 
@@ -169,3 +168,19 @@ class Tile:
     @property
     def is_castle(self):
         return self._is_castle
+
+    @property
+    def selected(self):
+        return self._selected
+
+    @selected.setter
+    def selected(self, value):
+        self._selected = value
+
+    @property
+    def waypoint(self):
+        return self._waypoint
+
+    @waypoint.setter
+    def waypoint(self, value):
+        self._waypoint = value

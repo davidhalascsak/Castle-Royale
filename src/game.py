@@ -4,6 +4,7 @@ from src.castle import Castle
 from src.mapgeneration import MapGeneration
 import random
 from src.astar import AStar
+from src.soldier import Soldier
 
 terrain_type = {"PLAIN", "LAKE", "HILL"}
 
@@ -21,11 +22,12 @@ class Game:
         self._is_ended = False
         self._winner = None
         self._path_finder = None
+        self._start_simulation = False
 
     def new_game(self, start_gold, name_1, name_2):
         # Configure Players
-        self._player_1 = Player(name_1, 1000, self.map_height // 2, 0)
-        self._player_2 = Player(name_2, 1000, self.map_height // 2, self.map_width-1)
+        self._player_1 = Player(name_1, 1000, self.map_height // 2, 0, self)
+        self._player_2 = Player(name_2, 1000, self.map_height // 2, self.map_width-1, self)
 
         self._player_1.gold = start_gold
         self._player_2.gold = start_gold
@@ -69,6 +71,8 @@ class Game:
         if self._current_player == self._starting_player:
             self._player_1.gold = (self._player_1.gold + self._player_1.calculate_gold_bonus())
             self._player_2.gold = (self._player_2.gold + self._player_2.calculate_gold_bonus())
+            self._start_simulation = True
+
         self._player_1.state = None
         self._player_2.state = None
 
@@ -91,6 +95,10 @@ class Game:
         return self._current_player
 
     @property
+    def starting_player(self):
+        return self._starting_player
+
+    @property
     def is_ended(self):
         return self._is_ended
 
@@ -101,6 +109,14 @@ class Game:
     @property
     def path_finder(self):
         return self._path_finder
+
+    @property
+    def start_simulation(self):
+        return self._start_simulation
+
+    @start_simulation.setter
+    def start_simulation(self, value):
+        self._start_simulation = value
 
 
 

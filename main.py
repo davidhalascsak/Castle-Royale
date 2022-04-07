@@ -14,8 +14,12 @@ SCREEN_HEIGHT = 720
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Castle Royale')
 
+simulation_starting_time = 0  # 1 second = 1000 millisecond
+elapsed_time = 0
 clock = pygame.time.Clock()
 FPS = 60
+threads = []
+all_units = []
 
 hamburger = Context()
 current_tile = None
@@ -37,10 +41,13 @@ btn_end = Button((255, 0, 0), SCREEN_WIDTH / 2 - 40, SCREEN_HEIGHT / 2 - 25, 80,
 
 game = Game()
 game.new_game(1000, "Player1", "Player2")
-
 # Test
+
+# game._player_2.units.append(BasicSoldier(game.map[0][0], game._player_2, 0, 0))
+# game._player_1.units.append(BasicSoldier(game.map[0][0], game._player_1, 0, 0))
+# game._map[0][0]._units.append(game._player_2.units[1])
+# game._map[0][0]._units.append(game._player_1.units[1])
 '''
-game._map[1][15]._units.append(BasicSoldier(game._map[0], game._player_2, 0, 0))
 game._map[1][15]._units.append(Climber(game._map[0], game._player_2, 0, 0))
 game._map[1][15]._units.append(Tank(game._map[0], game._player_2, 0, 0))
 game._map[1][15]._units.append(Suicide(game._map[0], game._player_2, 0, 0))
@@ -59,9 +66,6 @@ game._map[3][4]._units.append(Slow(game._map[0], game._player_1, 0, 0))
 #game._player_1.add(Climber(game._map[0], game._player_1, 0, 0))
 #game._player_1.add(Slow(game._map[0], game._player_1, 0, 0))
 '''
-
-#TODO: a szimulacio lefuttatasa utan minden csempéről leszedni a waypointokat és a selectedet
-# (Tile.waypoint = False, Tile.selected = False)
 
 font = pygame.font.SysFont('comicsans', 20)
 
@@ -108,8 +112,8 @@ while run:
             screen.blit(text, (SCREEN_WIDTH / 2 - text.get_width() / 2, SCREEN_HEIGHT / 2 - 60))
             btn_end.draw(screen)
 
+        # Draw Player Information
         if not game.is_ended:
-            # Draw Player Information
             player1_name = font.render(str(game.player_1.name), True, get_name_color(game.player_1))
             player1_money = font.render(str(game.player_1.gold), True, get_name_color(game.player_1))
 
@@ -124,7 +128,10 @@ while run:
             screen.blit(player2_money,
                         (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 35))
 
-            current_player_state = font.render(str(game.current_player.state), True, (0, 0, 0))
+            if not game.start_simulation:
+                current_player_state = font.render(str(game.current_player.state), True, (0, 0, 0))
+            else:
+                current_player_state = font.render("Simulation", True, (0, 0, 0))
             screen.blit(current_player_state, ((SCREEN_WIDTH / 2) - (current_player_state.get_width() / 2), 10))
 
         if not hamburger.opened:
@@ -143,9 +150,21 @@ while run:
             btn_continue.draw(screen)
 
         # Draw Context Menu
-
         hamburger.draw(screen)
         hamburger.is_over(pygame.mouse.get_pos())
+
+        if game.start_simulation:
+            if pygame.time.get_ticks() - simulation_starting_time < 10000:
+                if elapsed_time < pygame.time.get_ticks():
+                    elapsed_time += 1500
+                    game.player_1.simulate()
+                    game.player_2.simulate()
+            else:
+                game.start_simulation = False
+                game.player_1.reset_stamina()
+                game.player_2.reset_stamina()
+                print("{0} - {1}".format(game.player_1.units[0].health, game.player_2.units[0].health))
+
     # Keyboard input update function
     for event in pygame.event.get():
         if game_state == 1:
@@ -224,7 +243,7 @@ while run:
 
                             elif game.current_player.state == "TRAIN":
                                 mouse_cords = pygame.mouse.get_pos()
-                                print("TRAIN")
+                                # print("TRAIN")
                                 hamburger.change_content(["Soldier", "Climber", "Suicide", "Tank"])
                                 hamburger.open(mouse_cords[0], mouse_cords[1])
 
@@ -239,27 +258,29 @@ while run:
                                         hamburger.change_content(["Select", "Move"])
                                     else:
                                         hamburger.change_content(["Select"])
-                                if tile != selected_tile and (len(tile.units) == 0 or (tile.is_castle and tile.units[0].owner != game.other_player())):
+                                if tile != selected_tile and (len(tile.units) == 0 or tile.is_castle):
                                     hamburger.open(mouse_cords[0], mouse_cords[1])
-
-                            print("Tile Cords: {}, {}".format(tile.x, tile.y))
+                            # print("Tile Cords: {}, {}".format(tile.x, tile.y))
                             # print(game.path_finder.isPath(0, 0, tile.x, tile.y))
                             current_tile = tile
                 if event.type == pygame.MOUSEBUTTONUP:
                     if btn_continue.is_over(pygame.mouse.get_pos()):
                         game.next_round()
+                        for row in game.map:
+                            for tile in row:
+                                tile.selected = False
+                                tile.waypoint = False
+                        if game.start_simulation:
+                            simulation_starting_time = pygame.time.get_ticks()
+                            elapsed_time = simulation_starting_time
                     elif btn_quit.is_over(pygame.mouse.get_pos()):
                         run = False
-                        # for unit in game.current_player.to_simulate:
-                        #     unit.move()
-                        # game.current_player.to_simulate[0]
                     elif btn_build.is_over(pygame.mouse.get_pos()):
                         game.current_player.state = "BUILD"
                     elif btn_train.is_over(pygame.mouse.get_pos()):
                         game.current_player.state = "TRAIN"
                     elif btn_move.is_over(pygame.mouse.get_pos()):
                         game.current_player.state = "MOVE"
-                        # print(game.current_player.state)
                     elif btn_end.is_over(pygame.mouse.get_pos()):
                         pass
 
