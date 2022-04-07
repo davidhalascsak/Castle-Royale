@@ -127,7 +127,7 @@ while run:
                         (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 10))
             screen.blit(player2_money,
                         (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 35))
-
+            #TODO: kiirni a jatekos varanak hpjat felulre xd
             if not game.start_simulation:
                 current_player_state = font.render(str(game.current_player.state), True, (0, 0, 0))
             else:
@@ -207,7 +207,7 @@ while run:
                             for u in selected_tile.units:
                                 if hasattr(u, 'alive'):
                                     has_units = has_units or u.alive
-                            if selected_tile and (has_units and selected_tile.is_castle):
+                            if selected_tile and ((has_units and selected_tile.is_castle) or has_units):
                                 selected_tile.selected = True
                             else:
                                 selected_tile = None
@@ -224,6 +224,7 @@ while run:
                                         u.path = path[1]
                                         u.path.pop(0)
                                         u.destination = current_tile
+                                        game.current_player.to_simulate.remove(u)
                                         game.current_player.to_simulate.append(u)
                             print(game.current_player.to_simulate[0].path)
                             current_tile.waypoint = True
@@ -258,7 +259,12 @@ while run:
                                         hamburger.change_content(["Select", "Move"])
                                     else:
                                         hamburger.change_content(["Select"])
-                                if tile != selected_tile and (len(tile.units) == 0 or tile.is_castle):
+
+                                my_units = False
+                                for unit in tile.units:
+                                    my_units = my_units or hasattr(unit, "alive")
+
+                                if tile != selected_tile and (len(tile.units) == 0 or tile.is_castle or my_units):
                                     hamburger.open(mouse_cords[0], mouse_cords[1])
                             # print("Tile Cords: {}, {}".format(tile.x, tile.y))
                             # print(game.path_finder.isPath(0, 0, tile.x, tile.y))

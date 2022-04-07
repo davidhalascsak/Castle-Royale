@@ -12,7 +12,8 @@ class Soldier(Unit):
         self._tile = tile
         self.game = tile.game_ref
 
-    def move(self):
+    def move(self, current_tick=False, last_tick=False):
+        # if current_tick-self.get_speed() > last_tick:
         if self.path and self.destination:
             if len(self.path) > 0 and self._current_stamina > 0:
                 self._current_stamina -= 1
@@ -23,10 +24,13 @@ class Soldier(Unit):
                 self._tile = self.game.map[self.x][self.y]
                 self._tile.units.append(self)
 
-                if self.tile == self.destination:
-                    self.destination.units[0].hit(self.health)
-                    self.tile.units.remove(self)
-                    self.owner.units.remove(self)
+                # if self.tile == self.destination:
+                #     self.destination.units[0].hit(self.health)
+                #     self.tile.units.remove(self)
+                #     self.owner.units.remove(self)
+
+    def get_speed(self):
+        return 800
 
     def take_damage(self, damage):
         self.change_health(damage)
@@ -71,6 +75,9 @@ class Climber(Soldier):
     def __init__(self, tile, owner, x, y):
         super().__init__(health=120, damage=50, stamina=5, tile=tile, owner=owner, x=x, y=y)
 
+    def get_speed(self):
+        return 1000
+
 
 class Tank(Soldier):
     price = 150
@@ -82,6 +89,10 @@ class Tank(Soldier):
     def attack(self, enemy):
         pass
 
+    def get_speed(self):
+        return 2000
+
+
 
 class Suicide(Soldier):
     price = 200
@@ -92,3 +103,6 @@ class Suicide(Soldier):
 
     def attack(self, enemy):
         pass
+
+    def get_speed(self):
+        return 500

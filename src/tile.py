@@ -137,6 +137,10 @@ class Tile:
                 surface.blit(text, (self._y + horizontal_alignment, self._x + vertical_alignment + (ind * 16)))
                 ind += 1
 
+            for u in self.units:
+                if hasattr(u, "destination") and u.destination:
+                    pygame.draw.rect(surface, (255, 255, 0), pygame.Rect(u.destination.y * 48, u.destination.x * 48, self._width, self._height), 2)
+
     def is_over(self, pos):
         if self._y < pos[0] < self._y + self._width:
             if self._x < pos[1] < self._x + self._height:
