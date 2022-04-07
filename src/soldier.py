@@ -1,5 +1,5 @@
 from src.unit import *
-
+import pygame
 
 class Soldier(Unit):
     def __init__(self, health, damage, stamina, tile, owner, x, y):
@@ -11,18 +11,20 @@ class Soldier(Unit):
         self.destination = None
         self._tile = tile
         self.game = tile.game_ref
+        self.last_time = 0
 
-    def move(self, current_tick=False, last_tick=False):
-        # if current_tick-self.get_speed() > last_tick:
-        if self.path and self.destination:
-            if len(self.path) > 0 and self._current_stamina > 0:
-                self._current_stamina -= 1
-                next = self.path.pop(0)
-                self._tile.units.remove(self)
-                self._x = next[0]
-                self._y = next[1]
-                self._tile = self.game.map[self.x][self.y]
-                self._tile.units.append(self)
+    def move(self):
+        if pygame.time.get_ticks()-self.get_speed() > self.last_time:
+            if self.path and self.destination:
+                if len(self.path) > 0 and self._current_stamina > 0:
+                    self._current_stamina -= 1
+                    next = self.path.pop(0)
+                    self._tile.units.remove(self)
+                    self._x = next[0]
+                    self._y = next[1]
+                    self._tile = self.game.map[self.x][self.y]
+                    self._tile.units.append(self)
+                    self.last_time = pygame.time.get_ticks()
 
                 # if self.tile == self.destination:
                 #     self.destination.units[0].hit(self.health)

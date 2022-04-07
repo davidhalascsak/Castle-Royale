@@ -154,11 +154,11 @@ while run:
         hamburger.is_over(pygame.mouse.get_pos())
 
         if game.start_simulation:
-            if pygame.time.get_ticks() - simulation_starting_time < 10000:
-                if elapsed_time < pygame.time.get_ticks():
-                    elapsed_time += 1500
-                    game.player_1.simulate()
-                    game.player_2.simulate()
+            if pygame.time.get_ticks() - simulation_starting_time < 5000:
+            #     if elapsed_time < pygame.time.get_ticks():
+            #         elapsed_time += 1500
+                game.player_1.simulate()
+                game.player_2.simulate()
             else:
                 game.start_simulation = False
                 game.player_1.reset_stamina()
