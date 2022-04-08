@@ -29,14 +29,16 @@ class Player:
         return sum
 
     def simulate(self):
+        count = 0
         for unit in self._to_simulate:
             if issubclass(type(unit), Soldier):
-                unit.move()
+                count += unit.move()
             elif issubclass(type(unit), Tower):
                 if self == self._game.player_1:
-                    unit.shoot(self._game.player_2.units)
+                    count += unit.shoot(self._game.player_2.units)
                 else:
-                    unit.shoot(self._game.player_2.units)
+                    count += unit.shoot(self._game.player_1.units)
+        return count > 0
 
     def reset_stamina(self):
         for unit in self._to_simulate:

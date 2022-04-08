@@ -11,6 +11,7 @@ class Tower(Unit):
         self._is_in_ruins = False
         self._is_ready_to_demolish = False
         self._locked_unit = None
+        self._last_time = 0
 
     def upgrade(self):
         pass
@@ -29,20 +30,31 @@ class Tower(Unit):
         return distance
 
     def shoot(self, units):
-        if self._locked_unit is not None and self.distance(self._locked_unit) > self._range:
-            self._locked_unit = None
-        if self._locked_unit is None:
-            for unit in units:
-                if issubclass(type(unit), Soldier):
-                    if self._locked_unit is None and self.distance(unit) <= self._range:
-                        self._locked_unit = unit
-                    elif self._locked_unit is not None and self.distance(unit) < self.distance(self._locked_unit):
-                        self._locked_unit = unit
-
-        if self._locked_unit is not None:
-            self._locked_unit.take_damage(self._damage)
-            if not self._locked_unit.alive:
+        if pygame.time.get_ticks() - self.get_speed() > self._last_time:
+            self._last_time = pygame.time.get_ticks()
+            if self._locked_unit is not None and self.distance(self._locked_unit) > self._range:
                 self._locked_unit = None
+            if self._locked_unit is None:
+                for unit in units:
+                    if issubclass(type(unit), Soldier):
+                        if self._locked_unit is None and self.distance(unit) <= self._range:
+                            self._locked_unit = unit
+                        elif self._locked_unit is not None and self.distance(unit) < self.distance(self._locked_unit):
+                            self._locked_unit = unit
+
+            if self._locked_unit is not None:
+                self._locked_unit.take_damage(self._damage)
+                if not self._locked_unit.alive:
+                    self._locked_unit = None
+                    return 0
+            else:
+                return 0
+
+        return 1
+
+    @staticmethod
+    def get_speed():
+        return 1000
 
     @property
     def range(self):
@@ -72,33 +84,48 @@ class Tower(Unit):
     def is_ready_to_demolish(self, new):
         self._is_ready_to_demolish = new
 
+    @property
+    def last_time(self):
+        return self._last_time
+
 
 class BasicTower(Tower):
     price = 30
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=5000, damage=50, range=2, clean_time=2, tile=tile, owner=owner, x=x, y=y)
+        super().__init__(health=5000, damage=10, range=2.5, clean_time=2, tile=tile, owner=owner, x=x, y=y)
 
 
 class Splash(Tower):
     price = 40
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=5000, damage=25, range=3, clean_time=2, tile=tile, owner=owner, x=x, y=y)
+        super().__init__(health=5000, damage=5, range=2.5, clean_time=2, tile=tile, owner=owner, x=x, y=y)
 
     def shoot(self, units):
         locked_units = []
-        for unit in units:
-            if issubclass(type(unit), Soldier):
-                if self.distance(unit) < self._range:
-                    locked_units += unit
+        if pygame.time.get_ticks() - self.get_speed() > self._last_time:
+            self._last_time = pygame.time.get_ticks()
+            for unit in units:
+                if issubclass(type(unit), Soldier):
+                    if self.distance(unit) < self._range:
+                        locked_units.append(unit)
 
-        for unit in locked_units:
-            unit.take_damage(self._damage)
+            if len(locked_units) == 0:
+                return 0
+
+            for unit in locked_units:
+                unit.take_damage(self._damage)
+
+        return 1
 
 
 class Slow(Tower):
     price = 30
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=5000, damage=40, range=3, clean_time=2, tile=tile, owner=owner, x=x, y=y)
+        super().__init__(health=5000, damage=5, range=3, clean_time=2, tile=tile, owner=owner, x=x, y=y)
+
+    @staticmethod
+    def get_speed():
+        return 1200

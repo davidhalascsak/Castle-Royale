@@ -1,6 +1,7 @@
 from src.unit import *
 import pygame
 
+
 class Soldier(Unit):
     def __init__(self, health, damage, stamina, tile, owner, x, y):
         super().__init__(health=health, damage=damage, tile=tile, owner=owner, x=x, y=y)
@@ -10,28 +11,35 @@ class Soldier(Unit):
         self.path = None
         self.destination = None
         self._tile = tile
-        self.game = tile.game_ref
-        self.last_time = 0
+        self._game = tile.game_ref
+        self._last_time = 0
 
     def move(self):
-        if pygame.time.get_ticks()-self.get_speed() > self.last_time:
-            if self.path and self.destination:
-                if len(self.path) > 0 and self._current_stamina > 0:
-                    self._current_stamina -= 1
-                    next = self.path.pop(0)
-                    self._tile.units.remove(self)
-                    self._x = next[0]
-                    self._y = next[1]
-                    self._tile = self.game.map[self.x][self.y]
-                    self._tile.units.append(self)
-                    self.last_time = pygame.time.get_ticks()
+        if self._alive:
+            if pygame.time.get_ticks() - self.get_speed() > self._last_time:
+                self._last_time = pygame.time.get_ticks()
+                if self.path and self.destination:
+                    if len(self.path) > 0 and self._current_stamina > 0:
+                        self._current_stamina -= 1
+                        next = self.path.pop(0)
+                        self._tile.units.remove(self)
+                        self._x = next[0]
+                        self._y = next[1]
+                        self._tile = self.game.map[self.x][self.y]
+                        self._tile.units.append(self)
 
-                # if self.tile == self.destination:
-                #     self.destination.units[0].hit(self.health)
-                #     self.tile.units.remove(self)
-                #     self.owner.units.remove(self)
+                    if self.tile == self.destination and self.destination.is_castle:
+                        self.destination.units[0].hit(self.health)
+                        self.tile.units.remove(self)
+                        self.owner.units.remove(self)
 
-    def get_speed(self):
+        if self._alive and (self._current_stamina == 0 or self._tile == self.destination):
+            return 0
+        else:
+            return 1
+
+    @staticmethod
+    def get_speed():
         return 800
 
     def take_damage(self, damage):
@@ -60,6 +68,14 @@ class Soldier(Unit):
     @alive.setter
     def alive(self, change):
         self._alive = change
+
+    @property
+    def game(self):
+        return self._game
+
+    @property
+    def last_time(self):
+        return self._last_time
 
 
 class BasicSoldier(Soldier):
@@ -93,7 +109,6 @@ class Tank(Soldier):
 
     def get_speed(self):
         return 2000
-
 
 
 class Suicide(Soldier):

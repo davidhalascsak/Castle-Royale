@@ -15,12 +15,10 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption('Castle Royale')
 
 simulation_starting_time = 0  # 1 second = 1000 millisecond
-elapsed_time = 0
 clock = pygame.time.Clock()
 FPS = 60
-threads = []
-all_units = []
 
+action_is_happening = True
 hamburger = Context()
 current_tile = None
 selected_tile = None
@@ -127,7 +125,7 @@ while run:
                         (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 10))
             screen.blit(player2_money,
                         (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 35))
-            #TODO: kiirni a jatekos varanak hpjat felulre xd
+            # TODO: kiirni a jatekos varanak hpjat felulre xd
             if not game.start_simulation:
                 current_player_state = font.render(str(game.current_player.state), True, (0, 0, 0))
             else:
@@ -154,16 +152,16 @@ while run:
         hamburger.is_over(pygame.mouse.get_pos())
 
         if game.start_simulation:
-            if pygame.time.get_ticks() - simulation_starting_time < 5000:
-            #     if elapsed_time < pygame.time.get_ticks():
-            #         elapsed_time += 1500
-                game.player_1.simulate()
-                game.player_2.simulate()
+            if action_is_happening and pygame.time.get_ticks() - simulation_starting_time < 10000:
+                p1 = game.player_1.simulate()
+                p2 = game.player_2.simulate()
+                both = p1 + p2
+                action_is_happening = both > 0
+                # print("{0} - {1}".format(action_is_happening, not action_is_happening))
             else:
                 game.start_simulation = False
                 game.player_1.reset_stamina()
                 game.player_2.reset_stamina()
-                print("{0} - {1}".format(game.player_1.units[0].health, game.player_2.units[0].health))
 
     # Keyboard input update function
     for event in pygame.event.get():
@@ -220,13 +218,14 @@ while run:
                                 # if path[0]:
                                 for u in selected_tile.units:
                                     if hasattr(u, 'alive'):
-                                        path = game.path_finder.isPath(selected_tile.x, selected_tile.y, current_tile.x, current_tile.y, issubclass(type(u), Climber))
+                                        path = game.path_finder.isPath(selected_tile.x, selected_tile.y, current_tile.x,
+                                                                       current_tile.y, issubclass(type(u), Climber))
                                         u.path = path[1]
                                         u.path.pop(0)
                                         u.destination = current_tile
                                         game.current_player.to_simulate.remove(u)
                                         game.current_player.to_simulate.append(u)
-                            print(game.current_player.to_simulate[0].path)
+                            # print(game.current_player.to_simulate[0].path)
                             current_tile.waypoint = True
                             selected_tile.selected = False
                             selected_tile = None
@@ -238,7 +237,7 @@ while run:
                         if tile.is_over(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONUP:
                             if game.current_player.state == "BUILD":
                                 mouse_cords = pygame.mouse.get_pos()
-                                print("BUILD")
+                                # print("BUILD")
                                 hamburger.change_content(["Tower", "Slow", "Splash", "Barracks"])
                                 hamburger.open(mouse_cords[0], mouse_cords[1])
 
@@ -250,12 +249,14 @@ while run:
 
                             elif game.current_player.state == "MOVE":
                                 mouse_cords = pygame.mouse.get_pos()
-                                print("MOVE")
+                                # print("MOVE")
 
                                 if selected_tile is None:
                                     hamburger.change_content(["Select"])
                                 else:
-                                    if tile.type == "PLAIN" and game.path_finder.isPath(selected_tile.x, selected_tile.y, tile.x, tile.y)[0]:
+                                    if tile.type == "PLAIN" and \
+                                            game.path_finder.isPath(selected_tile.x, selected_tile.y, tile.x, tile.y)[
+                                                0]:
                                         hamburger.change_content(["Select", "Move"])
                                     else:
                                         hamburger.change_content(["Select"])
@@ -277,8 +278,8 @@ while run:
                                 tile.selected = False
                                 tile.waypoint = False
                         if game.start_simulation:
+                            action_is_happening = True
                             simulation_starting_time = pygame.time.get_ticks()
-                            elapsed_time = simulation_starting_time
                     elif btn_quit.is_over(pygame.mouse.get_pos()):
                         run = False
                     elif btn_build.is_over(pygame.mouse.get_pos()):
