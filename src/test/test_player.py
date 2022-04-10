@@ -7,8 +7,10 @@ import pygame
 
 pygame.init()
 
+
 def test_calculate_gold_bonus():
-    player_1 = Player("player_1", 150, 0, 0)
+    game = Game()
+    player_1 = Player("player_1", 150, 0, 0, game)
     player_1._gold = 1000
     t = Tile(Game(), 0, 0)
     player_1._units.append(BasicSoldier(t, player_1, 0, 0))
