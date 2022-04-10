@@ -21,15 +21,13 @@ class Soldier(Unit):
                 if self.path and self.destination:
                     if len(self.path) > 0 and self._current_stamina > 0:
                         self._current_stamina -= 1
-                        next = self.path.pop(0)
                         self._tile.units.remove(self)
-                        self._x = next[0]
-                        self._y = next[1]
-                        self._tile = self.game.map[self.x][self.y]
+                        [self._x, self._y] = self.path.pop(0)
+                        self._tile = self._game.map[self._x][self._y]
                         self._tile.units.append(self)
 
-                    if self.tile == self.destination and self.destination.is_castle:
-                        self.destination.units[0].hit(self.health)
+                    if self._tile == self.destination and self.destination._is_castle:
+                        self.destination.units[0].hit(self.damage)
                         self.tile.units.remove(self)
                         self.owner.units.remove(self)
 
@@ -43,8 +41,8 @@ class Soldier(Unit):
         return 800
 
     def take_damage(self, damage):
-        self.change_health(damage)
-        if self._health <= 0:
+        self.health -= damage
+        if self.health <= 0:
             self.alive = False
             self.owner.units.remove(self)
             self.tile.units.remove(self)
