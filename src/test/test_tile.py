@@ -16,7 +16,7 @@ def setup_game():
 def test_add_castle():
     game = setup_game()
     t = Tile(game, 0, 0)
-    c = Player("player_1", 150, 0, 0)._units[0]
+    c = Player("player_1", 150, 0, 0, game)._units[0]
     t.add_castle(c)
 
     assert c == t._units[0]
@@ -27,7 +27,7 @@ def test_build():
     game = setup_game()
     game._path_finder = AStar(game)
     t = Tile(game, 1, 0)
-    player_1 = Player("player_1", 150, 0, 0)
+    player_1 = Player("player_1", 150, 0, 0, game)
 
     # 0 gold
     t.build(player_1, "BasicTower")
@@ -46,7 +46,7 @@ def test_build():
 def test_train():
     game = setup_game()
     t = Tile(game, 1, 0)
-    player_1 = Player("player_1", 150, 0, 0)
+    player_1 = Player("player_1", 150, 0, 0, game)
 
     # 0 gold
     t.train(player_1, "BasicSoldier")

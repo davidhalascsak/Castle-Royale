@@ -15,8 +15,8 @@ def setup_game():
 
 def test_next_round():
     game = setup_game()
-    player_1 = Player("player_1", 150, 0, 0)
-    player_2 = Player("player_2", 150, 0, 0)
+    player_1 = Player("player_1", 150, 0, 0, game)
+    player_2 = Player("player_2", 150, 0, 0, game)
     game._player_1 = player_1
     game._player_2 = player_2
     game._current_player = game._player_1

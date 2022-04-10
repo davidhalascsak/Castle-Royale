@@ -18,8 +18,8 @@ def test_attack():
 def test_demolish():
     game = setup_game()
     t = Tile(game, 0, 0)
-    player_1 = Player("player_1", 150, 0, 0)
-    player_2 = Player("player_2", 150, 0, 25)
+    player_1 = Player("player_1", 150, 0, 0, game)
+    player_2 = Player("player_2", 150, 0, 25, game)
     tower = BasicTower(t, player_1, 1, 0)
     tower._is_in_ruins = True
     tower._clean_time = 1
