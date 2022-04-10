@@ -41,6 +41,15 @@ def test_move():
 
     assert soldier_1._x == 0 and soldier_1._y == 1
 
+def test_castle_dmg():
+    game = setup_game()
+    player_1 = Player("player_1", 150, 0, 0, game)
+    tile = Tile(game, 0, 0)
+    soldier_1 = BasicSoldier(tile, player_1, 0, 0)
+    player_1.units.append(soldier_1)
+    tile._units.append(soldier_1)
+    soldier_1._last_time = pygame.time.get_ticks() - soldier_1.get_speed() - 200
+    soldier_1.current_stamina = 5
     player_2 = Player("player_2", 150, 0, 10, game)
     player_2_castle = Castle(player_2, 100, 0, 10)
     tile_3 = Tile(game, 0, 10)
@@ -49,7 +58,7 @@ def test_move():
 
     tile_2 = Tile(game, 0, 9)
     tile_2.units.append(soldier_1)
-    soldier_1._last_time = pygame.time.get_ticks() - soldier_1.get_speed() - 200
+    soldier_1._last_time = pygame.time.get_ticks() - soldier_1.get_speed() - 1
     soldier_1.destination = tile_3
     soldier_1._tile = tile_2
     soldier_1.path = [(0, 10)]
@@ -60,14 +69,7 @@ def test_move():
 
     soldier_1.move()
 
-    assert soldier_1._tile == soldier_1.destination
-    assert soldier_1.destination._is_castle
-
-    soldier_1.move()
-
     assert player_2_castle._health == 100-damage
-
-
 
 def test_take_damage():
     game = setup_game()
@@ -83,7 +85,16 @@ def test_take_damage():
 
     assert soldier_1.health == health-50
 
-    soldier_1.take_damage(50)
+    
+
+def test_take_damage_alive():
+    game = setup_game()
+    player_1 = Player("player_1", 150, 0, 0, game)
+    tile = Tile(game, 0, 0)
+    soldier_1 = BasicSoldier(tile, player_1, 0, 0)
+    player_1._units.append(soldier_1)
+    tile.units.append(soldier_1)
+    soldier_1.take_damage(100)
 
     assert not soldier_1._alive
 

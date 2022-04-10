@@ -29,12 +29,6 @@ def test_build():
     t = Tile(game, 1, 0)
     player_1 = Player("player_1", 150, 0, 0, game)
 
-    # 0 gold
-    t.build(player_1, "BasicTower")
-    assert len(t._units) == 0
-
-    assert player_1.gold == 0
-
     player_1._gold = 1000
     
 
@@ -43,7 +37,31 @@ def test_build():
 
     assert player_1.gold == 970
 
+def test_build_no_resource():
+    game = setup_game()
+    game._path_finder = AStar(game)
+    t = Tile(game, 1, 0)
+    player_1 = Player("player_1", 150, 0, 0, game)
+
+    # 0 gold
+    t.build(player_1, "BasicTower")
+    assert len(t._units) == 0
+
+    assert player_1.gold == 0
+
 def test_train():
+    game = setup_game()
+    t = Tile(game, 1, 0)
+    player_1 = Player("player_1", 150, 0, 0, game)
+
+    player_1._gold = 1000
+
+    t.train(player_1, "BasicSoldier")
+    assert issubclass(type(t._units[0]), Soldier)
+
+    assert player_1.gold == 900
+
+def test_train_no_resource():
     game = setup_game()
     t = Tile(game, 1, 0)
     player_1 = Player("player_1", 150, 0, 0, game)
@@ -53,11 +71,4 @@ def test_train():
     assert len(t._units) == 0
 
     assert player_1.gold == 0
-
-    player_1._gold = 1000
-
-    t.train(player_1, "BasicSoldier")
-    assert issubclass(type(t._units[0]), Soldier)
-
-    assert player_1.gold == 900
 
