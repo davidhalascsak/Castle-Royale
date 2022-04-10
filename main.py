@@ -112,13 +112,13 @@ while run:
 
         # Draw Player Information
         if not game.is_ended:
-            player1_name = font.render(str(game.player_1.name), True, get_name_color(game.player_1))
+            player1_name = font.render(str(game.player_1.name) + " [{}]".format(game.player_1.castle_tile.units[0].health), True, get_name_color(game.player_1))
             player1_money = font.render(str(game.player_1.gold), True, get_name_color(game.player_1))
 
             screen.blit(player1_name, (10, 10))
             screen.blit(player1_money, (10, 35))
 
-            player2_name = font.render(str(game.player_2.name), True, get_name_color(game.player_2))
+            player2_name = font.render("[{}] ".format(game.player_2.castle_tile.units[0].health) + str(game.player_2.name), True, get_name_color(game.player_2))
             player2_money = font.render(str(game.player_2.gold), True, get_name_color(game.player_2))
 
             screen.blit(player2_name,
