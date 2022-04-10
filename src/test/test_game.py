@@ -25,8 +25,8 @@ def test_next_round():
 
 def test_next_round_gold():
     game = setup_game()
-    player_1 = Player("player_1", 150, 0, 0)
-    player_2 = Player("player_2", 150, 0, 0)
+    player_1 = Player("player_1", 150, 0, 0, game)
+    player_2 = Player("player_2", 150, 0, 0, game)
     t = Tile(game, 1, 0)
     player_2._units.append(BasicSoldier(t, player_2, 0, 0))
     game._player_1 = player_1
@@ -41,8 +41,8 @@ def test_next_round_gold():
 
 def test_next_round_is_ended():
     game = setup_game()
-    player_1 = Player("player_1", 150, 0, 0)
-    player_2 = Player("player_2", 150, 0, 0)
+    player_1 = Player("player_1", 150, 0, 0, game)
+    player_2 = Player("player_2", 150, 0, 0, game)
     game._player_2 = player_2
     player_1._units[0]._health = 0
     game._player_1 = player_1
