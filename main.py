@@ -5,7 +5,7 @@ from src.game import Game
 from src.contextmenu import Context
 from src.soldier import *
 from src.tower import *
-
+import os
 pygame.init()
 
 SCREEN_WIDTH = 1248  # 1280
@@ -66,10 +66,46 @@ game._map[3][4]._units.append(Slow(game._map[0], game._player_1, 0, 0))
 '''
 
 font = pygame.font.SysFont('comicsans', 20)
+font2 = pygame.font.Font(os.path.join("assets", "fonts", 'arcadeclassic.ttf'), 23)
+SCALE = 3
+
+gold_coin = pygame.image.load("assets/gold_coin.png")
+gold_coin = pygame.transform.scale(gold_coin, (16 * SCALE, 16 * SCALE))
+
+health_bar_left = pygame.image.load("assets/health_bar.png")
+health_bar_left = pygame.transform.scale(health_bar_left, (44 * SCALE, 9 * SCALE))
+
+health_bar_inside_left = pygame.image.load("assets/health_bar_inside.png")
+health_bar_inside_left = pygame.transform.scale(health_bar_inside_left, (44 * SCALE, 9 * SCALE))
+
+health_bar_inside_original_left = pygame.image.load("assets/health_bar_inside.png")
+health_bar_inside_original_left = pygame.transform.scale(health_bar_inside_original_left, (44 * SCALE, 9 * SCALE))
+
+health_bar_right = pygame.image.load("assets/health_bar.png")
+health_bar_right = pygame.transform.flip(health_bar_right, True, False)
+health_bar_right = pygame.transform.scale(health_bar_right, (44 * SCALE, 9 * SCALE))
+
+health_bar_inside_right = pygame.image.load("assets/health_bar_inside.png")
+health_bar_inside_right = pygame.transform.flip(health_bar_inside_right, True, False)
+health_bar_inside_right = pygame.transform.scale(health_bar_inside_right, (44 * SCALE, 9 * SCALE))
+
+health_bar_inside_original_right = pygame.image.load("assets/health_bar_inside.png")
+health_bar_inside_original_right = pygame.transform.flip(health_bar_inside_original_right, True, False)
+health_bar_inside_original_right = pygame.transform.scale(health_bar_inside_original_right, (44 * SCALE, 9 * SCALE))
 
 # Change name color based on round
 name_color = (0, 0, 0)
 name_color_now_playing = (255, 0, 0)
+
+
+def fill(surface, original_surface, hue):
+    w, h = surface.get_size()
+    for x in range(w):
+        for y in range(h):
+            a = surface.get_at((x, y))[3]
+            c = original_surface.get_at((x, y))
+            c.hsla = (c.hsla[0] + hue, c.hsla[1], c.hsla[2], c.hsla[3])
+            surface.set_at((x, y), pygame.Color(c.r, c.g, c.b, a))
 
 
 def get_name_color(player):
@@ -113,18 +149,40 @@ while run:
         # Draw Player Information
         if not game.is_ended:
             player1_name = font.render(str(game.player_1.name) + " [{}]".format(game.player_1.castle_tile.units[0].health), True, get_name_color(game.player_1))
-            player1_money = font.render(str(game.player_1.gold), True, get_name_color(game.player_1))
+            player1_money = font2.render(str(game.player_1.gold), True, pygame.Color(39, 28, 57))
+            player1_money_outline = font2.render(str(game.player_1.gold), True, pygame.Color(255, 206, 73))
 
-            screen.blit(player1_name, (10, 10))
-            screen.blit(player1_money, (10, 35))
+            hud_pos_x = 10
+            hud_pos_y = 45
+            # screen.blit(player1_name, (10, 10))
+
+
+            player1_hp = game.player_1.castle_tile.units[0].health
+            fill(health_bar_inside_left, health_bar_inside_original_left, math.floor(player1_hp / 10))
+            screen.blit(health_bar_left, (20, 20, 200, 200))
+            screen.blit(health_bar_inside_left, (20, 20, 200, 200), (0, 0, (health_bar_inside_left.get_width() * player1_hp) / 1000, 200))
+
+
+            screen.blit(gold_coin, (hud_pos_x, hud_pos_y))
+            screen.blit(player1_money, (-5 + hud_pos_x + gold_coin.get_width(), hud_pos_y + (gold_coin.get_height() / 2 - player1_money.get_height() / 2)))
+            screen.blit(player1_money_outline, (-5 + 3 + hud_pos_x + gold_coin.get_width(), hud_pos_y + (gold_coin.get_height() / 2 - player1_money_outline.get_height() / 2) - 1))
 
             player2_name = font.render("[{}] ".format(game.player_2.castle_tile.units[0].health) + str(game.player_2.name), True, get_name_color(game.player_2))
-            player2_money = font.render(str(game.player_2.gold), True, get_name_color(game.player_2))
+            player2_money = font2.render(str(game.player_2.gold), True, pygame.Color(39, 28, 57))
+            player2_money_outline = font2.render(str(game.player_2.gold), True, pygame.Color(255, 206, 73))
 
-            screen.blit(player2_name,
-                        (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 10))
-            screen.blit(player2_money,
-                        (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 35))
+            # screen.blit(player2_name, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 10))
+
+            player2_hp = game.player_2.castle_tile.units[0].health
+            fill(health_bar_inside_right, health_bar_inside_original_right, math.floor(player2_hp / 10))
+            screen.blit(health_bar_right, (SCREEN_WIDTH - 20 - health_bar_right.get_width(), 20, 200, 200))
+            screen.blit(health_bar_inside_right, (SCREEN_WIDTH - 20 - health_bar_inside_right.get_width() + (health_bar_inside_right.get_width() - ((health_bar_inside_right.get_width() * player2_hp) / 1000)), 20, 200, 200), (health_bar_inside_right.get_width() - ((health_bar_inside_right.get_width() * player2_hp) / 1000), 0, health_bar_inside_right.get_width(), 200))
+
+            screen.blit(gold_coin, (SCREEN_WIDTH - gold_coin.get_width() - hud_pos_x, hud_pos_y))
+            screen.blit(player2_money, (5 + SCREEN_WIDTH - gold_coin.get_width() - hud_pos_x - player2_money.get_width(), hud_pos_y + (gold_coin.get_height() / 2 - player2_money.get_height() / 2)))
+            screen.blit(player2_money_outline, (5 + 3 + SCREEN_WIDTH - gold_coin.get_width() - hud_pos_x - player2_money_outline.get_width(), hud_pos_y + (gold_coin.get_height() / 2 - player2_money_outline.get_height() / 2) - 1))
+            # screen.blit(player2_money_outline,
+            #             (3 + SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 35))
             # TODO: kiirni a jatekos varanak hpjat felulre xd
             if not game.start_simulation:
                 current_player_state = font.render(str(game.current_player.state), True, (0, 0, 0))
