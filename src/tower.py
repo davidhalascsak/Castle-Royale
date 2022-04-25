@@ -4,6 +4,7 @@ import math
 
 
 class Tower(Unit):
+
     def __init__(self, health, damage, range, clean_time, tile, owner, x, y):
         super().__init__(health=health, damage=damage, tile=tile, owner=owner, x=x, y=y)
         self._range = range
@@ -12,11 +13,23 @@ class Tower(Unit):
         self._is_ready_to_demolish = False
         self._locked_unit = None
         self._last_time = 0
+        self._level = 1
 
     def upgrade(self):
-        pass
+        if self._level < 5:
+            self._level += 1
+            self._health += 100
+            self._damage += 10
 
     def demolish(self):
+        self._owner.units.remove(self)
+        self._tile.units.remove(self)
+        self._owner.to_simulate.remove(self)
+        self._tile.has_building = False
+        gold = self._owner.gold
+        self._owner.gold = int(gold + (self.__class__.price * 0.5))
+
+    def remove_ruins(self):
         if self._is_in_ruins is True:
             if self._clean_time - 1 >= 0:
                 self._clean_time -= 1
@@ -93,14 +106,14 @@ class BasicTower(Tower):
     price = 30
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=5000, damage=10, range=2.5, clean_time=2, tile=tile, owner=owner, x=x, y=y)
+        super().__init__(health=500, damage=10, range=2.5, clean_time=2, tile=tile, owner=owner, x=x, y=y)
 
 
 class Splash(Tower):
     price = 40
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=5000, damage=5, range=2.5, clean_time=2, tile=tile, owner=owner, x=x, y=y)
+        super().__init__(health=500, damage=5, range=2.5, clean_time=2, tile=tile, owner=owner, x=x, y=y)
 
     def shoot(self, units):
         locked_units = []
@@ -124,8 +137,8 @@ class Slow(Tower):
     price = 30
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=5000, damage=5, range=3, clean_time=2, tile=tile, owner=owner, x=x, y=y)
+        super().__init__(health=500, damage=15, range=3, clean_time=2, tile=tile, owner=owner, x=x, y=y)
 
     @staticmethod
     def get_speed():
-        return 1200
+        return 1300

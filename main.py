@@ -18,7 +18,7 @@ simulation_starting_time = 0  # 1 second = 1000 millisecond
 clock = pygame.time.Clock()
 FPS = 60
 
-action_is_happening = True
+action_is_happening = False
 hamburger = Context()
 current_tile = None
 selected_tile = None
@@ -215,7 +215,6 @@ while run:
                 p2 = game.player_2.simulate()
                 both = p1 + p2
                 action_is_happening = both > 0
-                # print("{0} - {1}".format(action_is_happening, not action_is_happening))
             else:
                 game.start_simulation = False
                 game.player_1.reset_stamina()
@@ -247,6 +246,10 @@ while run:
                             current_tile.build(game.current_player, "Splash")
                         if item[2] and item[1] == "Barracks":
                             print("barracks")
+                        if item[2] and item[1] == "Upgrade":
+                            current_tile.upgrade_tower(game.current_player)
+                        if item[2] and item[1] == "Demolish":
+                            current_tile.demolish_tower()
                         if item[2] and item[1] == "Soldier":
                             game.current_player.castle_tile.train(game.current_player, "BasicSoldier")
                         if item[2] and item[1] == "Climber":
@@ -295,8 +298,10 @@ while run:
                         if tile.is_over(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONUP:
                             if game.current_player.state == "BUILD":
                                 mouse_cords = pygame.mouse.get_pos()
-                                # print("BUILD")
-                                hamburger.change_content(["Tower", "Slow", "Splash", "Barracks"])
+                                if tile.has_building:
+                                    hamburger.change_content(["Upgrade", "Demolish"])
+                                else:
+                                    hamburger.change_content(["Tower", "Slow", "Splash", "Barracks"])
                                 hamburger.open(mouse_cords[0], mouse_cords[1])
 
                             elif game.current_player.state == "TRAIN":
@@ -328,7 +333,7 @@ while run:
                             # print("Tile Cords: {}, {}".format(tile.x, tile.y))
                             # print(game.path_finder.isPath(0, 0, tile.x, tile.y))
                             current_tile = tile
-                if event.type == pygame.MOUSEBUTTONUP:
+                if event.type == pygame.MOUSEBUTTONUP and not game.start_simulation:
                     if btn_continue.is_over(pygame.mouse.get_pos()):
                         game.next_round()
                         for row in game.map:

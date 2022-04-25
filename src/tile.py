@@ -24,6 +24,7 @@ class Tile:
         self._hover_color = (48, 241, 255)
         self._hover = False
         self._is_castle = False
+        self._has_building = False
         self._units = []
         self._font = pygame.font.SysFont('Arial', 20)
         self.type = None
@@ -33,6 +34,7 @@ class Tile:
     def add_castle(self, castle):
         self._units.append(castle)
         self._is_castle = True
+        self._has_building = True
 
     def build(self, player, type):
         if len(self._units) == 0:
@@ -44,8 +46,27 @@ class Tile:
                     unit = eval(type)(self, player, self.x, self.y)
                     player.add_unit(unit)
                     self._units.append(unit)
+                    self._has_building = True
                 else:
                     self.game_ref.path_finder.set_obstacle(self.x, self.y, 0)
+
+    def upgrade_tower(self, player):
+        unit = None
+        for u in self._units:
+            if issubclass(type(u), Tower):
+                unit = u
+
+        if player.gold - (eval(unit.__class__.__name__).price * 0.5) > 0:
+            player.gold = int((player.gold - (eval(unit.__class__.__name__).price * 0.5)))
+            unit.upgrade()
+
+    def demolish_tower(self):
+        unit = None
+        for u in self._units:
+            if issubclass(type(u), Tower):
+                unit = u
+
+        unit.demolish()
 
     def train(self, player, soldier):
         count = 0
@@ -188,3 +209,12 @@ class Tile:
     @waypoint.setter
     def waypoint(self, value):
         self._waypoint = value
+
+    @property
+    def has_building(self):
+        return self._has_building
+
+    @has_building.setter
+    def has_building(self, new_value):
+        self._has_building = new_value
+

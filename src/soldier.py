@@ -100,7 +100,7 @@ class Tank(Soldier):
     max_health = 200
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=200, damage=75, stamina=5, tile=tile, owner=owner, x=x, y=y)
+        super().__init__(health=200, damage=75, stamina=3, tile=tile, owner=owner, x=x, y=y)
 
     def attack(self, enemy):
         pass
