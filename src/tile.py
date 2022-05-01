@@ -15,13 +15,15 @@ class Tile:
         self._y = pos_y * 48
         self._width = 48
         self._height = 48
-        self._color = {
+        self._image = {
             None: (255, 255, 255),
-            "PLAIN": (161, 146, 101),
-            "LAKE": (13, 64, 18),
-            "HILL": (120, 125, 123)
+            "PLAIN": pygame.transform.scale(pygame.image.load("assets/tile_assets/grass.png"), (self._width, self._width)),
+            "LAKE": pygame.transform.scale(pygame.image.load("assets/tile_assets/swamp.png"), (self._width, self._width)),
+            "HILL": pygame.transform.scale(pygame.image.load("assets/tile_assets/hill.png"), (self._width, self._width))
         }
-        self._hover_color = (48, 241, 255)
+
+        self._blender_image = pygame.transform.scale(pygame.image.load("assets/tile_assets/blender_swamp.png"), (self._width, self._width))
+        self._hover_image = pygame.transform.scale(pygame.image.load("assets/tile_assets/hover.png"), (self._width, self._width))
         self._hover = False
         self._is_castle = False
         self._has_building = False
@@ -83,50 +85,50 @@ class Tile:
                 self._units.append(unit)
 
     def draw(self, surface):
+        
+        surface.blit(self._image[self.type], [self._y, self._x, self._width, self._height])
+        if self.type == "LAKE":
+            # up
+            if self.x-1 >= 0 and self.game_ref._map[self.x-1][self.y].type != "LAKE":
+                surface.blit(self._blender_image, [self._y, self._x, self._width, self._height])
+            # down
+            if self.x+1 < self.game_ref.map_height and self.game_ref._map[self.x+1][self.y].type != "LAKE":
+                surface.blit(pygame.transform.rotate(self._blender_image, 180), [self._y, self._x, self._width, self._height])
+            # left
+            if self.y >= 0 and self.game_ref._map[self.x][self.y-1].type != "LAKE":
+                surface.blit(pygame.transform.rotate(self._blender_image, 90), [self._y, self._x, self._width, self._height])
+            # right
+            if self.y+1 < self.game_ref.map_width and self.game_ref._map[self.x][self.y+1].type != "LAKE":
+                surface.blit(pygame.transform.rotate(self._blender_image, 270), [self._y, self._x, self._width, self._height])
+        # castle
         if self._is_castle:
-            pygame.draw.rect(surface, (255, 255, 255), pygame.Rect(self._y, self._x, self._width, self._height))
-        else:
-            pygame.draw.rect(surface, self.get_color(), pygame.Rect(self._y, self._x, self._width, self._height))
+            surface.blit(self.get_castle_image(), [self._y, self._x, self._width, self._height])
+        
+        # hover
+        if self._hover:
+            surface.blit(self._hover_image, [self._y, self._x, self._width, self._height])
 
+        #select  
         if self._selected:
             pygame.draw.rect(surface, (255, 0, 0), pygame.Rect(self._y, self._x, self._width, self._height), 2)
 
+        # waypoint
         if self._waypoint:
             pygame.draw.rect(surface, (0, 255, 0), pygame.Rect(self._y, self._x, self._width, self._height), 2)
         # pygame.display.flip()
 
     def draw_buildings_and_soldiers(self, surface):
-        # tower draw
+        # draw tower
         if len(self._units) > 0 and isinstance(self._units[0], Tower):
-            color = (0, 0, 0)
-            if isinstance(self._units[0], BasicTower):
-                color = (0, 255, 255)
-            elif isinstance(self._units[0], Splash):
-                color = (255, 0, 255)
-            elif isinstance(self._units[0], Slow):
-                color = (255, 255, 0)
+            surface.blit(self.get_tower_image(), [self._y, self._x, self._width, self._height])
 
-            pygame.draw.rect(surface, self.get_owner_color(), pygame.Rect(self._y + self._width / 4 - self._width / 16,
-                                                                          self._x + self._height / 4 - self._width / 16,
-                                                                          self._width - self._width / 2 + self._width / 8,
-                                                                          self._height - self._height / 2 + self._width / 8))
-
-            pygame.draw.rect(surface, color, pygame.Rect(self._y + self._width / 4,
-                                                         self._x + self._height / 4,
-                                                         self._width - self._width / 2,
-                                                         self._height - self._height / 2))
-        # count of the soldiers on the tile
+        # draw soldier
         if len(self._units) > 0 and (isinstance(self._units[0], Soldier)):
-            surface.blit(self._font.render(str(len(self._units)), True, self.get_owner_color()),
-                         (self._y + self._width / 24 * 10, self._x + self._width / 4))
+            surface.blit(self.get_soldier_image(), [self._y+10, self._x+10, self._width, self._height])
         elif len(self._units) > 1 and self._is_castle:
-            surface.blit(self._font.render(str(len(self._units) - 1), True, self.get_owner_color()),
-                         (self._y + self._width / 24 * 10, self._x + self._width / 4))
+            surface.blit(self.get_soldier_image(), [self._y+10, self._x+10, self._width, self._height])
 
         # barrack draw
-        # pygame.draw.polygon(surface, (0, 0, 0), points=[(self._x + self._width/2,self._y + self._height/3),
-        #                                               (self._x + self._width/4, self._y + self._height/3*2),
-        #                                               (self._x + self._width/4*3,self._y + self._height/3 * 2)])
 
     def draw_context_menu_for_tiles(self, surface):
         # context menu for soldiers on a tile
@@ -162,6 +164,28 @@ class Tile:
                 if hasattr(u, "destination") and u.destination:
                     pygame.draw.rect(surface, (255, 255, 0), pygame.Rect(u.destination.y * 48, u.destination.x * 48, self._width, self._height), 2)
 
+        if self._hover and ((len(self._units) > 0 and issubclass(type(self._units[0]), Tower))):
+            length = len(self._units)
+            if self._y > 600:
+                horizontal_alignment = -122
+            else:
+                horizontal_alignment = 0
+            if self._x > 330:
+                vertical_alignment = - length * 18
+            else:
+                vertical_alignment = 48
+            pygame.draw.rect(surface, pygame.Color(0, 0, 0),
+                             pygame.Rect(self._y + horizontal_alignment, self._x + vertical_alignment, 170,
+                                         length * 18))
+            text = pygame.font.SysFont('Arial', 17).render("{0} - {1}/{2}".
+                                                               format(type(self._units[0]).__name__,
+                                                                      self._units[0].health,
+                                                                      eval(type(self._units[0]).__name__).max_health),
+                                                               False, self.get_owner_color(0))
+            surface.blit(text, (self._y + horizontal_alignment, self._x + vertical_alignment + (0 * 16)))
+
+
+
     def is_over(self, pos):
         if self._y < pos[0] < self._y + self._width:
             if self._x < pos[1] < self._x + self._height:
@@ -169,18 +193,55 @@ class Tile:
                 return True
         self._hover = False
 
-    def get_color(self):
+    def get_image(self):
         if self._hover:
-            return self._hover_color
+            return self._hover_image
         else:
-            return self._color[self.type]
+            return self._image[self.type]
 
     def get_owner_color(self, index=0):
         if self._units[index].owner == self.game_ref.player_1:
             return 255, 0, 0
-        elif self._units[index].owner == self.game_ref.player_2:
+        else:
             return 0, 0, 255
-        return 0, 0, 0
+
+    def get_castle_image(self):
+        if self._units[0].owner == self.game_ref.player_1:
+            return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_castle.png"), (self._width, self._width))
+        else:
+            return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_castle.png"), (self._width, self._width))
+
+    def get_tower_image(self):
+        if self._units[0].owner == self.game_ref.player_1:
+            if isinstance(self._units[0], BasicTower):
+                return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_basic_tower.png"), (self._width, self._width))
+            elif isinstance(self._units[0], Splash):
+                return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_splash_tower.png"), (self._width, self._width))
+            elif isinstance(self._units[0], Slow):
+                return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_slow_tower.png"), (self._width, self._width))
+        else:
+            if isinstance(self._units[0], BasicTower):
+                return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_basic_tower.png"), (self._width, self._width))
+            elif isinstance(self._units[0], Splash):
+                return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_splash_tower.png"), (self._width, self._width))
+            elif isinstance(self._units[0], Slow):
+                return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_slow_tower.png"), (self._width, self._width))
+
+    def get_soldier_image(self):
+        red = False
+        blue = False
+
+        for unit in self._units:
+            if unit.owner == self.game_ref.player_1:
+                red = True
+            else:
+                blue = True
+        if red and blue:
+            return pygame.transform.scale(pygame.image.load("assets/tile_assets/mixed_knight.png"), (self._width/1.5, self._width/1.5))
+        elif red:
+            return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_knight.png"), (self._width/1.5, self._width/1.5))
+        else:
+            return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_knight.png"), (self._width/1.5, self._width/1.5))
 
     @property
     def units(self):

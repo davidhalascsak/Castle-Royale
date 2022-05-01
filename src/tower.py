@@ -104,6 +104,7 @@ class Tower(Unit):
 
 class BasicTower(Tower):
     price = 30
+    max_health = 500
 
     def __init__(self, tile, owner, x, y):
         super().__init__(health=500, damage=10, range=2.5, clean_time=2, tile=tile, owner=owner, x=x, y=y)
@@ -111,6 +112,7 @@ class BasicTower(Tower):
 
 class Splash(Tower):
     price = 40
+    max_health = 500
 
     def __init__(self, tile, owner, x, y):
         super().__init__(health=500, damage=5, range=2.5, clean_time=2, tile=tile, owner=owner, x=x, y=y)
@@ -135,6 +137,7 @@ class Splash(Tower):
 
 class Slow(Tower):
     price = 30
+    max_health = 500
 
     def __init__(self, tile, owner, x, y):
         super().__init__(health=500, damage=15, range=3, clean_time=2, tile=tile, owner=owner, x=x, y=y)
