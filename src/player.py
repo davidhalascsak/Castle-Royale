@@ -16,6 +16,10 @@ class Player:
 
     def add_unit(self, unit):
         self._units.append(unit)
+        if issubclass(type(unit), Soldier):
+            unit.destination = self._game.other_player().castle_tile
+            # print(unit.destination)
+            # unit.waypoints.append((0, 0))
         self._to_simulate.append(unit)
 
     def add_castle_tile(self, tile):
@@ -29,16 +33,27 @@ class Player:
         return sum
 
     def simulate(self):
-        count = 0
+        pass
+        # # count = 0
+        # # print(self)
+        # # print(self._to_simulate)
+        stuck = True
         for unit in self._to_simulate:
             if issubclass(type(unit), Soldier):
-                count += unit.move()
-            elif issubclass(type(unit), Tower):
-                if self == self._game.player_1:
-                    count += unit.shoot(self._game.player_2.units)
-                else:
-                    count += unit.shoot(self._game.player_1.units)
-        return count > 0
+                unit.move()
+                stuck = stuck and unit.stuck
+                # pass
+                # count += unit.move()
+            # elif issubclass(type(unit), Tower):
+            #     if self == self._game.player_1:
+            #         pass
+            #         # count += unit.shoot(self._game.player_2.units)
+            #     else:
+            #         pass
+            #         # count += unit.shoot(self._game.player_1.units)
+        #
+        # # print(stuck)
+        return stuck
 
     def reset_stamina(self):
         for unit in self._to_simulate:
@@ -76,6 +91,10 @@ class Player:
     @property
     def to_simulate(self):
         return self._to_simulate
+
+    @property
+    def game(self):
+        return self._game
 
     def get_castle_health(self):
         return self._units[0].health

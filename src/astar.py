@@ -1,4 +1,5 @@
 import numpy as np
+from src.core import *
 
 
 class Node:
@@ -129,7 +130,9 @@ class AStar:
     def loadObstacles(self, special):
         for row in self.game.map:
             for tile in row:
-                if len(tile.units) > 0 and not tile.is_castle:
+                # if len(tile.units) > 0 and not tile.is_castle and not all(e.owner == self.game.current_player for e in tile.units):
+                # if len(tile.units) > 0 and not tile.is_castle:
+                if (len(tile.units) - tile_count_soldier(tile)) > 0 and not tile.is_castle:
                     self.arr[tile.x][tile.y] = 1
                 elif not special and tile.type != "PLAIN":
                     self.arr[tile.x][tile.y] = 1

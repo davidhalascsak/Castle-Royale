@@ -1,3 +1,5 @@
+import pygame.event
+
 from src.unit import *
 import pygame
 
@@ -13,28 +15,67 @@ class Soldier(Unit):
         self._tile = tile
         self._game = tile.game_ref
         self._last_time = 0
+        self.waypoints = []
+        self.stuck = False
 
     def move(self):
-        if self._alive:
+        self.stuck = False
+        # print(self.destination)
+        if self._alive and self.destination:
+            # print("move")
             if pygame.time.get_ticks() - self.get_speed() > self._last_time:
                 self._last_time = pygame.time.get_ticks()
-                if self.path and self.destination:
-                    if len(self.path) > 0 and self._current_stamina > 0:
-                        self._current_stamina -= 1
-                        self._tile.units.remove(self)
-                        [self._x, self._y] = self.path.pop(0)
-                        self._tile = self._game.map[self._x][self._y]
-                        self._tile.units.append(self)
 
-                    if self._tile == self.destination and self.destination._is_castle:
+                self.path = (False, [])
+                if len(self.waypoints) > 0:
+                    self.path = self._game.path_finder.isPath(self._tile.x, self._tile.y,  self.waypoints[0][0], self.waypoints[0][1], issubclass(type(self), Climber))
+                else:
+                    self.path = self._game.path_finder.isPath(self._tile.x, self._tile.y,  self.destination.x, self.destination.y, issubclass(type(self), Climber))
+                if self.path[0] and self._current_stamina > 0:
+                    next = self.path[1][1]
+                    self._current_stamina -= 1
+                    self._tile.units.remove(self)
+                    [self._x, self._y] = next
+                    self._tile = self._game.map[self._x][self._y]
+                    self._tile.units.append(self)
+
+                    if self._tile == self.destination and self.destination.is_castle:
                         self.destination.units[0].hit(self.damage)
                         self.tile.units.remove(self)
                         self.owner.units.remove(self)
+                        self.owner.to_simulate.remove(self)
 
-        if self._alive and (self._current_stamina == 0 or self._tile == self.destination):
-            return 0
+                    if len(self.waypoints) > 0 and next == self.waypoints[0]:
+                        self.waypoints.pop(0)
+                else:
+                    self.stuck = True
         else:
-            return 1
+            self.stuck = True
+
+
+
+        #         if self.path and self.destination:
+        #             if len(self.path) > 0 and self._current_stamina > 0:
+        #                 self._current_stamina -= 1
+        #                 self._tile.units.remove(self)
+        #                 [self._x, self._y] = self.path.pop(0)
+        #                 self._tile = self._game.map[self._x][self._y]
+        #                 self._tile.units.append(self)
+        #
+        #             if self._tile == self.destination and self.destination._is_castle:
+        #                 self.destination.units[0].hit(self.damage)
+        #                 self.tile.units.remove(self)
+        #                 self.owner.units.remove(self)
+        #
+        # if self._alive and (self._current_stamina == 0 or self._tile == self.destination):
+        #     return 0
+        # else:
+        #     return 1
+
+    def print_stats(self):
+        print("Stamina: {}".format(self._current_stamina))
+        print("Stuck: {}".format(self.stuck))
+        print("-----")
 
     @staticmethod
     def get_speed():
@@ -74,6 +115,11 @@ class Soldier(Unit):
     @property
     def last_time(self):
         return self._last_time
+
+    @property
+    def tile(self):
+        return self._tile
+
 
 
 class BasicSoldier(Soldier):

@@ -5,6 +5,7 @@ from src.mapgeneration import MapGeneration
 import random
 from src.astar import AStar
 from src.soldier import Soldier
+from src.core import *
 
 terrain_type = {"PLAIN", "LAKE", "HILL"}
 
@@ -23,6 +24,38 @@ class Game:
         self._winner = None
         self._path_finder = None
         self._start_simulation = False
+        self.selected_tile = None
+        self.current_tile = None
+
+    def simulate(self):
+        if self._start_simulation:
+            self._start_simulation = not (self._player_1.simulate() and self._player_2.simulate())
+            # for u in self._player_1.to_simulate:
+            #     u.print_stats()
+
+            # self._start_simulation = False
+    def reset_stats(self):
+        self._player_1.reset_stamina()
+        self._player_2.reset_stamina()
+
+    def select_current_tile(self):
+        if tile_has_soldier(self.current_tile):
+            if self.selected_tile:
+                self.selected_tile.selected = False
+
+            self.selected_tile = self.current_tile
+            self.selected_tile.selected = True
+
+    def add_waypoint(self):
+        if self.selected_tile:
+            for unit in self.selected_tile.units:
+                if issubclass(type(unit), Soldier) and hasattr(unit, 'waypoints') and isinstance(unit.waypoints, list) and self.current_tile and (self.current_tile.type == "PLAIN" or tile_all_climber(self.selected_tile)):
+                    unit.waypoints.append((self.current_tile.x, self.current_tile.y))
+
+    def reset_waypoint(self):
+        if self.selected_tile:
+            for unit in self.selected_tile.units:
+                unit.waypoints = []
 
     def new_game(self, start_gold, name_1, name_2):
         # Configure Players
@@ -33,7 +66,8 @@ class Game:
         self._player_2.gold = start_gold
 
         # Determine Starting Player
-        self._current_player = random.sample({self._player_1, self._player_2}, 1)[0]
+        # self._current_player = random.sample({self._player_1, self._player_2}, 1)[0]
+        self._current_player = self._player_1
         self._starting_player = self._current_player
         # Generate Map
         for x in range(0, self.map_height):
@@ -64,6 +98,9 @@ class Game:
             return self._player_1
 
     def next_round(self):
+        self._player_1.state = None
+        self._player_2.state = None
+
         if self._current_player == self._player_1:
             self._current_player = self._player_2
         else:
@@ -71,10 +108,8 @@ class Game:
         if self._current_player == self._starting_player:
             self._player_1.gold = (self._player_1.gold + self._player_1.calculate_gold_bonus())
             self._player_2.gold = (self._player_2.gold + self._player_2.calculate_gold_bonus())
+            self.reset_stats()
             self._start_simulation = True
-
-        self._player_1.state = None
-        self._player_2.state = None
 
         self._is_ended = not (self._player_1.get_castle_health() > 0 and self._player_2.get_castle_health())
 

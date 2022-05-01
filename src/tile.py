@@ -83,6 +83,9 @@ class Tile:
                 unit = eval(soldier)(self, player, self.x, self.y)
                 player.add_unit(unit)
                 self._units.append(unit)
+                unit.destination = player.game.other_player().castle_tile
+                # player.to_simulate.append(unit)
+                # print("asd")
 
     def draw(self, surface):
         
@@ -110,7 +113,7 @@ class Tile:
 
         #select  
         if self._selected:
-            pygame.draw.rect(surface, (255, 0, 0), pygame.Rect(self._y, self._x, self._width, self._height), 2)
+            pygame.draw.rect(surface, (0, 255, 0), pygame.Rect(self._y, self._x, self._width, self._height), 2)
 
         # waypoint
         if self._waypoint:
@@ -162,7 +165,16 @@ class Tile:
 
             for u in self.units:
                 if hasattr(u, "destination") and u.destination:
-                    pygame.draw.rect(surface, (255, 255, 0), pygame.Rect(u.destination.y * 48, u.destination.x * 48, self._width, self._height), 2)
+                    # pygame.draw.rect(surface, (255, 255, 0), pygame.Rect(u.destination.y * 48, u.destination.x * 48, self._width, self._height), 2)
+                    pygame.draw.rect(surface, (255, 0, 0),
+                                     pygame.Rect(u.destination.y * 48, u.destination.x * 48, self._width, self._height),
+                                     2)
+                if hasattr(u, "waypoints") and len(u.waypoints) > 0:
+                    for point in u.waypoints:
+                        pygame.draw.rect(surface, (255, 255, 0),
+                                         pygame.Rect(point[1] * 48, point[0] * 48, self._width,
+                                                     self._height),
+                                         2)
 
         if self._hover and ((len(self._units) > 0 and issubclass(type(self._units[0]), Tower))):
             length = len(self._units)
