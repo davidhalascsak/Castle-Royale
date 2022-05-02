@@ -44,13 +44,13 @@ class Player:
                 stuck = stuck and unit.stuck
                 # pass
                 # count += unit.move()
-            # elif issubclass(type(unit), Tower):
-            #     if self == self._game.player_1:
-            #         pass
-            #         # count += unit.shoot(self._game.player_2.units)
-            #     else:
-            #         pass
-            #         # count += unit.shoot(self._game.player_1.units)
+            elif issubclass(type(unit), Tower):
+                if self == self._game.player_1:
+                    # pass
+                    unit.shoot(self._game.player_2.units)
+                else:
+                    # pass
+                    unit.shoot(self._game.player_1.units)
         #
         # # print(stuck)
         return stuck
