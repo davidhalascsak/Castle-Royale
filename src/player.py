@@ -60,6 +60,32 @@ class Player:
             if issubclass(type(unit), Soldier):
                 unit.current_stamina = unit.stamina
 
+    @staticmethod
+    def distance(tower, castle_tile):
+        x = tower.x
+        y = tower.y
+        distance = math.sqrt(pow(x - castle_tile.x, 2) + pow(y - castle_tile.y, 2))
+        return distance
+
+    def has_tower(self):
+        for u in self._units:
+            if issubclass(type(u), Tower):
+                return True
+
+        return False
+
+    def closest_tower(self, castle_tile):
+        closest = None
+        for i, row in enumerate(self._game.map):
+            for j, elem in enumerate(row):
+                if len(self._game.map[i][j].units) != 0 and issubclass(type(self._game.map[i][j].units[0]), Tower):
+                    if closest is None:
+                        closest = self._game.map[i][j]
+                    elif self.distance(self._game.map[i][j], castle_tile) < self.distance(closest, castle_tile):
+                        closest = self._game.map[i][j]
+
+        return closest
+
     @property
     def gold(self):
         return self._gold

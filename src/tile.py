@@ -100,6 +100,7 @@ class Tile:
                             player.add_unit(unit)
                             self._units.append(unit)
                             unit.destination = self.game_ref.player_1.closest_tower(player.castle_tile)
+
                 # player.to_simulate.append(unit)
                 # print("asd")
 
