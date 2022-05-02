@@ -1,6 +1,6 @@
 import pygame
 
-from src.button import Button
+from src.button import Button, MenuButton
 from src.game import Game
 from src.contextmenu import Context
 from src.soldier import *
@@ -29,9 +29,42 @@ selected_tile = None
 # 3 - Load Game
 # 4 - In Game
 
-game_state = 4
+game_state = 1
 
-btn_quit = Button((255, 0, 0), 10, 676, 235, 40, "QUIT")
+in_game_menu = ["MAIN MENU", "BUILD", "TRAIN", "MOVE", "CONTINUE"]
+
+
+main_menu_scale = 5
+# MENU ASSETS
+menu_images = {
+    "BOTTOM": pygame.image.load("assets/menu_assets/also_tabla.png"),
+    "MIDDLE": pygame.image.load("assets/menu_assets/koztes_tabla.png"),
+    "LOGO": pygame.image.load("assets/menu_assets/logo_tabla.png"),
+    "BG": pygame.image.load("assets/menu_assets/menu_bg.png")
+}
+menu_images["LOGO"] = pygame.transform.scale(menu_images["LOGO"] , (menu_images["LOGO"].get_width() * main_menu_scale, menu_images["LOGO"].get_height() * main_menu_scale))
+
+
+main_menu = [(1, "NEW GAME"), (3, "OPTIONS"), (2, "QUIT")]
+main_menu_btn = []
+menu_top_padding = 0
+for i, elem in enumerate(main_menu):
+    if (len(main_menu) - 1) == i:
+        img = menu_images['BOTTOM']
+    else:
+        img = menu_images['MIDDLE']
+
+    padding = (i * (menu_images['MIDDLE'].get_height() * main_menu_scale))
+    # if (len(main_menu)-1) == i:
+    #     padding -= (menu_images['MIDDLE'].get_height() * main_menu_scale)
+    #     padding += (menu_images['BOTTOM'].get_height() * main_menu_scale)
+
+    # print(padding)
+
+    main_menu_btn.append(MenuButton(SCREEN_WIDTH / 2 - img.get_width() * main_menu_scale / 2, menu_top_padding + menu_images["LOGO"].get_height() + padding, img.get_width() * main_menu_scale, img.get_height() * main_menu_scale, elem[1], (len(main_menu)-1) == i))
+
+
+btn_quit = Button((255, 0, 0), 10, 676, 235, 40, "MAIN MENU")
 btn_build = Button((255, 0, 0), 260, 676, 235, 40, "BUILD")
 btn_train = Button((255, 0, 0), 510, 676, 235, 40, "TRAIN")
 btn_move = Button((255, 0, 0), 760, 676, 235, 40, "MOVE")
@@ -122,7 +155,13 @@ while run:
     screen.fill((54, 71, 101))
     # Draw update function
     if game_state == 1:
-        pass
+
+        screen.blit(menu_images["BG"], [0, 0, SCREEN_WIDTH, SCREEN_HEIGHT])
+
+        screen.blit(menu_images["LOGO"], [SCREEN_WIDTH / 2 - img.get_width() * main_menu_scale / 2, menu_top_padding, menu_images["LOGO"].get_width(), menu_images["LOGO"].get_height()])
+
+        for elem in main_menu_btn:
+            elem.draw(screen)
         # draw
     elif game_state == 2:
         pass
@@ -225,8 +264,14 @@ while run:
     # Keyboard input update function
     for event in pygame.event.get():
         if game_state == 1:
-            pass
-            # keyboard input
+            if event.type == pygame.MOUSEBUTTONUP:
+                for i, btn in enumerate(main_menu_btn):
+                    if btn.is_over(pygame.mouse.get_pos()):
+                        if main_menu[i][0] == 1:
+                            game_state = 4
+                        elif main_menu[i][0] == 2:
+                            run = False
+
         elif game_state == 2:
             pass
             # keyboard input
@@ -369,8 +414,8 @@ while run:
                                 action_is_happening = True
                                 simulation_starting_time = pygame.time.get_ticks()
                         elif btn_quit.is_over(pygame.mouse.get_pos()):
-                            # run = False
-                            print(len(game.player_1.to_simulate))
+                            game_state = 1
+                            # print(len(game.player_1.to_simulate))
                         elif btn_build.is_over(pygame.mouse.get_pos()):
                             game.current_player.state = "BUILD"
                         elif btn_train.is_over(pygame.mouse.get_pos()):
