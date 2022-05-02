@@ -1,6 +1,7 @@
 class Unit:
-    def __init__(self, health, damage, tile, owner, x, y):
+    def __init__(self, health, max_health, damage, tile, owner, x, y):
         self._health = health
+        self._max_health = max_health
         self._damage = damage
         self._tile = tile
         self._owner = owner
@@ -18,6 +19,10 @@ class Unit:
     @health.setter
     def health(self, change):
         self._health = change
+
+    @property
+    def max_health(self):
+        return self._max_health
 
     @property
     def damage(self):

@@ -5,21 +5,23 @@ import math
 
 class Tower(Unit):
 
-    def __init__(self, health, damage, range, clean_time, tile, owner, x, y):
-        super().__init__(health=health, damage=damage, tile=tile, owner=owner, x=x, y=y)
+    def __init__(self, health, max_health, damage, range, clean_time, tile, owner, x, y):
+        super().__init__(health=health, max_health=max_health, damage=damage, tile=tile, owner=owner, x=x, y=y)
         self._range = range
         self._clean_time = clean_time
         self._is_in_ruins = False
-        self._is_ready_to_demolish = False
         self._locked_unit = None
         self._last_time = 0
         self._level = 1
 
     def upgrade(self):
-        if self._level < 5:
+        if self._level < 5 and self._owner.gold - (self._level + 1) * self.__class__.price > 0:
             self._level += 1
-            self._health += 100
+            self._max_health *= 2
+            self._health *= 2
             self._damage += 10
+            self._clean_time = self._level
+            self._owner.gold = self._owner.gold - (self._level + 1) * self.__class__.price
 
     def demolish(self):
         self._owner.units.remove(self)
@@ -27,20 +29,26 @@ class Tower(Unit):
         self._owner.to_simulate.remove(self)
         self._tile.has_building = False
         gold = self._owner.gold
-        self._owner.gold = int(gold + (self.__class__.price * 0.5))
+        self._owner.gold = int(gold + (self.__class__.price * self._level * 0.5))
 
     def remove_ruins(self):
-        if self._is_in_ruins is True:
-            if self._clean_time - 1 >= 0:
+        if self._is_in_ruins is True and se:
+            if self._clean_time - 1 > 0:
                 self._clean_time -= 1
             else:
-                self._is_ready_to_demolish = True
+                self._owner.units.remove(self)
+                self._tile.units.remove(self)
 
     def distance(self, unit):
         x = unit.x
         y = unit.y
         distance = math.sqrt(pow(x - self._x, 2) + pow(y - self._y, 2))
         return distance
+
+    def hit(self, damage):
+        self._health -= damage
+        if self._health <= 0:
+            self._is_in_ruins = True
 
     def shoot(self, units):
         if pygame.time.get_ticks() - self.get_speed() > self._last_time:
@@ -78,24 +86,8 @@ class Tower(Unit):
         return self._clean_time
 
     @property
-    def range(self):
-        return self._range
-
-    @property
     def is_in_ruins(self):
         return self._is_in_ruins
-
-    @is_in_ruins.setter
-    def is_in_ruins(self, new):
-        self._is_in_ruins = new
-
-    @property
-    def is_ready_to_demolish(self):
-        return self._is_ready_to_demolish
-
-    @is_ready_to_demolish.setter
-    def is_ready_to_demolish(self, new):
-        self._is_ready_to_demolish = new
 
     @property
     def last_time(self):
@@ -103,19 +95,17 @@ class Tower(Unit):
 
 
 class BasicTower(Tower):
-    price = 30
-    max_health = 500
+    price = 50
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=500, damage=10, range=2.5, clean_time=2, tile=tile, owner=owner, x=x, y=y)
+        super().__init__(health=500, max_health=500, damage=10, range=2.5, clean_time=1, tile=tile, owner=owner, x=x, y=y)
 
 
 class Splash(Tower):
-    price = 40
-    max_health = 500
+    price = 50
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=500, damage=5, range=2.5, clean_time=2, tile=tile, owner=owner, x=x, y=y)
+        super().__init__(health=500, max_health=500, damage=5, range=2.5, clean_time=1, tile=tile, owner=owner, x=x, y=y)
 
     def shoot(self, units):
         locked_units = []
@@ -136,11 +126,10 @@ class Splash(Tower):
 
 
 class Slow(Tower):
-    price = 30
-    max_health = 500
+    price = 50
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=500, damage=15, range=3, clean_time=2, tile=tile, owner=owner, x=x, y=y)
+        super().__init__(health=500, max_health=500, damage=15, range=3, clean_time=1, tile=tile, owner=owner, x=x, y=y)
 
     @staticmethod
     def get_speed():

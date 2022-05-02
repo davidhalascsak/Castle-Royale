@@ -5,8 +5,8 @@ import pygame
 
 
 class Soldier(Unit):
-    def __init__(self, health, damage, stamina, tile, owner, x, y):
-        super().__init__(health=health, damage=damage, tile=tile, owner=owner, x=x, y=y)
+    def __init__(self, health, max_health, damage, stamina, tile, owner, x, y):
+        super().__init__(health=health, max_health=max_health, damage=damage, tile=tile, owner=owner, x=x, y=y)
         self.current_stamina = stamina
         self._stamina = stamina
         self._alive = True
@@ -20,9 +20,7 @@ class Soldier(Unit):
 
     def move(self):
         self.stuck = False
-        # print(self.destination)
         if self._alive and self.destination:
-            # print("move")
             if pygame.time.get_ticks() - self.get_speed() > self._last_time:
                 self._last_time = pygame.time.get_ticks()
 
@@ -51,31 +49,6 @@ class Soldier(Unit):
                     self.stuck = True
         else:
             self.stuck = True
-
-
-
-        #         if self.path and self.destination:
-        #             if len(self.path) > 0 and self._current_stamina > 0:
-        #                 self._current_stamina -= 1
-        #                 self._tile.units.remove(self)
-        #                 [self._x, self._y] = self.path.pop(0)
-        #                 self._tile = self._game.map[self._x][self._y]
-        #                 self._tile.units.append(self)
-        #
-        #             if self._tile == self.destination and self.destination._is_castle:
-        #                 self.destination.units[0].hit(self.damage)
-        #                 self.tile.units.remove(self)
-        #                 self.owner.units.remove(self)
-        #
-        # if self._alive and (self._current_stamina == 0 or self._tile == self.destination):
-        #     return 0
-        # else:
-        #     return 1
-
-    def print_stats(self):
-        print("Stamina: {}".format(self._current_stamina))
-        print("Stuck: {}".format(self.stuck))
-        print("-----")
 
     @staticmethod
     def get_speed():
@@ -121,21 +94,18 @@ class Soldier(Unit):
         return self._tile
 
 
-
 class BasicSoldier(Soldier):
     price = 100
-    max_health = 100
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=100, damage=50, stamina=5, tile=tile, owner=owner, x=x, y=y)
+        super().__init__(health=100, max_health=100, damage=50, stamina=5, tile=tile, owner=owner, x=x, y=y)
 
 
 class Climber(Soldier):
     price = 150
-    max_health = 120
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=120, damage=50, stamina=5, tile=tile, owner=owner, x=x, y=y)
+        super().__init__(health=120, max_health=120, damage=50, stamina=5, tile=tile, owner=owner, x=x, y=y)
 
     def get_speed(self):
         return 1000
@@ -143,13 +113,9 @@ class Climber(Soldier):
 
 class Tank(Soldier):
     price = 150
-    max_health = 200
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=200, damage=75, stamina=3, tile=tile, owner=owner, x=x, y=y)
-
-    def attack(self, enemy):
-        pass
+        super().__init__(health=200, max_health=200, damage=75, stamina=3, tile=tile, owner=owner, x=x, y=y)
 
     def get_speed(self):
         return 2000
@@ -157,13 +123,10 @@ class Tank(Soldier):
 
 class Suicide(Soldier):
     price = 200
-    max_health = 500
 
     def __init__(self, tile, owner, x, y):
-        super().__init__(health=500, damage=100, stamina=5, tile=tile, owner=owner, x=x, y=y)
-
-    def attack(self, enemy):
-        pass
+        super().__init__(health=500, max_health=500, damage=100, stamina=5, tile=tile, owner=owner, x=x, y=y)
 
     def get_speed(self):
         return 500
+

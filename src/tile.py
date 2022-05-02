@@ -79,11 +79,27 @@ class Tile:
         if count < 4:
             unit_price = eval(soldier).price
             if (player.gold - unit_price) > 0:
-                player.gold = (player.gold - unit_price)
-                unit = eval(soldier)(self, player, self.x, self.y)
-                player.add_unit(unit)
-                self._units.append(unit)
-                unit.destination = player.game.other_player().castle_tile
+                if soldier != "Suicide":
+                    player.gold = (player.gold - unit_price)
+                    unit = eval(soldier)(self, player, self.x, self.y)
+                    player.add_unit(unit)
+                    self._units.append(unit)
+                    unit.destination = player.game.other_player().castle_tile
+                else:
+                    if self.game_ref.player_1 == player:
+                        if self.game_ref.player_2.has_tower():
+                            player.gold = (player.gold - unit_price)
+                            unit = eval(soldier)(self, player, self.x, self.y)
+                            player.add_unit(unit)
+                            self._units.append(unit)
+                            unit.destination = self.game_ref.player_2.closest_tower(player.castle_tile)
+                    elif self.game_ref.player_2 == player:
+                        if self.game_ref.player_1.has_tower():
+                            player.gold = (player.gold - unit_price)
+                            unit = eval(soldier)(self, player, self.x, self.y)
+                            player.add_unit(unit)
+                            self._units.append(unit)
+                            unit.destination = self.game_ref.player_1.closest_tower(player.castle_tile)
                 # player.to_simulate.append(unit)
                 # print("asd")
 
@@ -111,7 +127,7 @@ class Tile:
         if self._hover:
             surface.blit(self._hover_image, [self._y, self._x, self._width, self._height])
 
-        #select  
+        #select
         if self._selected:
             pygame.draw.rect(surface, (0, 255, 0), pygame.Rect(self._y, self._x, self._width, self._height), 2)
 
@@ -155,10 +171,10 @@ class Tile:
                              pygame.Rect(self._y + horizontal_alignment, self._x + vertical_alignment, 170,
                                          length * 18))
             for i in range(start, len(self._units)):
-                text = pygame.font.SysFont('Arial', 17).render("{0} - {1}/{2}".
+                text = pygame.font.SysFont('Arial', 17).render("{0} - {1}//{2}".
                                                                format(type(self._units[i]).__name__,
                                                                       self._units[i].health,
-                                                                      eval(type(self._units[i]).__name__).max_health),
+                                                                      self._units[i].max_health),
                                                                False, self.get_owner_color(i))
                 surface.blit(text, (self._y + horizontal_alignment, self._x + vertical_alignment + (ind * 16)))
                 ind += 1
@@ -192,11 +208,9 @@ class Tile:
             text = pygame.font.SysFont('Arial', 17).render("{0} - {1}/{2}".
                                                                format(type(self._units[0]).__name__,
                                                                       self._units[0].health,
-                                                                      eval(type(self._units[0]).__name__).max_health),
+                                                                      self._units[0].max_health),
                                                                False, self.get_owner_color(0))
             surface.blit(text, (self._y + horizontal_alignment, self._x + vertical_alignment + (0 * 16)))
-
-
 
     def is_over(self, pos):
         if self._y < pos[0] < self._y + self._width:
