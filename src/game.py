@@ -29,7 +29,9 @@ class Game:
 
     def simulate(self):
         if self._start_simulation:
-            self._start_simulation = not (self._player_1.simulate() and self._player_2.simulate())
+            player1_stuck = self._player_1.simulate()
+            player2_stuck = self._player_2.simulate()
+            self._start_simulation = not (player1_stuck and player2_stuck)
             # for u in self._player_1.to_simulate:
             #     u.print_stats()
 
