@@ -16,13 +16,14 @@ class Tower(Unit):
         self._round_done = False
 
     def upgrade(self):
+
         if self._level < 5 and self._owner.gold - (self._level + 1) * self.__class__.price > 0:
             self._level += 1
-            self._max_health *= 2
-            self._health *= 2
+            self._max_health *= 0.5
+            self._health *= 0.5
             self._damage += 10
             self._clean_time += 1
-            self._owner.gold = self._owner.gold - (self._level + 1) * self.__class__.price
+            self._owner.gold = self._owner.gold - self._level * self.__class__.price
 
     def demolish(self):
         self._owner.units.remove(self)

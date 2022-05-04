@@ -56,15 +56,13 @@ class Tile:
                 else:
                     self.game_ref.path_finder.set_obstacle(self.x, self.y, 0)
 
-    def upgrade_tower(self, player):
+    def upgrade_tower(self):
         unit = None
         for u in self._units:
             if issubclass(type(u), Tower):
                 unit = u
 
-        if player.gold - (eval(unit.__class__.__name__).price * 0.5) > 0:
-            player.gold = int((player.gold - (eval(unit.__class__.__name__).price * 0.5)))
-            unit.upgrade()
+        unit.upgrade()
 
     def demolish_tower(self):
         unit = None

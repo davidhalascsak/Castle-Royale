@@ -258,7 +258,7 @@ while run:
                             if item[2] and item[1] == "Barracks":
                                 print("barracks")
                             if item[2] and item[1] == "Upgrade":
-                                game.current_tile.upgrade_tower(game.current_player)
+                                game.current_tile.upgrade_tower()
                             if item[2] and item[1] == "Demolish":
                                 game.current_tile.demolish_tower()
                             if item[2] and item[1] == "Remove":
