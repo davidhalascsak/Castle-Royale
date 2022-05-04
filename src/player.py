@@ -34,12 +34,11 @@ class Player:
         stuck = True
         for unit in self._to_simulate:
             if issubclass(type(unit), Soldier):
-                if issubclass(type(unit), Suicide) and len(unit.destination.units) == 0 or unit.destination.units[0].is_in_ruins:
+                if issubclass(type(unit), Suicide) and (len(unit.destination.units) == 0 or unit.destination.units[0].is_in_ruins):
                     if self == self._game.player_1:
                         new_destination = self._game.player_2.closest_tower(unit.tile)
                     else:
                         new_destination = self._game.player_1.closest_tower(unit.tile)
-                    print(new_destination)
                     if new_destination is None:
                         self._units.remove(unit)
                         self._to_simulate.remove(unit)

@@ -43,7 +43,7 @@ class Tile:
         self._has_building = True
 
     def build(self, player, type):
-        if len(self._units) == 0:
+        if len(self._units) == 0 and self.type == "PLAIN":
             unit_price = eval(type).price
             if (player.gold - unit_price) > 0:
                 self.game_ref.path_finder.set_obstacle(self.x, self.y, 1)
