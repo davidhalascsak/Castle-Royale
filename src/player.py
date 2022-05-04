@@ -18,8 +18,6 @@ class Player:
         self._units.append(unit)
         if issubclass(type(unit), Soldier):
             unit.destination = self._game.other_player().castle_tile
-            # print(unit.destination)
-            # unit.waypoints.append((0, 0))
         self._to_simulate.append(unit)
 
     def add_castle_tile(self, tile):
@@ -33,26 +31,32 @@ class Player:
         return sum
 
     def simulate(self):
-        pass
-        # # count = 0
-        # # print(self)
-        # # print(self._to_simulate)
         stuck = True
         for unit in self._to_simulate:
             if issubclass(type(unit), Soldier):
-                unit.move()
-                stuck = stuck and unit.stuck
-                # pass
-                # count += unit.move()
-            elif issubclass(type(unit), Tower):
-                if self == self._game.player_1:
-                    # pass
-                    unit.shoot(self._game.player_2.units)
+                if issubclass(type(unit), Suicide) and len(unit.destination.units) == 0 or unit.destination.units[0].is_in_ruins:
+                    if self == self._game.player_1:
+                        new_destination = self._game.player_2.closest_tower(unit.tile)
+                    else:
+                        new_destination = self._game.player_1.closest_tower(unit.tile)
+                    print(new_destination)
+                    if new_destination is None:
+                        self._units.remove(unit)
+                        self._to_simulate.remove(unit)
+                        unit.tile.units.remove(unit)
+                    else:
+                        unit.destination = new_destination
+                        unit.move()
                 else:
-                    # pass
-                    unit.shoot(self._game.player_1.units)
-        #
-        # # print(stuck)
+                    unit.move()
+                stuck = stuck and unit.stuck
+            elif issubclass(type(unit), Tower):
+                if not unit.is_in_ruins:
+                    if self == self._game.player_1:
+                        unit.shoot(self._game.player_2.units)
+                    else:
+                        unit.shoot(self._game.player_1.units)
+
         return stuck
 
     def reset_stamina(self):
@@ -61,10 +65,10 @@ class Player:
                 unit.current_stamina = unit.stamina
 
     @staticmethod
-    def distance(tower, castle_tile):
+    def distance(tower, tile):
         x = tower.x
         y = tower.y
-        distance = math.sqrt(pow(x - castle_tile.x, 2) + pow(y - castle_tile.y, 2))
+        distance = math.sqrt(pow(x - tile.x, 2) + pow(y - tile.y, 2))
         return distance
 
     def has_tower(self):
@@ -74,15 +78,16 @@ class Player:
 
         return False
 
-    def closest_tower(self, castle_tile):
+    def closest_tower(self, tile):
         closest = None
         for i, row in enumerate(self._game.map):
             for j, elem in enumerate(row):
                 if len(self._game.map[i][j].units) != 0 and issubclass(type(self._game.map[i][j].units[0]), Tower):
-                    if closest is None:
-                        closest = self._game.map[i][j]
-                    elif self.distance(self._game.map[i][j], castle_tile) < self.distance(closest, castle_tile):
-                        closest = self._game.map[i][j]
+                    if not self._game.map[i][j].units[0].is_in_ruins:
+                        if closest is None:
+                            closest = self._game.map[i][j]
+                        elif self.distance(self._game.map[i][j], tile) < self.distance(closest, tile):
+                            closest = self._game.map[i][j]
 
         return closest
 
@@ -124,5 +129,3 @@ class Player:
 
     def get_castle_health(self):
         return self._units[0].health
-
-

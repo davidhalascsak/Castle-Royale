@@ -20,7 +20,7 @@ class Tower(Unit):
             self._max_health *= 2
             self._health *= 2
             self._damage += 10
-            self._clean_time = self._level
+            self._clean_time += 1
             self._owner.gold = self._owner.gold - (self._level + 1) * self.__class__.price
 
     def demolish(self):
@@ -30,14 +30,16 @@ class Tower(Unit):
         self._tile.has_building = False
         gold = self._owner.gold
         self._owner.gold = int(gold + (self.__class__.price * self._level * 0.5))
+        self._tile.has_building = False
 
     def remove_ruins(self):
-        if self._is_in_ruins is True and se:
+        if self._is_in_ruins is True:
             if self._clean_time - 1 > 0:
                 self._clean_time -= 1
             else:
                 self._owner.units.remove(self)
                 self._tile.units.remove(self)
+                self._tile.has_building = False
 
     def distance(self, unit):
         x = unit.x

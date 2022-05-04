@@ -119,30 +119,24 @@ class AStar:
         self.row = len(self.arr)
         self.col = len(self.arr[0])
 
-    def isPath(self, x1, y1, x2, y2, special=False, update=True):
+    def isPath(self, x1, y1, x2, y2, special=False, destination_tile=None, update=True):
         if update:
-            self.loadObstacles(special)
+            self.loadObstacles(special, destination_tile)
         path = search(self.arr, 1, [x1, y1], [x2, y2])
         if path is None:
             return False, []
         return True, path
 
-    def loadObstacles(self, special):
+    def loadObstacles(self, special, destination_tile):
+
         for row in self.game.map:
             for tile in row:
-                # if len(tile.units) > 0 and not tile.is_castle and not all(e.owner == self.game.current_player for e in tile.units):
-                # if len(tile.units) > 0 and not tile.is_castle:
-                if (len(tile.units) - tile_count_soldier(tile)) > 0 and not tile.is_castle:
+                if tile != destination_tile and (len(tile.units) - tile_count_soldier(tile)) > 0 and not tile.is_castle:
                     self.arr[tile.x][tile.y] = 1
                 elif not special and tile.type != "PLAIN":
                     self.arr[tile.x][tile.y] = 1
                 else:
                     self.arr[tile.x][tile.y] = 0
-        # self.arr = []
-        # for i in range(14):
-        #     self.arr.append([])
-        #     for j in range(26):
-        #         self.arr[i].append(0)
 
     def set_obstacle(self, x, y, value):
         self.arr[x][y] = value

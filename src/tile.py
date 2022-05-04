@@ -17,13 +17,17 @@ class Tile:
         self._height = 48
         self._image = {
             None: (255, 255, 255),
-            "PLAIN": pygame.transform.scale(pygame.image.load("assets/tile_assets/grass.png"), (self._width, self._width)),
-            "LAKE": pygame.transform.scale(pygame.image.load("assets/tile_assets/swamp.png"), (self._width, self._width)),
+            "PLAIN": pygame.transform.scale(pygame.image.load("assets/tile_assets/grass.png"),
+                                            (self._width, self._width)),
+            "LAKE": pygame.transform.scale(pygame.image.load("assets/tile_assets/swamp.png"),
+                                           (self._width, self._width)),
             "HILL": pygame.transform.scale(pygame.image.load("assets/tile_assets/hill.png"), (self._width, self._width))
         }
 
-        self._blender_image = pygame.transform.scale(pygame.image.load("assets/tile_assets/blender_swamp.png"), (self._width, self._width))
-        self._hover_image = pygame.transform.scale(pygame.image.load("assets/tile_assets/hover.png"), (self._width, self._width))
+        self._blender_image = pygame.transform.scale(pygame.image.load("assets/tile_assets/blender_swamp.png"),
+                                                     (self._width, self._width))
+        self._hover_image = pygame.transform.scale(pygame.image.load("assets/tile_assets/hover.png"),
+                                                   (self._width, self._width))
         self._hover = False
         self._is_castle = False
         self._has_building = False
@@ -70,13 +74,21 @@ class Tile:
 
         unit.demolish()
 
+    def remove_tower_ruin(self):
+        unit = None
+        for u in self._units:
+            if issubclass(type(u), Tower):
+                unit = u
+
+        unit.remove_ruins()
+
     def train(self, player, soldier):
         count = 0
         for unit in self._units:
             if issubclass(type(unit), Soldier):
                 count += 1
 
-        if count < 4:
+        if count < 5:
             unit_price = eval(soldier).price
             if (player.gold - unit_price) > 0:
                 if soldier != "Suicide":
@@ -105,30 +117,33 @@ class Tile:
                 # print("asd")
 
     def draw(self, surface):
-        
+
         surface.blit(self._image[self.type], [self._y, self._x, self._width, self._height])
         if self.type == "LAKE":
             # up
-            if self.x-1 >= 0 and self.game_ref._map[self.x-1][self.y].type != "LAKE":
+            if self.x - 1 >= 0 and self.game_ref._map[self.x - 1][self.y].type != "LAKE":
                 surface.blit(self._blender_image, [self._y, self._x, self._width, self._height])
             # down
-            if self.x+1 < self.game_ref.map_height and self.game_ref._map[self.x+1][self.y].type != "LAKE":
-                surface.blit(pygame.transform.rotate(self._blender_image, 180), [self._y, self._x, self._width, self._height])
+            if self.x + 1 < self.game_ref.map_height and self.game_ref._map[self.x + 1][self.y].type != "LAKE":
+                surface.blit(pygame.transform.rotate(self._blender_image, 180),
+                             [self._y, self._x, self._width, self._height])
             # left
-            if self.y >= 0 and self.game_ref._map[self.x][self.y-1].type != "LAKE":
-                surface.blit(pygame.transform.rotate(self._blender_image, 90), [self._y, self._x, self._width, self._height])
+            if self.y >= 0 and self.game_ref._map[self.x][self.y - 1].type != "LAKE":
+                surface.blit(pygame.transform.rotate(self._blender_image, 90),
+                             [self._y, self._x, self._width, self._height])
             # right
-            if self.y+1 < self.game_ref.map_width and self.game_ref._map[self.x][self.y+1].type != "LAKE":
-                surface.blit(pygame.transform.rotate(self._blender_image, 270), [self._y, self._x, self._width, self._height])
+            if self.y + 1 < self.game_ref.map_width and self.game_ref._map[self.x][self.y + 1].type != "LAKE":
+                surface.blit(pygame.transform.rotate(self._blender_image, 270),
+                             [self._y, self._x, self._width, self._height])
         # castle
         if self._is_castle:
             surface.blit(self.get_castle_image(), [self._y, self._x, self._width, self._height])
-        
+
         # hover
         if self._hover:
             surface.blit(self._hover_image, [self._y, self._x, self._width, self._height])
 
-        #select
+        # select
         if self._selected:
             pygame.draw.rect(surface, (0, 255, 0), pygame.Rect(self._y, self._x, self._width, self._height), 2)
 
@@ -144,9 +159,9 @@ class Tile:
 
         # draw soldier
         if len(self._units) > 0 and (isinstance(self._units[0], Soldier)):
-            surface.blit(self.get_soldier_image(), [self._y+10, self._x+10, self._width, self._height])
+            surface.blit(self.get_soldier_image(), [self._y + 10, self._x + 10, self._width, self._height])
         elif len(self._units) > 1 and self._is_castle:
-            surface.blit(self.get_soldier_image(), [self._y+10, self._x+10, self._width, self._height])
+            surface.blit(self.get_soldier_image(), [self._y + 10, self._x + 10, self._width, self._height])
 
         # barrack draw
 
@@ -172,7 +187,7 @@ class Tile:
                              pygame.Rect(self._y + horizontal_alignment, self._x + vertical_alignment, 170,
                                          length * 18))
             for i in range(start, len(self._units)):
-                text = pygame.font.SysFont('Arial', 17).render("{0} - {1}//{2}".
+                text = pygame.font.SysFont('Arial', 17).render("{0} - {1}/{2}".
                                                                format(type(self._units[i]).__name__,
                                                                       self._units[i].health,
                                                                       self._units[i].max_health),
@@ -193,7 +208,7 @@ class Tile:
                                                      self._height),
                                          2)
 
-        if self._hover and ((len(self._units) > 0 and issubclass(type(self._units[0]), Tower))):
+        if self._hover and (len(self._units) > 0 and issubclass(type(self._units[0]), Tower)):
             length = len(self._units)
             if self._y > 600:
                 horizontal_alignment = -122
@@ -206,7 +221,10 @@ class Tile:
             pygame.draw.rect(surface, pygame.Color(0, 0, 0),
                              pygame.Rect(self._y + horizontal_alignment, self._x + vertical_alignment, 170,
                                          length * 18))
-            text = pygame.font.SysFont('Arial', 17).render("{0} - {1}/{2}".
+            if self._units[0].is_in_ruins:
+                text = pygame.font.SysFont('Arial', 17).render("{0} days to clean the site.".format(self._units[0].clean_time), False, self.get_owner_color(0))
+            else:
+                text = pygame.font.SysFont('Arial', 17).render("{0} - {1}/{2}".
                                                                format(type(self._units[0]).__name__,
                                                                       self._units[0].health,
                                                                       self._units[0].max_health),
@@ -234,25 +252,41 @@ class Tile:
 
     def get_castle_image(self):
         if self._units[0].owner == self.game_ref.player_1:
-            return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_castle.png"), (self._width, self._width))
+            return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_castle.png"),
+                                          (self._width, self._width))
         else:
-            return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_castle.png"), (self._width, self._width))
+            return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_castle.png"),
+                                          (self._width, self._width))
 
     def get_tower_image(self):
         if self._units[0].owner == self.game_ref.player_1:
-            if isinstance(self._units[0], BasicTower):
-                return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_basic_tower.png"), (self._width, self._width))
-            elif isinstance(self._units[0], Splash):
-                return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_splash_tower.png"), (self._width, self._width))
-            elif isinstance(self._units[0], Slow):
-                return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_slow_tower.png"), (self._width, self._width))
+            if self._units[0].is_in_ruins:
+                return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_tower_ruin.png"),
+                                              (self._width, self._width))
+            else:
+                if isinstance(self._units[0], BasicTower):
+                    return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_basic_tower.png"),
+                                                  (self._width, self._width))
+                elif isinstance(self._units[0], Splash):
+                    return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_splash_tower.png"),
+                                                  (self._width, self._width))
+                elif isinstance(self._units[0], Slow):
+                    return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_slow_tower.png"),
+                                                  (self._width, self._width))
         else:
-            if isinstance(self._units[0], BasicTower):
-                return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_basic_tower.png"), (self._width, self._width))
-            elif isinstance(self._units[0], Splash):
-                return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_splash_tower.png"), (self._width, self._width))
-            elif isinstance(self._units[0], Slow):
-                return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_slow_tower.png"), (self._width, self._width))
+            if self._units[0].is_in_ruins:
+                return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_tower_ruin.png"),
+                                              (self._width, self._width))
+            else:
+                if isinstance(self._units[0], BasicTower):
+                    return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_basic_tower.png"),
+                                                  (self._width, self._width))
+                elif isinstance(self._units[0], Splash):
+                    return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_splash_tower.png"),
+                                                  (self._width, self._width))
+                elif isinstance(self._units[0], Slow):
+                    return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_slow_tower.png"),
+                                                  (self._width, self._width))
 
     def get_soldier_image(self):
         red = False
@@ -264,11 +298,14 @@ class Tile:
             else:
                 blue = True
         if red and blue:
-            return pygame.transform.scale(pygame.image.load("assets/tile_assets/mixed_knight.png"), (self._width/1.5, self._width/1.5))
+            return pygame.transform.scale(pygame.image.load("assets/tile_assets/mixed_knight.png"),
+                                          (self._width / 1.5, self._width / 1.5))
         elif red:
-            return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_knight.png"), (self._width/1.5, self._width/1.5))
+            return pygame.transform.scale(pygame.image.load("assets/tile_assets/red_knight.png"),
+                                          (self._width / 1.5, self._width / 1.5))
         else:
-            return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_knight.png"), (self._width/1.5, self._width/1.5))
+            return pygame.transform.scale(pygame.image.load("assets/tile_assets/blue_knight.png"),
+                                          (self._width / 1.5, self._width / 1.5))
 
     @property
     def units(self):
@@ -305,4 +342,3 @@ class Tile:
     @has_building.setter
     def has_building(self, new_value):
         self._has_building = new_value
-

@@ -6,6 +6,7 @@ from src.contextmenu import Context
 from src.soldier import *
 from src.tower import *
 from src.core import *
+from src.tile import *
 import os
 pygame.init()
 
@@ -19,10 +20,7 @@ simulation_starting_time = 0  # 1 second = 1000 millisecond
 clock = pygame.time.Clock()
 FPS = 60
 
-action_is_happening = False
 hamburger = Context()
-#game.current_tile = None
-selected_tile = None
 
 # 1 - Menu
 # 2 - New Game
@@ -42,7 +40,7 @@ menu_images = {
     "LOGO": pygame.image.load("assets/menu_assets/logo_tabla.png"),
     "BG": pygame.image.load("assets/menu_assets/menu_bg.png")
 }
-menu_images["LOGO"] = pygame.transform.scale(menu_images["LOGO"] , (menu_images["LOGO"].get_width() * main_menu_scale, menu_images["LOGO"].get_height() * main_menu_scale))
+menu_images["LOGO"] = pygame.transform.scale(menu_images["LOGO"], (menu_images["LOGO"].get_width() * main_menu_scale, menu_images["LOGO"].get_height() * main_menu_scale))
 
 
 main_menu = [(1, "NEW GAME"), (3, "OPTIONS"), (2, "QUIT")]
@@ -72,32 +70,8 @@ btn_continue = Button((255, 0, 0), 1010, 676, 235, 40, "CONTINUE")
 btn_end = Button((255, 0, 0), SCREEN_WIDTH / 2 - 40, SCREEN_HEIGHT / 2 - 25, 80, 50, "MENU")
 
 game = Game()
+
 game.new_game(1000, "Player1", "Player2")
-# Test
-
-# game._player_2.units.append(BasicSoldier(game.map[0][0], game._player_2, 0, 0))
-# game._player_1.units.append(BasicSoldier(game.map[0][0], game._player_1, 0, 0))
-# game._map[0][0]._units.append(game._player_2.units[1])
-# game._map[0][0]._units.append(game._player_1.units[1])
-'''
-game._map[1][15]._units.append(Climber(game._map[0], game._player_2, 0, 0))
-game._map[1][15]._units.append(Tank(game._map[0], game._player_2, 0, 0))
-game._map[1][15]._units.append(Suicide(game._map[0], game._player_2, 0, 0))
-game._map[1][1]._units.append(Suicide(game._map[0], game._player_2, 0, 0))
-game._map[4][4]._units.append(BasicTower(game._map[0], game._player_2, 0, 0))
-game._map[2][2]._units.append(Splash(game._map[0], game._player_2, 0, 0))
-game._map[3][3]._units.append(Slow(game._map[0], game._player_2, 0, 0))
-
-game._map[1][2]._units.append(BasicSoldier(game._map[0], game._player_1, 0, 0))
-game._map[1][2]._units.append(Climber(game._map[0], game._player_1, 0, 0))
-game._map[1][2]._units.append(Tank(game._map[0], game._player_1, 0, 0))
-game._map[1][2]._units.append(Suicide(game._map[0], game._player_1, 0, 0))
-game._map[4][5]._units.append(BasicTower(game._map[0], game._player_1, 0, 0))
-game._map[2][3]._units.append(Splash(game._map[0], game._player_1, 0, 0))
-game._map[3][4]._units.append(Slow(game._map[0], game._player_1, 0, 0))
-#game._player_1.add(Climber(game._map[0], game._player_1, 0, 0))
-#game._player_1.add(Slow(game._map[0], game._player_1, 0, 0))
-'''
 
 font = pygame.font.SysFont('comicsans', 20)
 font2 = pygame.font.Font(os.path.join("assets", "fonts", 'arcadeclassic.ttf'), 23)
@@ -196,12 +170,10 @@ while run:
             hud_pos_y = 45
             # screen.blit(player1_name, (10, 10))
 
-
             player1_hp = game.player_1.castle_tile.units[0].health
             fill(health_bar_inside_left, health_bar_inside_original_left, math.floor(player1_hp / 10))
             screen.blit(health_bar_left, (20, 20, 200, 200))
             screen.blit(health_bar_inside_left, (20, 20, 200, 200), (0, 0, (health_bar_inside_left.get_width() * player1_hp) / 1000, 200))
-
 
             screen.blit(gold_coin, (hud_pos_x, hud_pos_y))
             screen.blit(player1_money, (-5 + hud_pos_x + gold_coin.get_width(), hud_pos_y + (gold_coin.get_height() / 2 - player1_money.get_height() / 2)))
@@ -251,15 +223,6 @@ while run:
 
         if game.start_simulation:
             game.simulate()
-            # if action_is_happening and pygame.time.get_ticks() - simulation_starting_time < 10000:
-            #     p1 = game.player_1.simulate()
-            #     p2 = game.player_2.simulate()
-            #     both = p1 + p2
-            #     action_is_happening = both > 0
-            # else:
-            #     game.start_simulation = False
-            #     game.player_1.reset_stamina()
-            #     game.player_2.reset_stamina()
 
     # Keyboard input update function
     for event in pygame.event.get():
@@ -298,6 +261,8 @@ while run:
                                 game.current_tile.upgrade_tower(game.current_player)
                             if item[2] and item[1] == "Demolish":
                                 game.current_tile.demolish_tower()
+                            if item[2] and item[1] == "Remove":
+                                game.current_tile.remove_tower_ruin()
                             if item[2] and item[1] == "Soldier":
                                 game.current_player.castle_tile.train(game.current_player, "BasicSoldier")
                             if item[2] and item[1] == "Climber":
@@ -307,51 +272,11 @@ while run:
                             if item[2] and item[1] == "Tank":
                                 game.current_player.castle_tile.train(game.current_player, "Tank")
                             if item[2] and item[1] == "Select":
-                                # game.add_waypoint()
                                 game.select_current_tile()
-                                # pass
-                                # if game.selected_tile:
-                                #     game.selected_tile.selected = False
-                                #
-                                # game.selected_tile = game.current_tile
-
-                                # if selected_tile:
-                                #     selected_tile.selected = False
-                                # selected_tile = game.current_tile
-                                # has_units = False
-                                # for u in selected_tile.units:
-                                #     if hasattr(u, 'alive'):
-                                #         has_units = has_units or u.alive
-                                # if selected_tile and ((has_units and selected_tile.is_castle) or has_units):
-                                #     selected_tile.selected = True
-                                # else:
-                                #     selected_tile = None
-
-                                # game.current_player.castle_tile.train(game.current_player, "Tank")
                             if item[2] and item[1] == "Waypoint":
                                 game.add_waypoint()
                             if item[2] and item[1] == "Reset":
                                 game.reset_waypoint()
-                            # if item[2] and item[1] == "Move":
-                            #     pass
-                            #     if selected_tile:
-                            #         # path = game.path_finder.isPath(selected_tile.x, selected_tile.y, game.current_tile.x,
-                            #         #                                game.current_tile.y)
-                            #         # if path[0]:
-                            #         for u in selected_tile.units:
-                            #             if hasattr(u, 'alive'):
-                            #                 path = game.path_finder.isPath(selected_tile.x, selected_tile.y, game.current_tile.x,
-                            #                                                game.current_tile.y, issubclass(type(u), Climber))
-                            #                 u.path = path[1]
-                            #                 u.path.pop(0)
-                            #                 u.destination = game.current_tile
-                            #                 game.current_player.to_simulate.remove(u)
-                            #                 game.current_player.to_simulate.append(u)
-                            #     # print(game.current_player.to_simulate[0].path)
-                            #     game.current_tile.waypoint = True
-                            #     selected_tile.selected = False
-                            #     selected_tile = None
-                            #     # game.current_player.castle_tile.train(game.current_player, "Tank")
                             hamburger.opened = False
                 else:
                     for row in game.map:
@@ -359,22 +284,21 @@ while run:
                             if tile.is_over(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONUP:
                                 if game.current_player.state == "BUILD":
                                     mouse_cords = pygame.mouse.get_pos()
-                                    if tile.has_building:
+                                    if tile.has_building and issubclass(type(tile.units[0]), Tower) and not tile.units[0].is_in_ruins:
                                         hamburger.change_content(["Upgrade", "Demolish"])
+                                    elif tile.has_building and issubclass(type(tile.units[0]), Tower) and tile.units[0].is_in_ruins:
+                                        hamburger.change_content(["Remove"])
                                     else:
                                         hamburger.change_content(["Tower", "Slow", "Splash", "Barracks"])
                                     hamburger.open(mouse_cords[0], mouse_cords[1])
 
                                 elif game.current_player.state == "TRAIN":
                                     mouse_cords = pygame.mouse.get_pos()
-                                    # print("TRAIN")
                                     hamburger.change_content(["Soldier", "Climber", "Suicide", "Tank"])
                                     hamburger.open(mouse_cords[0], mouse_cords[1])
 
                                 elif game.current_player.state == "MOVE":
                                     mouse_cords = pygame.mouse.get_pos()
-                                    # print("MOVE")
-
                                     options = []
                                     if tile_can_be_selected(tile):
                                         options.append("Select")
@@ -385,23 +309,8 @@ while run:
                                     if game.selected_tile:
                                         options.append("Reset")
                                     hamburger.change_content(options)
-                                    # else:
-                                    #     if tile.type == "PLAIN" and \
-                                    #             game.path_finder.isPath(selected_tile.x, selected_tile.y, tile.x, tile.y)[
-                                    #                 0]:
-                                    #         hamburger.change_content(["Select", "Move"])
-                                    #     else:
-                                    #         hamburger.change_content(["Select"])
-                                    #
-                                    # my_units = False
-                                    # for unit in tile.units:
-                                    #     my_units = my_units or hasattr(unit, "alive")
-                                    #
-                                    # if tile != selected_tile and (len(tile.units) == 0 or tile.is_castle or my_units):
                                     if len(options) > 0:
                                         hamburger.open(mouse_cords[0], mouse_cords[1])
-                                # print("Tile Cords: {}, {}".format(tile.x, tile.y))
-                                # print(game.path_finder.isPath(0, 0, tile.x, tile.y))
                                 game.current_tile = tile
                     if event.type == pygame.MOUSEBUTTONUP and not game.start_simulation:
                         if btn_continue.is_over(pygame.mouse.get_pos()):
@@ -411,11 +320,9 @@ while run:
                                     tile.selected = False
                                     tile.waypoint = False
                             if game.start_simulation:
-                                action_is_happening = True
                                 simulation_starting_time = pygame.time.get_ticks()
                         elif btn_quit.is_over(pygame.mouse.get_pos()):
                             game_state = 1
-                            # print(len(game.player_1.to_simulate))
                         elif btn_build.is_over(pygame.mouse.get_pos()):
                             game.current_player.state = "BUILD"
                         elif btn_train.is_over(pygame.mouse.get_pos()):

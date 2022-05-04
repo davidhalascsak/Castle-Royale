@@ -26,10 +26,21 @@ class Soldier(Unit):
 
                 self.path = (False, [])
                 if len(self.waypoints) > 0:
-                    self.path = self._game.path_finder.isPath(self._tile.x, self._tile.y,  self.waypoints[0][0], self.waypoints[0][1], issubclass(type(self), Climber))
+                    if issubclass(type(self), Suicide):
+                        self.path = self._game.path_finder.isPath(self._tile.x, self._tile.y, self.waypoints[0][0],
+                                                                  self.waypoints[0][1], issubclass(type(self), Climber),
+                                                                  self.destination)
+                    else:
+                        self.path = self._game.path_finder.isPath(self._tile.x, self._tile.y,  self.waypoints[0][0],
+                                                                  self.waypoints[0][1], issubclass(type(self), Climber))
                 else:
-                    self.path = self._game.path_finder.isPath(self._tile.x, self._tile.y,  self.destination.x, self.destination.y, issubclass(type(self), Climber))
-                print(self.path)
+                    if issubclass(type(self), Suicide):
+                        self.path = self._game.path_finder.isPath(self._tile.x, self._tile.y, self.destination.x,
+                                                                  self.destination.y, issubclass(type(self), Climber),
+                                                                  self.destination)
+                    else:
+                        self.path = self._game.path_finder.isPath(self._tile.x, self._tile.y, self.destination.x,
+                                                                  self.destination.y, issubclass(type(self), Climber))
                 if self.path[0] and self._current_stamina > 0:
                     next = self.path[1][1]
                     self._current_stamina -= 1
@@ -38,7 +49,7 @@ class Soldier(Unit):
                     self._tile = self._game.map[self._x][self._y]
                     self._tile.units.append(self)
 
-                    if self._tile == self.destination and self.destination.is_castle:
+                    if self._tile == self.destination:
                         self.destination.units[0].hit(self.damage)
                         self.tile.units.remove(self)
                         self.owner.units.remove(self)
@@ -123,11 +134,10 @@ class Tank(Soldier):
 
 
 class Suicide(Soldier):
-    price = 200
+    price = 20
 
     def __init__(self, tile, owner, x, y):
         super().__init__(health=500, max_health=500, damage=100, stamina=5, tile=tile, owner=owner, x=x, y=y)
 
     def get_speed(self):
         return 500
-
