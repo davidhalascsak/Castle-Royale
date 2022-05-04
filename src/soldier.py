@@ -28,19 +28,19 @@ class Soldier(Unit):
                 if len(self.waypoints) > 0:
                     if issubclass(type(self), Suicide):
                         self.path = self._game.path_finder.isPath(self._tile.x, self._tile.y, self.waypoints[0][0],
-                                                                  self.waypoints[0][1], issubclass(type(self), Climber),
+                                                                  self.waypoints[0][1], True, issubclass(type(self), Climber),
                                                                   self.destination)
                     else:
                         self.path = self._game.path_finder.isPath(self._tile.x, self._tile.y,  self.waypoints[0][0],
-                                                                  self.waypoints[0][1], issubclass(type(self), Climber))
+                                                                  self.waypoints[0][1], True, issubclass(type(self), Climber))
                 else:
                     if issubclass(type(self), Suicide):
                         self.path = self._game.path_finder.isPath(self._tile.x, self._tile.y, self.destination.x,
-                                                                  self.destination.y, issubclass(type(self), Climber),
+                                                                  self.destination.y, True, issubclass(type(self), Climber),
                                                                   self.destination)
                     else:
                         self.path = self._game.path_finder.isPath(self._tile.x, self._tile.y, self.destination.x,
-                                                                  self.destination.y, issubclass(type(self), Climber))
+                                                                  self.destination.y, True, issubclass(type(self), Climber))
                 if self.path[0] and self._current_stamina > 0:
                     next = self.path[1][1]
                     self._current_stamina -= 1

@@ -62,6 +62,8 @@ class Player:
         for unit in self._to_simulate:
             if issubclass(type(unit), Soldier):
                 unit.current_stamina = unit.stamina
+            elif issubclass(type(unit), Tower) and unit.is_in_ruins:
+                unit.round_done = False
 
     @staticmethod
     def distance(tower, tile):
@@ -79,14 +81,13 @@ class Player:
 
     def closest_tower(self, tile):
         closest = None
-        for i, row in enumerate(self._game.map):
-            for j, elem in enumerate(row):
-                if len(self._game.map[i][j].units) != 0 and issubclass(type(self._game.map[i][j].units[0]), Tower):
-                    if not self._game.map[i][j].units[0].is_in_ruins:
-                        if closest is None:
-                            closest = self._game.map[i][j]
-                        elif self.distance(self._game.map[i][j], tile) < self.distance(closest, tile):
-                            closest = self._game.map[i][j]
+        for u in self._units:
+            if issubclass(type(u), Tower):
+                if not u.is_in_ruins:
+                    if closest is None:
+                        closest = u.tile
+                    elif self.distance(u.tile, tile) < self.distance(closest, tile):
+                        closest = u.tile
 
         return closest
 

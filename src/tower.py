@@ -13,6 +13,7 @@ class Tower(Unit):
         self._locked_unit = None
         self._last_time = 0
         self._level = 1
+        self._round_done = False
 
     def upgrade(self):
         if self._level < 5 and self._owner.gold - (self._level + 1) * self.__class__.price > 0:
@@ -33,13 +34,14 @@ class Tower(Unit):
         self._tile.has_building = False
 
     def remove_ruins(self):
-        if self._is_in_ruins is True:
+        if self._is_in_ruins is True and not self._round_done:
             if self._clean_time - 1 > 0:
                 self._clean_time -= 1
             else:
                 self._owner.units.remove(self)
                 self._tile.units.remove(self)
                 self._tile.has_building = False
+        self._round_done = True
 
     def distance(self, unit):
         x = unit.x
@@ -94,6 +96,14 @@ class Tower(Unit):
     @property
     def last_time(self):
         return self._last_time
+
+    @property
+    def round_done(self):
+        return self._round_done
+
+    @round_done.setter
+    def round_done(self, new_value):
+        self._round_done = new_value
 
 
 class BasicTower(Tower):

@@ -119,7 +119,7 @@ class AStar:
         self.row = len(self.arr)
         self.col = len(self.arr[0])
 
-    def isPath(self, x1, y1, x2, y2, special=False, destination_tile=None, update=True):
+    def isPath(self, x1, y1, x2, y2, update, special=False, destination_tile=None):
         if update:
             self.loadObstacles(special, destination_tile)
         path = search(self.arr, 1, [x1, y1], [x2, y2])
