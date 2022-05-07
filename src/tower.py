@@ -51,7 +51,11 @@ class Tower(Unit):
         return distance
 
     def hit(self, damage):
-        self._health -= damage
+        if (self._health - damage) < 0:
+            self._health = 0
+        else:
+            self._health -= damage
+
         if self._health <= 0:
             self._is_in_ruins = True
 

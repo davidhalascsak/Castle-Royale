@@ -10,6 +10,8 @@ class Unit:
 
     def change_health(self, damage):
         new = self._health - damage
+        if new < 0:
+            new = 0
         self.health = new
 
     @property

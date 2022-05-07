@@ -7,6 +7,13 @@ class Castle:
 
     def hit(self, damage):
         self._health -= damage
+        if self.health <= 0:
+            if self._owner == self._owner.game.player_1:
+                w = self._owner.game.player_2
+            else:
+                w = self._owner.game.player_1
+
+            self._owner.game.set_winner(w)
 
     @property
     def health(self):

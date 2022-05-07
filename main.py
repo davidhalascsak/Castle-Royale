@@ -69,12 +69,19 @@ btn_move = Button((255, 0, 0), 760, 676, 235, 40, "MOVE")
 btn_continue = Button((255, 0, 0), 1010, 676, 235, 40, "CONTINUE")
 btn_end = Button((255, 0, 0), SCREEN_WIDTH / 2 - 40, SCREEN_HEIGHT / 2 - 25, 80, 50, "MENU")
 
-game = Game()
+btn_back = Button((255, 0, 0), 10, 676, 235, 40, "MAIN MENU")
 
-game.new_game(1000, "Player1", "Player2")
+# game = Game()
+#
+# game.new_game(1000, "Player1", "Player2")
+
+
+game = None
+
 
 font = pygame.font.SysFont('comicsans', 20)
 font2 = pygame.font.Font(os.path.join("assets", "fonts", 'arcadeclassic.ttf'), 23)
+font_game_over = pygame.font.Font(os.path.join("assets", "fonts", 'arcadeclassic.ttf'), 100)
 SCALE = 3
 
 gold_coin = pygame.image.load("assets/gold_coin.png")
@@ -110,6 +117,8 @@ name_color_now_playing = (255, 0, 0)
 
 
 def fill(surface, original_surface, hue):
+    if hue < 0:
+        hue = 0
     w, h = surface.get_size()
     for x in range(w):
         for y in range(h):
@@ -141,7 +150,17 @@ while run:
             elem.draw(screen)
         # draw
     elif game_state == 2:
-        pass
+        screen.blit(menu_images["BG"], [0, 0, SCREEN_WIDTH, SCREEN_HEIGHT])
+
+        if game.winner:
+            game_over_title = font_game_over.render("{} WINS".format(game.winner.name), True, (255, 215, 166))
+            game_over_title_outlines = font_game_over.render("{} WINS".format(game.winner.name), True, (39, 28, 57))
+
+            screen.blit(game_over_title_outlines, ( (SCREEN_WIDTH / 2 - game_over_title.get_width() / 2) - 4, (SCREEN_HEIGHT / 2 - game_over_title.get_height() / 2) + 4))
+            screen.blit(game_over_title, (SCREEN_WIDTH / 2 - game_over_title.get_width() / 2, SCREEN_HEIGHT / 2 - game_over_title.get_height() / 2))
+
+        btn_back.draw(screen)
+        btn_back.is_over(pygame.mouse.get_pos())
         # draw
     elif game_state == 3:
         pass
@@ -228,6 +247,8 @@ while run:
             screen.blit(current_player_state_outline, ((SCREEN_WIDTH / 2) - 2 - (current_player_state.get_width() / 2), 10 + 2))
             screen.blit(current_player_state, ((SCREEN_WIDTH / 2) - (current_player_state.get_width() / 2), 10))
 
+            if game_state == 4 and game.winner:
+                game_state = 2
 
         if not hamburger.opened:
             btn_quit.is_over(pygame.mouse.get_pos())
@@ -258,13 +279,16 @@ while run:
                 for i, btn in enumerate(main_menu_btn):
                     if btn.is_over(pygame.mouse.get_pos()):
                         if main_menu[i][0] == 1:
+                            game = Game()
+                            game.new_game(1000, "Player1", "Player2")
                             game_state = 4
                         elif main_menu[i][0] == 2:
                             run = False
 
         elif game_state == 2:
-            pass
-            # keyboard input
+            if event.type == pygame.MOUSEBUTTONUP and not game.start_simulation:
+                if btn_back.is_over(pygame.mouse.get_pos()):
+                    game_state = 1
         elif game_state == 3:
             pass
             # keyboard input
@@ -350,6 +374,9 @@ while run:
                                 simulation_starting_time = pygame.time.get_ticks()
                         elif btn_quit.is_over(pygame.mouse.get_pos()):
                             game_state = 1
+                            # print(game.player_1.castle_tile.units[0].health)
+                            # print(game.player_2.castle_tile.units[0].health)
+                            # print(game.winner)
                         elif btn_build.is_over(pygame.mouse.get_pos()):
                             game.current_player.state = "BUILD"
                         elif btn_train.is_over(pygame.mouse.get_pos()):
@@ -358,7 +385,6 @@ while run:
                             game.current_player.state = "MOVE"
                         elif btn_end.is_over(pygame.mouse.get_pos()):
                             pass
-
         if event.type == pygame.QUIT:
             run = False
 

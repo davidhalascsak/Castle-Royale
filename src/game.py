@@ -99,6 +99,9 @@ class Game:
         else:
             return self._player_1
 
+    def set_winner(self, p):
+        self._winner = p
+
     def next_round(self):
         self._player_1.state = None
         self._player_2.state = None
