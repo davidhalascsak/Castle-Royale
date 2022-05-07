@@ -61,8 +61,8 @@ class Game:
 
     def new_game(self, start_gold, name_1, name_2):
         # Configure Players
-        self._player_1 = Player(name_1, 1000, self.map_height // 2, 0, self)
-        self._player_2 = Player(name_2, 1000, self.map_height // 2, self.map_width-1, self)
+        self._player_1 = Player(name_1, 10, self.map_height // 2, 0, self)
+        self._player_2 = Player(name_2, 10, self.map_height // 2, self.map_width-1, self)
 
         self._player_1.gold = start_gold
         self._player_2.gold = start_gold
