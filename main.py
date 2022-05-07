@@ -87,6 +87,9 @@ SCALE = 3
 gold_coin = pygame.image.load("assets/gold_coin.png")
 gold_coin = pygame.transform.scale(gold_coin, (16 * SCALE, 16 * SCALE))
 
+game_icon = pygame.image.load("assets/tile_assets/blue_castle.png")
+pygame.display.set_icon(game_icon)
+
 sword = pygame.image.load("assets/sword.png")
 sword = pygame.transform.scale(sword, (16 * 2, 16 * 2))
 
@@ -378,10 +381,10 @@ while run:
                             if game.start_simulation:
                                 simulation_starting_time = pygame.time.get_ticks()
                         elif btn_quit.is_over(pygame.mouse.get_pos()):
-                            # game_state = 1
-                            game.player_2.castle_tile.units[0].hit(10)
+                            game_state = 1
+                            # game.player_2.castle_tile.units[0].hit(10)
                             # print(game.player_1.castle_tile.units[0].health)
-                            print(game.player_2.castle_tile.units[0].health)
+                            # print(game.player_2.castle_tile.units[0].health)
                             # print(game.winner)
                         elif btn_build.is_over(pygame.mouse.get_pos()):
                             game.current_player.state = "BUILD"
