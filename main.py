@@ -340,7 +340,7 @@ while run:
                                     elif tile.has_building and issubclass(type(tile.units[0]), Tower) and tile.units[0].is_in_ruins:
                                         hamburger.change_content(["Remove"])
                                     else:
-                                        hamburger.change_content(["Tower", "Slow", "Splash", "Barracks"])
+                                        hamburger.change_content(["Tower", "Slow", "Splash"])
                                     hamburger.open(mouse_cords[0], mouse_cords[1])
 
                                 elif game.current_player.state == "TRAIN":
