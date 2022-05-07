@@ -5,6 +5,12 @@ from src.soldier import *
 from src.tower import *
 
 
+def draw_rect_alpha(surface, color, rect):
+    shape_surf = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
+    pygame.draw.rect(shape_surf, color, shape_surf.get_rect(), 1)
+    surface.blit(shape_surf, rect)
+
+
 class Tile:
 
     def __init__(self, game, pos_x, pos_y):
@@ -137,6 +143,9 @@ class Tile:
         if self._is_castle:
             surface.blit(self.get_castle_image(), [self._y, self._x, self._width, self._height])
 
+        if not self.game_ref.start_simulation:
+            draw_rect_alpha(surface, pygame.Color(0, 0, 0, 30), pygame.Rect(self._y, self._x, self._width, self._height))
+
         # hover
         if self._hover:
             surface.blit(self._hover_image, [self._y, self._x, self._width, self._height])
@@ -149,6 +158,8 @@ class Tile:
         if self._waypoint:
             pygame.draw.rect(surface, (0, 255, 0), pygame.Rect(self._y, self._x, self._width, self._height), 2)
         # pygame.display.flip()
+
+        # pygame.draw.rect(surface, pygame.Color(0, 0, 0, 50), pygame.Rect(self._y, self._x, self._width, self._height), 1)
 
     def draw_buildings_and_soldiers(self, surface):
         # draw tower

@@ -200,11 +200,14 @@ while run:
             player1_hp = game.player_1.castle_tile.units[0].health
             fill(health_bar_inside_left, health_bar_inside_original_left, math.floor(player1_hp / 10))
 
+
+
             screen.blit(player1_name_outlines, (30, 15, 200, 200))
             screen.blit(player1_name, (30 + 2, 15 - 2, 200, 200))
 
+            player1_display_hp = translate(player1_hp, 0, 1000, 160, 1000)
             screen.blit(health_bar_left, (20, 45, 200, 200))
-            screen.blit(health_bar_inside_left, (20, 45, 200, 200), (0, 0, (health_bar_inside_left.get_width() * player1_hp) / 1000, 200))
+            screen.blit(health_bar_inside_left, (20, 45, 200, 200), (0, 0, (health_bar_inside_left.get_width() * player1_display_hp) / 1000, 200))
 
             screen.blit(gold_coin, (hud_pos_x, hud_pos_y))
             screen.blit(player1_money, (-5 + hud_pos_x + gold_coin.get_width(), hud_pos_y + (gold_coin.get_height() / 2 - player1_money.get_height() / 2)))
@@ -226,7 +229,9 @@ while run:
             player2_hp = game.player_2.castle_tile.units[0].health
             fill(health_bar_inside_right, health_bar_inside_original_right, math.floor(player2_hp / 10))
             screen.blit(health_bar_right, (SCREEN_WIDTH - 20 - health_bar_right.get_width(), 45, 200, 200))
-            screen.blit(health_bar_inside_right, (SCREEN_WIDTH - 20 - health_bar_inside_right.get_width() + (health_bar_inside_right.get_width() - ((health_bar_inside_right.get_width() * player2_hp) / 1000)), 45, 200, 200), (health_bar_inside_right.get_width() - ((health_bar_inside_right.get_width() * player2_hp) / 1000), 0, health_bar_inside_right.get_width(), 200))
+
+            player2_display_hp = translate(player2_hp, 0, 1000, 160, 1000)
+            screen.blit(health_bar_inside_right, (SCREEN_WIDTH - 20 - health_bar_inside_right.get_width() + (health_bar_inside_right.get_width() - ((health_bar_inside_right.get_width() * player2_display_hp) / 1000)), 45, 200, 200), (health_bar_inside_right.get_width() - ((health_bar_inside_right.get_width() * player2_display_hp) / 1000), 0, health_bar_inside_right.get_width(), 200))
 
             screen.blit(player2_name_outlines, (SCREEN_WIDTH - 30 - player2_name_outlines.get_width(), 15, 200, 200))
             screen.blit(player2_name, (SCREEN_WIDTH - 30 - player2_name_outlines.get_width() + 2, 15 - 2, 200, 200))
@@ -373,9 +378,10 @@ while run:
                             if game.start_simulation:
                                 simulation_starting_time = pygame.time.get_ticks()
                         elif btn_quit.is_over(pygame.mouse.get_pos()):
-                            game_state = 1
+                            # game_state = 1
+                            game.player_2.castle_tile.units[0].hit(10)
                             # print(game.player_1.castle_tile.units[0].health)
-                            # print(game.player_2.castle_tile.units[0].health)
+                            print(game.player_2.castle_tile.units[0].health)
                             # print(game.winner)
                         elif btn_build.is_over(pygame.mouse.get_pos()):
                             game.current_player.state = "BUILD"

@@ -39,3 +39,12 @@ def tile_can_be_added_as_waypoint(cur_tile, sel_tile):
              sum = sum and hasattr(unit, 'waypoints') and isinstance(unit.waypoints, list) and cur_tile and (cur_tile.type == "PLAIN" or tile_all_climber(sel_tile))
     print(sum)
     return sum
+
+
+def translate(value, leftMin, leftMax, rightMin, rightMax):
+    leftSpan = leftMax - leftMin
+    rightSpan = rightMax - rightMin
+
+    valueScaled = float(value - leftMin) / float(leftSpan)
+
+    return rightMin + (valueScaled * rightSpan)
