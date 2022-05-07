@@ -62,14 +62,14 @@ for i, elem in enumerate(main_menu):
     main_menu_btn.append(MenuButton(SCREEN_WIDTH / 2 - img.get_width() * main_menu_scale / 2, menu_top_padding + menu_images["LOGO"].get_height() + padding, img.get_width() * main_menu_scale, img.get_height() * main_menu_scale, elem[1], (len(main_menu)-1) == i))
 
 
-btn_quit = Button((255, 0, 0), 10, 676, 235, 40, "MAIN MENU")
-btn_build = Button((255, 0, 0), 260, 676, 235, 40, "BUILD")
-btn_train = Button((255, 0, 0), 510, 676, 235, 40, "TRAIN")
-btn_move = Button((255, 0, 0), 760, 676, 235, 40, "MOVE")
-btn_continue = Button((255, 0, 0), 1010, 676, 235, 40, "CONTINUE")
+btn_quit = Button((255, 0, 0), 18, 676, 228, 40, "MAIN MENU")
+btn_build = Button((255, 0, 0), 264, 676, 228, 40, "BUILD")
+btn_train = Button((255, 0, 0), 510, 676, 228, 40, "TRAIN")
+btn_move = Button((255, 0, 0), 756, 676, 228, 40, "MOVE")
+btn_continue = Button((255, 0, 0), 1002, 676, 228, 40, "CONTINUE")
 btn_end = Button((255, 0, 0), SCREEN_WIDTH / 2 - 40, SCREEN_HEIGHT / 2 - 25, 80, 50, "MENU")
 
-btn_back = Button((255, 0, 0), 10, 676, 235, 40, "MAIN MENU")
+btn_back = Button((255, 0, 0), 18, 676, 228, 40, "MAIN MENU")
 
 # game = Game()
 #
@@ -114,6 +114,11 @@ health_bar_inside_original_right = pygame.image.load("assets/health_bar_inside.p
 health_bar_inside_original_right = pygame.transform.flip(health_bar_inside_original_right, True, False)
 health_bar_inside_original_right = pygame.transform.scale(health_bar_inside_original_right, (44 * SCALE, 9 * SCALE))
 
+buttons_background = pygame.image.load("assets/in_game_button_assets/button_background.png")
+lock = pygame.image.load("assets/lock.png")
+lock = pygame.transform.scale(lock, (16 * 2, 16 * 2))
+
+
 # Change name color based on round
 name_color = (0, 0, 0)
 name_color_now_playing = (255, 0, 0)
@@ -141,7 +146,7 @@ run = True
 while run:
     clock.tick(FPS)
     # Background color for testing
-    screen.fill((54, 71, 101))
+    screen.fill((247, 217, 181))
     # Draw update function
     if game_state == 1:
 
@@ -170,6 +175,9 @@ while run:
         # draw
     elif game_state == 4:
         # Draw Tiles
+
+        screen.blit(buttons_background, [0, 672, SCREEN_WIDTH, 200])
+
         if not game.is_ended:
             for i in range(0, 14):
                 for j in range(0, 26):
@@ -258,13 +266,14 @@ while run:
             if game_state == 4 and game.winner:
                 game_state = 2
 
-        if not hamburger.opened:
-            btn_quit.is_over(pygame.mouse.get_pos())
-            btn_build.is_over(pygame.mouse.get_pos())
-            btn_train.is_over(pygame.mouse.get_pos())
-            btn_move.is_over(pygame.mouse.get_pos())
-            btn_continue.is_over(pygame.mouse.get_pos())
-            btn_end.is_over(pygame.mouse.get_pos())
+        if not game.start_simulation:
+            if not hamburger.opened:
+                btn_quit.is_over(pygame.mouse.get_pos())
+                btn_build.is_over(pygame.mouse.get_pos())
+                btn_train.is_over(pygame.mouse.get_pos())
+                btn_move.is_over(pygame.mouse.get_pos())
+                btn_continue.is_over(pygame.mouse.get_pos())
+                btn_end.is_over(pygame.mouse.get_pos())
 
         if not game.is_ended:
             btn_quit.draw(screen)
@@ -273,6 +282,12 @@ while run:
             btn_move.draw(screen)
             btn_continue.draw(screen)
 
+        if game.start_simulation:
+            screen.blit(lock, [17, 682, lock.get_width(), lock.get_height()])
+            screen.blit(lock, [263, 682, lock.get_width(), lock.get_height()])
+            screen.blit(lock, [509, 682, lock.get_width(), lock.get_height()])
+            screen.blit(lock, [755, 682, lock.get_width(), lock.get_height()])
+            screen.blit(lock, [1001, 682, lock.get_width(), lock.get_height()])
         # Draw Context Menu
         hamburger.draw(screen)
         hamburger.is_over(pygame.mouse.get_pos())
@@ -373,6 +388,7 @@ while run:
                                 game.current_tile = tile
                     if event.type == pygame.MOUSEBUTTONUP and not game.start_simulation:
                         if btn_continue.is_over(pygame.mouse.get_pos()):
+                            btn_continue.is_over((0, 0))
                             game.next_round()
                             for row in game.map:
                                 for tile in row:

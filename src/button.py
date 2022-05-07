@@ -1,7 +1,9 @@
 import pygame
 pygame.init()
 import os
+font = pygame.font.Font(os.path.join("assets", "fonts", 'arcadeclassic.ttf'), 20)
 font2 = pygame.font.Font(os.path.join("assets", "fonts", 'arcadeclassic.ttf'), 35)
+
 
 class Button:
     def __init__(self, color, x, y, width, height, text=''):
@@ -11,21 +13,30 @@ class Button:
         self._width = width
         self._height = height
         self._text = text
-        self.color = (255, 255, 255)
-        self.hover_color = (0, 0, 0)
+        self.color = (255, 221, 184)
+        self.hover_color = (255, 255, 0)
         self.hover = False
+        self.image = pygame.image.load("assets/in_game_button_assets/button.png")
 
     def draw(self, win, outline=None):
-        if outline:
-            pygame.draw.rect(win, outline, (self._x - 2, self._y - 2, self._width + 4, self._height + 4), 0)
+        # if outline:
+        #     pygame.draw.rect(win, outline, (self._x - 2, self._y - 2, self._width + 4, self._height + 4), 0)
 
-        pygame.draw.rect(win, (255, 255, 255), (self._x, self._y, self._width, self._height), 2)
-        if self.hover:
-            pygame.draw.rect(win, (255, 255, 255), (self._x, self._y, self._width, self._height), 0)
+        # pygame.draw.rect(win, (255, 255, 255), (self._x, self._y, self._width, self._height), 2)
+
+        win.blit(self.image, [self._x, self._y, self._width, self._height])
+
+        # if self.hover:
+        #     pygame.draw.rect(win, (255, 255, 255), (self._x, self._y, self._width, self._height), 0)
 
         if self._text != '':
-            font = pygame.font.SysFont('arial', 15)
+            # font = pygame.font.SysFont('arial', 15)
             text = font.render(self.text, 1, self.get_text_color())
+            text_outline = font.render(self.text, 1, (61, 51, 45))
+
+            win.blit(text_outline,
+                     (self._x + 2 + (self._width / 2 - text.get_width() / 2),
+                      self._y + 2 + (self._height / 2 - text.get_height() / 2)))
             win.blit(text,
                      (self._x + (self._width / 2 - text.get_width() / 2),
                       self._y + (self._height / 2 - text.get_height() / 2)))
