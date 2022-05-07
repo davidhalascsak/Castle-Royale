@@ -185,28 +185,28 @@ class Tile:
                 start = 1
                 length -= 1
             if self._y > 600:
-                horizontal_alignment = -122
+                horizontal_alignment = -172
             else:
                 horizontal_alignment = 0
             if self._x > 330:
                 vertical_alignment = - length * 18
             else:
                 vertical_alignment = 48
-            pygame.draw.rect(surface, pygame.Color(0, 0, 0),
-                             pygame.Rect(self._y + horizontal_alignment, self._x + vertical_alignment, 170,
+            pygame.draw.rect(surface, pygame.Color(255, 255, 255),
+                             pygame.Rect(self._y + horizontal_alignment, self._x + vertical_alignment, 220,
                                          length * 18))
             for i in range(start, len(self._units)):
-                text = pygame.font.SysFont('Arial', 17).render("{0} - {1}/{2}".
+                text = pygame.font.SysFont('Arial', 19).render("{0} - {1}/{2}".
                                                                format(type(self._units[i]).__name__,
                                                                       self._units[i].health,
                                                                       self._units[i].max_health),
-                                                               False, self.get_owner_color(i))
-                surface.blit(text, (self._y + horizontal_alignment, self._x + vertical_alignment + (ind * 16)))
+                                                               False, pygame.Color(0, 0, 0))
+                surface.blit(text, (self._y + horizontal_alignment + 20, self._x + vertical_alignment - 2 + (ind * 18)))
+                pygame.draw.circle(surface, self.get_owner_color(), (self._y + horizontal_alignment + 10, self._x + 9 + vertical_alignment + (ind * 18)), 5)
                 ind += 1
 
             for u in self.units:
                 if hasattr(u, "destination") and u.destination:
-                    # pygame.draw.rect(surface, (255, 255, 0), pygame.Rect(u.destination.y * 48, u.destination.x * 48, self._width, self._height), 2)
                     pygame.draw.rect(surface, (255, 0, 0),
                                      pygame.Rect(u.destination.y * 48, u.destination.x * 48, self._width, self._height),
                                      2)
@@ -214,31 +214,31 @@ class Tile:
                     for point in u.waypoints:
                         pygame.draw.rect(surface, (255, 255, 0),
                                          pygame.Rect(point[1] * 48, point[0] * 48, self._width,
-                                                     self._height),
-                                         2)
+                                                     self._height),2)
 
         if self._hover and (len(self._units) > 0 and issubclass(type(self._units[0]), Tower)):
             length = len(self._units)
             if self._y > 600:
-                horizontal_alignment = -122
+                horizontal_alignment = -172
             else:
                 horizontal_alignment = 0
             if self._x > 330:
                 vertical_alignment = - length * 18
             else:
                 vertical_alignment = 48
-            pygame.draw.rect(surface, pygame.Color(0, 0, 0),
-                             pygame.Rect(self._y + horizontal_alignment, self._x + vertical_alignment, 170,
+            pygame.draw.rect(surface, pygame.Color(255, 255, 255),
+                             pygame.Rect(self._y + horizontal_alignment, self._x + vertical_alignment, 220,
                                          length * 18))
             if self._units[0].is_in_ruins:
-                text = pygame.font.SysFont('Arial', 17).render("{0} days to clean the site.".format(self._units[0].clean_time), False, self.get_owner_color(0))
+                text = pygame.font.SysFont('Arial', 19).render("{0} days to clean the site.".format(self._units[0].clean_time), False, self.get_owner_color(0))
             else:
-                text = pygame.font.SysFont('Arial', 17).render("{0} - {1}/{2}".
+                text = pygame.font.SysFont('Arial', 19).render("{0} - {1}/{2}".
                                                                format(type(self._units[0]).__name__,
                                                                       self._units[0].health,
                                                                       self._units[0].max_health),
-                                                               False, self.get_owner_color(0))
-            surface.blit(text, (self._y + horizontal_alignment, self._x + vertical_alignment + (0 * 16)))
+                                                               False, pygame.Color(0, 0, 0))
+            pygame.draw.circle(surface, self.get_owner_color(), (self._y + horizontal_alignment + 10, self._x + 9 + vertical_alignment), 5)
+            surface.blit(text, (self._y + horizontal_alignment + 20, self._x + vertical_alignment - 2))
 
     def is_over(self, pos):
         if self._y < pos[0] < self._y + self._width:

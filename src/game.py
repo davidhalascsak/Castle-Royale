@@ -32,10 +32,7 @@ class Game:
             player1_stuck = self._player_1.simulate()
             player2_stuck = self._player_2.simulate()
             self._start_simulation = not (player1_stuck and player2_stuck)
-            # for u in self._player_1.to_simulate:
-            #     u.print_stats()
 
-            # self._start_simulation = False
     def reset_stats(self):
         self._player_1.reset_stamina()
         self._player_2.reset_stamina()

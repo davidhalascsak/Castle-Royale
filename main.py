@@ -8,6 +8,7 @@ from src.tower import *
 from src.core import *
 from src.tile import *
 import os
+
 pygame.init()
 
 SCREEN_WIDTH = 1248  # 1280
@@ -31,7 +32,6 @@ game_state = 1
 
 in_game_menu = ["MAIN MENU", "BUILD", "TRAIN", "MOVE", "CONTINUE"]
 
-
 main_menu_scale = 5
 # MENU ASSETS
 menu_images = {
@@ -40,8 +40,8 @@ menu_images = {
     "LOGO": pygame.image.load("assets/menu_assets/logo_tabla.png"),
     "BG": pygame.image.load("assets/menu_assets/menu_bg.png")
 }
-menu_images["LOGO"] = pygame.transform.scale(menu_images["LOGO"], (menu_images["LOGO"].get_width() * main_menu_scale, menu_images["LOGO"].get_height() * main_menu_scale))
-
+menu_images["LOGO"] = pygame.transform.scale(menu_images["LOGO"], (
+menu_images["LOGO"].get_width() * main_menu_scale, menu_images["LOGO"].get_height() * main_menu_scale))
 
 main_menu = [(1, "NEW GAME"), (2, "QUIT")]
 main_menu_btn = []
@@ -59,8 +59,10 @@ for i, elem in enumerate(main_menu):
 
     # print(padding)
 
-    main_menu_btn.append(MenuButton(SCREEN_WIDTH / 2 - img.get_width() * main_menu_scale / 2, menu_top_padding + menu_images["LOGO"].get_height() + padding, img.get_width() * main_menu_scale, img.get_height() * main_menu_scale, elem[1], (len(main_menu)-1) == i))
-
+    main_menu_btn.append(MenuButton(SCREEN_WIDTH / 2 - img.get_width() * main_menu_scale / 2,
+                                    menu_top_padding + menu_images["LOGO"].get_height() + padding,
+                                    img.get_width() * main_menu_scale, img.get_height() * main_menu_scale, elem[1],
+                                    (len(main_menu) - 1) == i))
 
 btn_quit = Button((255, 0, 0), 18, 676, 228, 40, "MAIN MENU")
 btn_build = Button((255, 0, 0), 264, 676, 228, 40, "BUILD")
@@ -77,7 +79,6 @@ btn_back = Button((255, 0, 0), 18, 676, 228, 40, "MAIN MENU")
 
 
 game = None
-
 
 font = pygame.font.SysFont('comicsans', 20)
 font2 = pygame.font.Font(os.path.join("assets", "fonts", 'arcadeclassic.ttf'), 23)
@@ -118,7 +119,6 @@ buttons_background = pygame.image.load("assets/in_game_button_assets/button_back
 lock = pygame.image.load("assets/lock.png")
 lock = pygame.transform.scale(lock, (16 * 2, 16 * 2))
 
-
 # Change name color based on round
 name_color = (0, 0, 0)
 name_color_now_playing = (255, 0, 0)
@@ -127,13 +127,14 @@ name_color_now_playing = (255, 0, 0)
 def fill(surface, original_surface, hue):
     if hue < 0:
         hue = 0
-    w, h = surface.get_size()
-    for x in range(w):
-        for y in range(h):
-            a = surface.get_at((x, y))[3]
-            c = original_surface.get_at((x, y))
-            c.hsla = (c.hsla[0] + hue, c.hsla[1], c.hsla[2], c.hsla[3])
-            surface.set_at((x, y), pygame.Color(c.r, c.g, c.b, a))
+    pass
+    # w, h = surface.get_size()
+    # for x in range(w):
+    #     for y in range(h):
+    #         a = surface.get_at((x, y))[3]
+    #         c = original_surface.get_at((x, y))
+    #         c.hsla = (c.hsla[0] + hue, c.hsla[1], c.hsla[2], c.hsla[3])
+    #         surface.set_at((x, y), pygame.Color(c.r, c.g, c.b, a))
 
 
 def get_name_color(player):
@@ -152,7 +153,8 @@ while run:
 
         screen.blit(menu_images["BG"], [0, 0, SCREEN_WIDTH, SCREEN_HEIGHT])
 
-        screen.blit(menu_images["LOGO"], [SCREEN_WIDTH / 2 - img.get_width() * main_menu_scale / 2, menu_top_padding, menu_images["LOGO"].get_width(), menu_images["LOGO"].get_height()])
+        screen.blit(menu_images["LOGO"], [SCREEN_WIDTH / 2 - img.get_width() * main_menu_scale / 2, menu_top_padding,
+                                          menu_images["LOGO"].get_width(), menu_images["LOGO"].get_height()])
 
         for elem in main_menu_btn:
             elem.draw(screen)
@@ -164,8 +166,10 @@ while run:
             game_over_title = font_game_over.render("{} WINS".format(game.winner.name), True, (255, 215, 166))
             game_over_title_outlines = font_game_over.render("{} WINS".format(game.winner.name), True, (39, 28, 57))
 
-            screen.blit(game_over_title_outlines, ( (SCREEN_WIDTH / 2 - game_over_title.get_width() / 2) - 4, (SCREEN_HEIGHT / 2 - game_over_title.get_height() / 2) + 4))
-            screen.blit(game_over_title, (SCREEN_WIDTH / 2 - game_over_title.get_width() / 2, SCREEN_HEIGHT / 2 - game_over_title.get_height() / 2))
+            screen.blit(game_over_title_outlines, ((SCREEN_WIDTH / 2 - game_over_title.get_width() / 2) - 4,
+                                                   (SCREEN_HEIGHT / 2 - game_over_title.get_height() / 2) + 4))
+            screen.blit(game_over_title, (
+            SCREEN_WIDTH / 2 - game_over_title.get_width() / 2, SCREEN_HEIGHT / 2 - game_over_title.get_height() / 2))
 
         btn_back.draw(screen)
         btn_back.is_over(pygame.mouse.get_pos())
@@ -198,7 +202,6 @@ while run:
             p1_name = str(game.player_1.name)
             p2_name = str(game.player_2.name)
 
-
             player1_name = font2.render(p1_name, True, (255, 255, 255))
             player1_name_outlines = font2.render(p1_name, True, (39, 28, 57))
             player1_money = font2.render(str(game.player_1.gold), True, pygame.Color(39, 28, 57))
@@ -211,18 +214,19 @@ while run:
             player1_hp = game.player_1.castle_tile.units[0].health
             fill(health_bar_inside_left, health_bar_inside_original_left, math.floor(player1_hp / 10))
 
-
-
             screen.blit(player1_name_outlines, (30, 15, 200, 200))
             screen.blit(player1_name, (30 + 2, 15 - 2, 200, 200))
 
             player1_display_hp = translate(player1_hp, 0, 1000, 160, 1000)
             screen.blit(health_bar_left, (20, 45, 200, 200))
-            screen.blit(health_bar_inside_left, (20, 45, 200, 200), (0, 0, (health_bar_inside_left.get_width() * player1_display_hp) / 1000, 200))
+            screen.blit(health_bar_inside_left, (20, 45, 200, 200),
+                        (0, 0, (health_bar_inside_left.get_width() * player1_display_hp) / 1000, 200))
 
             screen.blit(gold_coin, (hud_pos_x, hud_pos_y))
-            screen.blit(player1_money, (-5 + hud_pos_x + gold_coin.get_width(), hud_pos_y + (gold_coin.get_height() / 2 - player1_money.get_height() / 2)))
-            screen.blit(player1_money_outline, (-5 + 3 + hud_pos_x + gold_coin.get_width(), hud_pos_y + (gold_coin.get_height() / 2 - player1_money_outline.get_height() / 2) - 1))
+            screen.blit(player1_money, (-5 + hud_pos_x + gold_coin.get_width(),
+                                        hud_pos_y + (gold_coin.get_height() / 2 - player1_money.get_height() / 2)))
+            screen.blit(player1_money_outline, (-5 + 3 + hud_pos_x + gold_coin.get_width(), hud_pos_y + (
+                        gold_coin.get_height() / 2 - player1_money_outline.get_height() / 2) - 1))
 
             player2_name = font2.render(p2_name, True, (255, 255, 255))
             player2_name_outlines = font2.render(p2_name, True, (39, 28, 57))
@@ -233,7 +237,8 @@ while run:
                 if game.current_player == game.player_1:
                     screen.blit(sword, (30 + player1_name.get_width(), 8))
                 else:
-                    screen.blit(pygame.transform.flip(sword, flip_x=True, flip_y=False), (SCREEN_WIDTH - 30 - sword.get_width() - player2_name.get_width(), 8))
+                    screen.blit(pygame.transform.flip(sword, flip_x=True, flip_y=False),
+                                (SCREEN_WIDTH - 30 - sword.get_width() - player2_name.get_width(), 8))
 
             # screen.blit(player2_name, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 10))
 
@@ -242,17 +247,24 @@ while run:
             screen.blit(health_bar_right, (SCREEN_WIDTH - 20 - health_bar_right.get_width(), 45, 200, 200))
 
             player2_display_hp = translate(player2_hp, 0, 1000, 160, 1000)
-            screen.blit(health_bar_inside_right, (SCREEN_WIDTH - 20 - health_bar_inside_right.get_width() + (health_bar_inside_right.get_width() - ((health_bar_inside_right.get_width() * player2_display_hp) / 1000)), 45, 200, 200), (health_bar_inside_right.get_width() - ((health_bar_inside_right.get_width() * player2_display_hp) / 1000), 0, health_bar_inside_right.get_width(), 200))
+            screen.blit(health_bar_inside_right, (SCREEN_WIDTH - 20 - health_bar_inside_right.get_width() + (
+                        health_bar_inside_right.get_width() - (
+                            (health_bar_inside_right.get_width() * player2_display_hp) / 1000)), 45, 200, 200), (
+                        health_bar_inside_right.get_width() - (
+                                    (health_bar_inside_right.get_width() * player2_display_hp) / 1000), 0,
+                        health_bar_inside_right.get_width(), 200))
 
             screen.blit(player2_name_outlines, (SCREEN_WIDTH - 30 - player2_name_outlines.get_width(), 15, 200, 200))
             screen.blit(player2_name, (SCREEN_WIDTH - 30 - player2_name_outlines.get_width() + 2, 15 - 2, 200, 200))
 
             screen.blit(gold_coin, (SCREEN_WIDTH - gold_coin.get_width() - hud_pos_x, hud_pos_y))
-            screen.blit(player2_money, (5 + SCREEN_WIDTH - gold_coin.get_width() - hud_pos_x - player2_money.get_width(), hud_pos_y + (gold_coin.get_height() / 2 - player2_money.get_height() / 2)))
-            screen.blit(player2_money_outline, (5 + 3 + SCREEN_WIDTH - gold_coin.get_width() - hud_pos_x - player2_money_outline.get_width(), hud_pos_y + (gold_coin.get_height() / 2 - player2_money_outline.get_height() / 2) - 1))
-            # screen.blit(player2_money_outline,
-            #             (3 + SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 35))
-            # TODO: kiirni a jatekos varanak hpjat felulre xd
+            screen.blit(player2_money, (
+            5 + SCREEN_WIDTH - gold_coin.get_width() - hud_pos_x - player2_money.get_width(),
+            hud_pos_y + (gold_coin.get_height() / 2 - player2_money.get_height() / 2)))
+            screen.blit(player2_money_outline, (
+            5 + 3 + SCREEN_WIDTH - gold_coin.get_width() - hud_pos_x - player2_money_outline.get_width(),
+            hud_pos_y + (gold_coin.get_height() / 2 - player2_money_outline.get_height() / 2) - 1))
+
             if not game.start_simulation:
                 current_player_state = font2.render(str(game.current_player.state), True, (255, 255, 255))
                 current_player_state_outline = font2.render(str(game.current_player.state), True, (39, 28, 57))
@@ -260,7 +272,8 @@ while run:
                 current_player_state = font2.render("Simulation", True, (255, 255, 255))
                 current_player_state_outline = font2.render("Simulation", True, (39, 28, 57))
 
-            screen.blit(current_player_state_outline, ((SCREEN_WIDTH / 2) - 2 - (current_player_state.get_width() / 2), 10 + 2))
+            screen.blit(current_player_state_outline,
+                        ((SCREEN_WIDTH / 2) - 2 - (current_player_state.get_width() / 2), 10 + 2))
             screen.blit(current_player_state, ((SCREEN_WIDTH / 2) - (current_player_state.get_width() / 2), 10))
 
             if game_state == 4 and game.winner:
@@ -358,9 +371,11 @@ while run:
                             if tile.is_over(pygame.mouse.get_pos()) and event.type == pygame.MOUSEBUTTONUP:
                                 if game.current_player.state == "BUILD":
                                     mouse_cords = pygame.mouse.get_pos()
-                                    if tile.has_building and issubclass(type(tile.units[0]), Tower) and not tile.units[0].is_in_ruins:
+                                    if tile.has_building and issubclass(type(tile.units[0]), Tower) and not tile.units[
+                                        0].is_in_ruins:
                                         hamburger.change_content(["Upgrade", "Demolish"])
-                                    elif tile.has_building and issubclass(type(tile.units[0]), Tower) and tile.units[0].is_in_ruins:
+                                    elif tile.has_building and issubclass(type(tile.units[0]), Tower) and tile.units[
+                                        0].is_in_ruins:
                                         hamburger.change_content(["Remove"])
                                     else:
                                         hamburger.change_content(["Tower", "Slow", "Splash"])
