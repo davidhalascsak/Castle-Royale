@@ -63,6 +63,7 @@ class Player:
     def reset_stamina(self):
         for unit in self._to_simulate:
             if issubclass(type(unit), Soldier):
+                unit.last_stuck = False
                 unit.current_stamina = unit.stamina
             elif issubclass(type(unit), Tower) and unit.is_in_ruins:
                 unit.round_done = False
