@@ -76,15 +76,17 @@ class Tile:
         for u in self._units:
             if issubclass(type(u), Tower):
                 unit = u
+        self.game_ref.path_finder.set_obstacle(self.x, self.y, 0)
         unit.demolish()
 
     def remove_tower_ruin(self):
-        unit = None
-        for u in self._units:
-            if issubclass(type(u), Tower):
-                unit = u
+        if self._units[0].owner == self.game_ref._current_player:
+            unit = None
+            for u in self._units:
+                if issubclass(type(u), Tower):
+                    unit = u
 
-        unit.remove_ruins()
+            unit.remove_ruins()
 
     def train(self, player, soldier):
         count = 0
