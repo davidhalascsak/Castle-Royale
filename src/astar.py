@@ -15,10 +15,8 @@ class Node:
         return self.position == other.position
 
 
-def return_path(current_node, maze):
+def return_path(current_node):
     path = []
-    no_rows, no_columns = np.shape(maze)
-    result = [[-1 for i in range(no_columns)] for j in range(no_rows)]
     current = current_node
     while current is not None:
         path.append(current.position)
@@ -61,13 +59,13 @@ def search(maze, cost, start, end):
 
         if outer_iterations > max_iterations:
             print("giving up on pathfinding too many iterations")
-            return return_path(current_node, maze)
+            return return_path(current_node)
 
         yet_to_visit_list.pop(current_index)
         visited_list.append(current_node)
 
         if current_node == end_node:
-            return return_path(current_node, maze)
+            return return_path(current_node)
 
         children = []
 

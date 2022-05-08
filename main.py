@@ -7,6 +7,7 @@ from src.soldier import *
 from src.tower import *
 from src.core import *
 from src.tile import *
+from src.tileview import *
 import os
 
 pygame.init()
@@ -53,11 +54,6 @@ for i, elem in enumerate(main_menu):
         img = menu_images['MIDDLE']
 
     padding = (i * (menu_images['MIDDLE'].get_height() * main_menu_scale))
-    # if (len(main_menu)-1) == i:
-    #     padding -= (menu_images['MIDDLE'].get_height() * main_menu_scale)
-    #     padding += (menu_images['BOTTOM'].get_height() * main_menu_scale)
-
-    # print(padding)
 
     main_menu_btn.append(MenuButton(SCREEN_WIDTH / 2 - img.get_width() * main_menu_scale / 2,
                                     menu_top_padding + menu_images["LOGO"].get_height() + padding,
@@ -72,10 +68,6 @@ btn_continue = Button((255, 0, 0), 1002, 676, 228, 40, "CONTINUE")
 btn_end = Button((255, 0, 0), SCREEN_WIDTH / 2 - 40, SCREEN_HEIGHT / 2 - 25, 80, 50, "MENU")
 
 btn_back = Button((255, 0, 0), 18, 676, 228, 40, "MAIN MENU")
-
-# game = Game()
-#
-# game.new_game(1000, "Player1", "Player2")
 
 
 game = None
@@ -123,6 +115,8 @@ lock = pygame.transform.scale(lock, (16 * 2, 16 * 2))
 name_color = (0, 0, 0)
 name_color_now_playing = (255, 0, 0)
 
+tile_view = []
+
 
 def fill(surface, original_surface, hue):
     if hue < 0:
@@ -140,6 +134,26 @@ def get_name_color(player):
     if game.current_player == player:
         return name_color_now_playing
     return name_color
+
+def translate(value, left_min, left_max, right_min, right_max):
+    left_span = left_max - left_min
+    right_span = right_max - right_min
+
+    value_scaled = float(value - left_min) / float(left_span)
+
+    return right_min + (value_scaled * right_span)
+
+def update_tile_view(map):
+    if(tile_view == []):
+        for i in range(0, 14):
+            tile_view.append([])
+            for j in range(0, 26):
+                tile_view[i].append(TileView(game, i, j))
+                tile_view[i][j]._tile = map[i][j]
+    else:
+        for i in range(0, 14):
+            for j in range(0, 26):
+                tile_view[i][j]._tile = map[i][j]
 
 
 run = True
@@ -178,19 +192,20 @@ while run:
         # draw
     elif game_state == 4:
         # Draw Tiles
-
+        
         screen.blit(buttons_background, [0, 672, SCREEN_WIDTH, 200])
-
+        
         if not game.is_ended:
+            update_tile_view(game._map)
             for i in range(0, 14):
                 for j in range(0, 26):
-                    game.map[i][j].draw(screen)
+                    tile_view[i][j].draw(screen)
             for i in range(0, 14):
                 for j in range(0, 26):
-                    game.map[i][j].draw_buildings_and_soldiers(screen)
+                    tile_view[i][j].draw_buildings_and_soldiers(screen)
             for i in range(0, 14):
                 for j in range(0, 26):
-                    game.map[i][j].draw_context_menu_for_tiles(screen)
+                    tile_view[i][j].draw_context_menu_for_tiles(screen)
         else:
             text = pygame.font.SysFont('Arial', 25).render("The winner is {0}.".format(game.winner), False, (0, 0, 0))
             screen.blit(text, (SCREEN_WIDTH / 2 - text.get_width() / 2, SCREEN_HEIGHT / 2 - 60))
@@ -208,7 +223,6 @@ while run:
 
             hud_pos_x = 10
             hud_pos_y = 70
-            # screen.blit(player1_name, (10, 10))
 
             player1_hp = game.player_1.castle_tile.units[0].health
             fill(health_bar_inside_left, health_bar_inside_original_left, math.floor(player1_hp / 10))
@@ -238,8 +252,6 @@ while run:
                 else:
                     screen.blit(pygame.transform.flip(sword, flip_x=True, flip_y=False),
                                 (SCREEN_WIDTH - 30 - sword.get_width() - player2_name.get_width(), 8))
-
-            # screen.blit(player2_name, (SCREEN_WIDTH - max(player2_money.get_width(), player2_name.get_width()) - 10, 10))
 
             player2_hp = game.player_2.castle_tile.units[0].health
             fill(health_bar_inside_right, health_bar_inside_original_right, math.floor(player2_hp / 10))
@@ -331,9 +343,7 @@ while run:
             if not game.start_simulation:
                 if hamburger.opened:
                     if event.type == pygame.MOUSEBUTTONUP:
-                        # if hamburger.is_outside(pygame.mouse.get_pos()):
                         content = hamburger.is_over(pygame.mouse.get_pos())
-                        # print(content)
                         for item in content:
                             if item[2] and item[1] == "Tower":
                                 game.current_tile.build(game.current_player, "BasicTower")
@@ -412,10 +422,6 @@ while run:
                                 simulation_starting_time = pygame.time.get_ticks()
                         elif btn_quit.is_over(pygame.mouse.get_pos()):
                             game_state = 1
-                            # game.player_2.castle_tile.units[0].hit(10)
-                            # print(game.player_1.castle_tile.units[0].health)
-                            # print(game.player_2.castle_tile.units[0].health)
-                            # print(game.winner)
                         elif btn_build.is_over(pygame.mouse.get_pos()):
                             game.current_player.state = "BUILD"
                         elif btn_train.is_over(pygame.mouse.get_pos()):
@@ -430,3 +436,5 @@ while run:
     pygame.display.update()
 
 pygame.quit()
+
+

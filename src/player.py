@@ -31,7 +31,6 @@ class Player:
         return sum
 
     def simulate(self):
-        #print("=======")
         stuck = True
         for unit in self._to_simulate:
             if issubclass(type(unit), Soldier):
@@ -49,7 +48,6 @@ class Player:
                         unit.move()
                 else:
                     unit.move()
-                print("{}".format(unit.stuck))
                 stuck = stuck and unit.stuck
             elif issubclass(type(unit), Tower):
                 if not unit.is_in_ruins:
@@ -85,13 +83,11 @@ class Player:
     def closest_tower(self, tile):
         closest = None
         for u in self._units:
-            if issubclass(type(u), Tower):
-                if not u.is_in_ruins:
-                    if closest is None:
+            if issubclass(type(u), Tower) and \
+                not u.is_in_ruins and \
+                (closest is None or self.distance(u.tile, tile) < self.distance(closest, tile)):
                         closest = u.tile
-                    elif self.distance(u.tile, tile) < self.distance(closest, tile):
-                        closest = u.tile
-
+                        
         return closest
 
     @property

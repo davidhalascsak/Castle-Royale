@@ -67,9 +67,8 @@ class Tower(Unit):
             if self._locked_unit is None:
                 for unit in units:
                     if issubclass(type(unit), Soldier):
-                        if self._locked_unit is None and self.distance(unit) <= self._range:
-                            self._locked_unit = unit
-                        elif self._locked_unit is not None and self.distance(unit) < self.distance(self._locked_unit):
+                        if self._locked_unit is None and self.distance(unit) <= self._range or \
+                            (self._locked_unit is not None and self.distance(unit) < self.distance(self._locked_unit)):
                             self._locked_unit = unit
 
             if self._locked_unit is not None:

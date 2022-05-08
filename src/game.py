@@ -65,9 +65,9 @@ class Game:
         self._player_2.gold = start_gold
 
         # Determine Starting Player
-        # self._current_player = random.sample({self._player_1, self._player_2}, 1)[0]
         self._current_player = self._player_1
         self._starting_player = self._current_player
+
         # Generate Map
         for x in range(0, self.map_height):
             self._map.append([])
@@ -83,12 +83,6 @@ class Game:
                     self._player_2.add_castle_tile(t)
         MapGeneration.generate_map(self)
         self._path_finder = AStar(self)
-
-    def load_game(self):
-        pass
-
-    def save_game(self):
-        pass
 
     def not_active_player(self):
         if self._current_player == self._player_1:
