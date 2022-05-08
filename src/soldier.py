@@ -76,8 +76,10 @@ class Soldier(Unit):
         self.health -= damage
         if self.health <= 0:
             self.alive = False
-            self.owner.units.remove(self)
-            self.tile.units.remove(self)
+            if self in self.owner.units:
+                self.owner.units.remove(self)
+            if self in self.tile.units:
+                self.tile.units.remove(self)
 
     @property
     def stamina(self):
