@@ -31,6 +31,7 @@ class Player:
         return sum
 
     def simulate(self):
+        print("=======")
         stuck = True
         for unit in self._to_simulate:
             if issubclass(type(unit), Soldier):
@@ -48,6 +49,7 @@ class Player:
                         unit.move()
                 else:
                     unit.move()
+                print("{}".format(unit.stuck))
                 stuck = stuck and unit.stuck
             elif issubclass(type(unit), Tower):
                 if not unit.is_in_ruins:

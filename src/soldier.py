@@ -17,6 +17,7 @@ class Soldier(Unit):
         self._last_time = 0
         self.waypoints = []
         self.stuck = False
+        self.last_stuck = None
 
     def move(self):
         self.stuck = False
@@ -59,8 +60,13 @@ class Soldier(Unit):
                         self.waypoints.pop(0)
                 else:
                     self.stuck = True
+                    self.last_stuck = self.stuck
+            else:
+                if self.last_stuck:
+                    self.stuck = self.last_stuck
         else:
             self.stuck = True
+            self.last_stuck = self.stuck
 
     @staticmethod
     def get_speed():
