@@ -38,7 +38,7 @@ class Game:
         self._player_2.reset_stamina()
 
     def select_current_tile(self):
-        if tile_has_soldier(self.current_tile):
+        if tile_has_soldier(self.current_tile) and self.current_tile.units[0].owner == self.current_player:
             if self.selected_tile:
                 self.selected_tile.selected = False
 

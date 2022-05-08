@@ -127,14 +127,13 @@ name_color_now_playing = (255, 0, 0)
 def fill(surface, original_surface, hue):
     if hue < 0:
         hue = 0
-    pass
-    # w, h = surface.get_size()
-    # for x in range(w):
-    #     for y in range(h):
-    #         a = surface.get_at((x, y))[3]
-    #         c = original_surface.get_at((x, y))
-    #         c.hsla = (c.hsla[0] + hue, c.hsla[1], c.hsla[2], c.hsla[3])
-    #         surface.set_at((x, y), pygame.Color(c.r, c.g, c.b, a))
+    w, h = surface.get_size()
+    for x in range(w):
+        for y in range(h):
+            a = surface.get_at((x, y))[3]
+            c = original_surface.get_at((x, y))
+            c.hsla = (c.hsla[0] + hue, c.hsla[1], c.hsla[2], c.hsla[3])
+            surface.set_at((x, y), pygame.Color(c.r, c.g, c.b, a))
 
 
 def get_name_color(player):
