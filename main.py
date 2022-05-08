@@ -352,6 +352,7 @@ while run:
                             game = Game()
                             game.new_game(1000, "Player1", "Player2")
                             game_state = 4
+                            tile_view = []
                         elif main_menu[i][0] == 2:
                             run = False
                         elif main_menu[i][0] == 3:

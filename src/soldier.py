@@ -44,11 +44,23 @@ class Soldier(Unit):
                                                                   self.destination.y, True, issubclass(type(self), Climber))
                 if self.path[0] and self._current_stamina > 0:
                     next = self.path[1][1]
+                    if issubclass(type(self), Tank) and len(self._game._map[next[0]][next[1]].units) > 0:
+                        for unit in self._game._map[next[0]][next[1]].units:
+                            if unit.owner == self._game.other_player(self.owner) and issubclass(type(unit), Soldier):
+                                unit.take_damage(self.damage)
+                    
+                    previous_tile = self._tile
                     self._current_stamina -= 1
                     self._tile.units.remove(self)
                     [self._x, self._y] = next
                     self._tile = self._game.map[self._x][self._y]
                     self._tile.units.append(self)
+
+                    if issubclass(type(self), Tank) and len(previous_tile.units) > 0:
+                        for unit in previous_tile.units:
+                            if unit.owner == self._game.other_player(self.owner) and issubclass(type(unit), Soldier):
+                                unit.take_damage(self.damage)
+                    
 
                     if self._tile == self.destination:
                         self.destination.units[0].hit(self.damage)
