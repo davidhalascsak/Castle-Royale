@@ -52,6 +52,7 @@ class Tile:
         if len(self._units) == 0 and self.type == "PLAIN":
             unit_price = eval(type).price
             if (player.gold - unit_price) >= 0:
+                self.game_ref.path_finder.loadObstacles(False, None)
                 self.game_ref.path_finder.set_obstacle(self.x, self.y, 1)
                 if self.game_ref.path_finder.isPath(7, 0, 7, 25, False)[0]:
                     player.gold = (player.gold - unit_price)
@@ -75,7 +76,6 @@ class Tile:
         for u in self._units:
             if issubclass(type(u), Tower):
                 unit = u
-
         unit.demolish()
 
     def remove_tower_ruin(self):
