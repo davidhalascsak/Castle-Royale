@@ -19,8 +19,8 @@ class Tower(Unit):
 
         if self._level < 5 and self._owner.gold - (self._level + 1) * self.__class__.price > 0:
             self._level += 1
-            self._max_health *= 1.5
-            self._health *= 1.5
+            self._max_health = int(self._max_health * 1.5)
+            self._health = int(self._health * 1.5)
             self._damage += 10
             self._clean_time += 1
             self._owner.gold = self._owner.gold - self._level * self.__class__.price

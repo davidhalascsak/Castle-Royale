@@ -219,7 +219,7 @@ class Tile:
         if self._hover and (len(self._units) > 0 and issubclass(type(self._units[0]), Tower)):
             length = len(self._units)
             if self._y > 600:
-                horizontal_alignment = -172
+                horizontal_alignment = -182
             else:
                 horizontal_alignment = 0
             if self._x > 330:
@@ -227,7 +227,7 @@ class Tile:
             else:
                 vertical_alignment = 48
             pygame.draw.rect(surface, pygame.Color(255, 255, 255),
-                             pygame.Rect(self._y + horizontal_alignment, self._x + vertical_alignment, 220,
+                             pygame.Rect(self._y + horizontal_alignment, self._x + vertical_alignment, 230,
                                          length * 18))
             if self._units[0].is_in_ruins:
                 text = pygame.font.SysFont('Arial', 19).render("{0} days to clean the site.".format(self._units[0].clean_time), False, self.get_owner_color(0))
@@ -237,7 +237,7 @@ class Tile:
                                                                       self._units[0].health,
                                                                       self._units[0].max_health),
                                                                False, pygame.Color(0, 0, 0))
-            pygame.draw.circle(surface, self.get_owner_color(), (self._y + horizontal_alignment + 10, self._x + 9 + vertical_alignment), 5)
+            pygame.draw.circle(surface, self.get_owner_color(), (self._y + horizontal_alignment + 10, self._x + 8 + vertical_alignment), 5)
             surface.blit(text, (self._y + horizontal_alignment + 20, self._x + vertical_alignment - 2))
 
     def is_over(self, pos):
