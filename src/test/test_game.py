@@ -37,7 +37,7 @@ def test_next_round_gold():
     game.next_round()
     game.next_round() # back to starting player
     
-    assert game._player_2.gold == 1010
+    assert game._player_2.gold == 1060
 
 def test_next_round_is_ended():
     game = setup_game()
