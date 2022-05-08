@@ -119,6 +119,9 @@ def test_take_damage_alive():
     player_1_tile.add_castle(player_1_tile.units[0])
     game._player_1.add_castle_tile(player_1_tile)
 
+    player_2 = Player("player_2", 150, 1, 1, game)
+    game._player_2 = player_2
+
     tile = game._map[0][0]
     soldier_1 = BasicSoldier(tile, player_1, 0, 0)
     player_1.add_unit(soldier_1)

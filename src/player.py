@@ -17,21 +17,21 @@ class Player:
     def add_unit(self, unit):
         self._units.append(unit)
         if issubclass(type(unit), Soldier):
-            unit.destination = self._game.other_player().castle_tile
+            unit.destination = self._game.not_active_player().castle_tile
         self._to_simulate.append(unit)
 
     def add_castle_tile(self, tile):
         self._castle_tile = tile
 
     def calculate_gold_bonus(self):
-        sum = 0
+        sum = 50
         for unit in self._units:
             if issubclass(type(unit), Soldier):
                 sum += 10
         return sum
 
     def simulate(self):
-        print("=======")
+        #print("=======")
         stuck = True
         for unit in self._to_simulate:
             if issubclass(type(unit), Soldier):

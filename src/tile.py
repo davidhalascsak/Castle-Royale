@@ -51,7 +51,7 @@ class Tile:
     def build(self, player, type):
         if len(self._units) == 0 and self.type == "PLAIN":
             unit_price = eval(type).price
-            if (player.gold - unit_price) > 0:
+            if (player.gold - unit_price) >= 0:
                 self.game_ref.path_finder.set_obstacle(self.x, self.y, 1)
                 if self.game_ref.path_finder.isPath(7, 0, 7, 25, False)[0]:
                     player.gold = (player.gold - unit_price)
@@ -94,13 +94,13 @@ class Tile:
 
         if count < 5:
             unit_price = eval(soldier).price
-            if (player.gold - unit_price) > 0:
+            if (player.gold - unit_price) >= 0:
                 if soldier != "Suicide":
                     player.gold = (player.gold - unit_price)
                     unit = eval(soldier)(self, player, self.x, self.y)
                     player.add_unit(unit)
                     self._units.append(unit)
-                    unit.destination = player.game.other_player().castle_tile
+                    unit.destination = player.game.not_active_player().castle_tile
                 else:
                     if self.game_ref.player_1 == player:
                         if self.game_ref.player_2.has_tower():

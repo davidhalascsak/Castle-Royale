@@ -73,13 +73,15 @@ class Soldier(Unit):
         return 800
 
     def take_damage(self, damage):
-        self.health -= damage
-        if self.health <= 0:
-            self.alive = False
-            if self in self.owner.units:
-                self.owner.units.remove(self)
-            if self in self.tile.units:
-                self.tile.units.remove(self)
+        if(self.health > 0):
+            self.health -= damage
+            if self.health <= 0:
+                self.alive = False
+                self._game.other_player(self.owner)._gold += 30
+                if self in self.owner.units:
+                    self.owner.units.remove(self)
+                if self in self.tile.units:
+                    self.tile.units.remove(self)
 
     @property
     def stamina(self):
