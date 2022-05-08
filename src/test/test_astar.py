@@ -28,25 +28,25 @@ def test_load_obstacles():
     game = setup_game()
     astar = AStar(game)
     game._map[0][5].type = "HILL"
-    [availability, path] = astar.isPath(0, 0, 0, 10)
+    
 
     # one obstacle in the way, normal unit
-    astar.loadObstacles(False)
+    [availability, path] = astar.isPath(0, 0, 0, 10, True)
     assert astar.arr[0][5] == 1
 
     # one obstacle in the way, with special unit
-    astar.loadObstacles(True)
+    [availability, path] = astar.isPath(0, 0, 0, 10, True, True)
     assert astar.arr[0][5] == 0
 
     # no obstacle
     game._map[0][5].type = "PLAIN"
-    astar.loadObstacles(False)
+    [availability, path] = astar.isPath(0, 0, 0, 10, True)
     assert astar.arr[0][5] == 0
 
 def test_is_path():
     game = setup_game()
     astar = AStar(game)
-    [availability, path] = astar.isPath(0, 0, 0, 10)
+    [availability, path] = astar.isPath(0, 0, 0, 10, True)
 
     # empty test    
     arr = []
@@ -61,7 +61,7 @@ def test_is_path():
     game = setup_game()
     astar = AStar(game)
     game._map[0][5].type = "HILL"
-    [availability, path] = astar.isPath(0, 0, 0, 10)
+    [availability, path] = astar.isPath(0, 0, 0, 10, True)
 
     arr = []
     for i in range(5):
@@ -81,7 +81,7 @@ def test_is_path():
     game = setup_game()
     astar = AStar(game)
     game._map[0][5].type = "HILL"
-    [availability, path] = astar.isPath(0, 0, 0, 10, True)
+    [availability, path] = astar.isPath(0, 0, 0, 10, True, True)
 
     arr = []
     for i in range(11):
@@ -97,7 +97,7 @@ def test_is_path():
     astar = AStar(game)
     for i in range(14):
         game._map[i][5].type = "HILL"
-    [availability, path] = astar.isPath(0, 0, 0, 10)
+    [availability, path] = astar.isPath(0, 0, 0, 10, True)
 
 
     assert not availability
@@ -107,7 +107,7 @@ def test_is_path():
     astar = AStar(game)
     for i in range(14):
         game._map[i][5].type = "HILL"
-    [availability, path] = astar.isPath(0, 0, 0, 10, True)
+    [availability, path] = astar.isPath(0, 0, 0, 10, True, True)
 
 
     assert availability
