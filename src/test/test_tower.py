@@ -22,8 +22,11 @@ def test_demolish():
     tower = BasicTower(t, player_1, 1, 0)
     tower._is_in_ruins = True
     tower._clean_time = 1
+    player_1.add_unit(tower)
+    t.units.append(tower)
     tower.demolish()
-    assert tower._clean_time == 0
+    
+    assert tower._clean_time == 1
 
 def test_basic_tower_dmg():
     game = setup_game()
