@@ -1,5 +1,5 @@
 import pygame
-
+from src.persistence import Persistence
 from src.button import Button, MenuButton
 from src.game import Game
 from src.contextmenu import Context
@@ -44,7 +44,7 @@ menu_images = {
 menu_images["LOGO"] = pygame.transform.scale(menu_images["LOGO"], (
 menu_images["LOGO"].get_width() * main_menu_scale, menu_images["LOGO"].get_height() * main_menu_scale))
 
-main_menu = [(1, "NEW GAME"), (2, "QUIT")]
+main_menu = [(1, "NEW GAME"), (4, "SAVE"), (3, "LOAD"), (2, "QUIT")]
 main_menu_btn = []
 menu_top_padding = 0
 for i, elem in enumerate(main_menu):
@@ -71,6 +71,7 @@ btn_back = Button((255, 0, 0), 18, 676, 228, 40, "MAIN MENU")
 
 
 game = None
+persistence = Persistence()
 
 font = pygame.font.SysFont('comicsans', 20)
 font2 = pygame.font.Font(os.path.join("assets", "fonts", 'arcadeclassic.ttf'), 23)
@@ -110,12 +111,21 @@ health_bar_inside_original_right = pygame.transform.scale(health_bar_inside_orig
 buttons_background = pygame.image.load("assets/in_game_button_assets/button_background.png")
 lock = pygame.image.load("assets/lock.png")
 lock = pygame.transform.scale(lock, (16 * 2, 16 * 2))
+lock2 = pygame.image.load("assets/lock.png")
+lock2 = pygame.transform.scale(lock, (16 * 3, 16 * 3))
 
 # Change name color based on round
 name_color = (0, 0, 0)
 name_color_now_playing = (255, 0, 0)
 
 tile_view = []
+
+load_buttons = []
+def create_buttons(num_buttons):
+    global load_buttons
+    load_buttons = []
+    for i in range(num_buttons):
+        load_buttons.append(Button((255, 0, 0), (i * 228) + ((i+1) * 18), 18, 228, 40, "MAP {}".format(i)))
 
 
 def fill(surface, original_surface, hue):
@@ -171,6 +181,9 @@ while run:
 
         for elem in main_menu_btn:
             elem.draw(screen)
+
+        if game is None:
+            screen.blit(lock2, [410, 320, lock.get_width(), lock.get_height()])
         # draw
     elif game_state == 2:
         screen.blit(menu_images["BG"], [0, 0, SCREEN_WIDTH, SCREEN_HEIGHT])
@@ -189,6 +202,16 @@ while run:
         # draw
     elif game_state == 3:
         pass
+    elif game_state == 5:
+        screen.blit(menu_images["BG"], [0, 0, SCREEN_WIDTH, SCREEN_HEIGHT])
+
+        for i in load_buttons:
+            i.draw(screen)
+            i.is_over(pygame.mouse.get_pos())
+
+        btn_back.draw(screen)
+        btn_back.is_over(pygame.mouse.get_pos())
+
         # draw
     elif game_state == 4:
         # Draw Tiles
@@ -331,11 +354,30 @@ while run:
                             game_state = 4
                         elif main_menu[i][0] == 2:
                             run = False
+                        elif main_menu[i][0] == 3:
+                            num_saves = persistence.get_num_saves()
+                            create_buttons(num_saves)
+                            game_state = 5
+                        elif main_menu[i][0] == 4:
+                            persistence.save(game)
+                            game = None
 
         elif game_state == 2:
-            if event.type == pygame.MOUSEBUTTONUP and not game.start_simulation:
+            if event.type == pygame.MOUSEBUTTONUP and (not game or not game.start_simulation):
                 if btn_back.is_over(pygame.mouse.get_pos()):
                     game_state = 1
+
+        elif game_state == 5:
+            if event.type == pygame.MOUSEBUTTONUP and (not game or not game.start_simulation):
+                if btn_back.is_over(pygame.mouse.get_pos()):
+                    game_state = 1
+                for index, btn in enumerate(load_buttons):
+                    if btn.is_over(pygame.mouse.get_pos()):
+                        load = persistence.load(index)
+                        if load:
+                            game = load
+                        game_state = 4
+
         elif game_state == 3:
             pass
             # keyboard input
