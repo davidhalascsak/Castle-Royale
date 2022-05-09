@@ -377,6 +377,7 @@ while run:
                         load = persistence.load(index)
                         if load:
                             game = load
+                            tile_view = []
                         game_state = 4
 
         elif game_state == 3:
