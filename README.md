@@ -10,4 +10,4 @@ A feladat egy felülnézetes, kétszemélyes, körökre osztott stratégiai ját
   * Egységek képzése
   * Különböző építmények létrehozása és fejlesztése aranyért
 
-# Képek
+## Képek
