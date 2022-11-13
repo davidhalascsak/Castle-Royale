@@ -9,3 +9,5 @@ A feladat egy felülnézetes, kétszemélyes, körökre osztott stratégiai ját
 * Egy kör több részből áll és megadott ideig tart
   * Egységek képzése
   * Különböző építmények létrehozása és fejlesztése aranyért
+
+# Képek
